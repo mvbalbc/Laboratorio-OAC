@@ -5,7 +5,6 @@ import re
 import tempfile
 import os
 
-
 #################### ENTRADA DO ARQUIVO ####################
 
 def entrada_arquivo(nome_arquivo):
@@ -13,64 +12,100 @@ def entrada_arquivo(nome_arquivo):
     nome_completo_arquivo = f"{nome_arquivo}" + ".asm"
     if arquivos_asm:
         if Path(nome_completo_arquivo).exists():
-            print(f'Preparando para ler o arquivo')
-            cria_arquivo_temp(nome_completo_arquivo)
+            print(f"O arquivo de nome {nome_completo_arquivo} existe.")
+            return nome_completo_arquivo
         else:
             print(f"O nome do arquivo não foi encontrado")
             print(arquivos_asm)
 
     else:
         print(f"Nenhum arquivo .asm foi encontrado.")
-
+        return None
 
 ##################### LEITURA DE ARQUIVO #######################
 
 def ler_arquivo(arquivo):
+    print("Lendo arquivo")
     with open(arquivo, 'r', encoding='utf-8') as arquivo:
         conteudo = arquivo.readlines()
     return conteudo
 
-##################### ANALISE DO ARQUIVO #######################
+##################### EXECUCAO DO CODIGO #######################
+"""
+Penso que essa função será como o PC do código em Assembly
+"""
 
-def analisar_arquivo(nome_arquivo):
-        with open(nome_arquivo, 'r', encoding='utf-8') as arquivo:
-            for linha in arquivo:
-                if linha:
-                     """
-                     Será que é necessário separar o .text do .data ?
-                     """
+def executa_codigo(nome_arquivo):
+    with open(nome_arquivo, 'r', encoding='utf-8') as arquivo:
+        for linha in arquivo:
+            if linha:
+                 """
+                 Será que é necessário separar o .text do .data ?
+                 """
+        print("chegamos aqui")
 
 #################### TRATAMENTO DO CONTEUDO DO ARQUIVO ########
 
 def tratar_ws(linhas_arquivo):
-    linhas_tratadas = [linha.lstrip().replace(" ", "") for linha in linhas_arquivo if linha]
+    """
+    Podemos fazer tratamentos das linhas mais sofisticados
+    """
+    print("Trantando as linhas do arquivo")
+    linhas_tratadas = [linha.lstrip() for linha in linhas_arquivo if linha]
     return linhas_tratadas
-
 
 #################### CRIACAO DO ARQUIVO TEMPORARIO ############
 
 def cria_arquivo_temp(nome_arquivo):
-    conteudo = ler_arquivo(nome_arquivo)
-    with tempfile.NamedTemporaryFile(mode='w+', delete=False, encoding='utf-8') as arquivo_temp:
-        arquivo_temp.write(str(conteudo))
-        arquivo_temp.seek(0)
-    alterar_arquivo(conteudo)
-
-
+    print("Criando arquivo temporário")
+    arquivo_temp = tempfile.NamedTemporaryFile(mode='w+', delete=False, encoding='utf-8', dir='.')
+    return arquivo_temp
+     
 ################### ALTERAR O ARQUIVO TEMPORARIO #############
  
-def alterar_arquivo(linhas_arquivo):
-    arquivo_sem_ws = tratar_ws(linhas_arquivo)
-    print("alterando o arquivo")
-    print(arquivo_sem_ws)
-
-
+def alterar_arquivo_temp(linhas_codigo, arquivo_temp):
+    print("Alterando o arquivo")
+    for linha in linhas_codigo:
+        arquivo_temp.write(linha)
+    arquivo_temp.flush()
+    arquivo_temp.seek(0)
+    return arquivo_temp.name # Retornamos o caminho para a próxima função
 
 ###################### MAIN ###################################
 print("Olá, você está em um simulador do RARS\n")
 
 # nome_arquivo = input("Digite o nome do arquivo de extesão .asm para ser 'montado':")
 
-entrada_arquivo("exemplo-lab1")
+nome_arquivo = "exemplo-lab1"
+caminho_asm = entrada_arquivo(nome_arquivo)
+
+if caminho_asm:
+    conteudo_original = ler_arquivo(caminho_asm)
+    conteudo_limpo = tratar_ws(conteudo_original)
+    temp_file_obj = cria_arquivo_temp(nome_arquivo)
+    print(temp_file_obj)
+    
+    try:
+        alterar_arquivo_temp(conteudo_limpo, temp_file_obj)
+        nome_temp = temp_file_obj.name
+        print(nome_temp)
+        temp_file_obj.close() 
+        executa_codigo(nome_temp)
+    except:
+        print("Alguma coisa de errado não deu certo")
+    finally:
+        os.unlink(nome_temp)
+
+################# IDEIAS SOBRE O CÓDIGO
+
+"""
+A memória RAM  pode ser uma tabela hash em que geramos o endereço em hexadecimal como a chave e colocamos o conteúdo como valor;
+
+Se quisermos ser rígidos com os caracteres de entrada do arquivo lido, podemos mudar o tipo de encoding para 'ascii' assim, qualquer caracter que não for ascii
+gerará uma exceção, o que poder ser bom, para retornarmos uma mensagem para o usuário.
+
+Eu estou pengando um arquivo em .asm e lendo ele como se fosse .txt, existe algum erro possível nisso ?
+
+"""
 
 
