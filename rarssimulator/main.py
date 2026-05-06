@@ -39,9 +39,7 @@ def executa_codigo(nome_arquivo):
     with open(nome_arquivo, 'r', encoding='utf-8') as arquivo:
         for linha in arquivo:
             if linha:
-                 """
-                 Será que é necessário separar o .text do .data ?
-                 """
+                pass
         print("chegamos aqui")
 
 #################### TRATAMENTO DO CONTEUDO DO ARQUIVO ########
@@ -50,8 +48,17 @@ def tratar_ws(linhas_arquivo):
     """
     Podemos fazer tratamentos das linhas mais sofisticados
     """
-    print("Trantando as linhas do arquivo")
-    linhas_tratadas = [linha.lstrip() for linha in linhas_arquivo if linha]
+    print("Tratando as linhas do arquivo...")
+    linhas_tratadas = []
+    
+    for linha in linhas_arquivo:
+        linha_limpa = re.sub(r'#.*', '', linha).strip()
+        
+        linha_limpa = re.sub(r'\s+', ' ', linha_limpa)
+        
+        if linha_limpa:
+            linhas_tratadas.append(linha_limpa)
+            
     return linhas_tratadas
 
 #################### CRIACAO DO ARQUIVO TEMPORARIO ############
@@ -66,10 +73,23 @@ def cria_arquivo_temp(nome_arquivo):
 def alterar_arquivo_temp(linhas_codigo, arquivo_temp):
     print("Alterando o arquivo")
     for linha in linhas_codigo:
-        arquivo_temp.write(linha)
+        arquivo_temp.write(linha + '\n')
     arquivo_temp.flush()
     arquivo_temp.seek(0)
     return arquivo_temp.name # Retornamos o caminho para a próxima função
+
+################# CLASSE RAM ##################################
+
+class RAM:
+    def __init__(self):
+        self.memoria = {}
+    
+    def write(self, endereco, valor):
+        self.memoria[endereco] = valor
+
+    def read(self, endereco):
+        self.memoria.get(endereco, 0)
+
 
 ###################### MAIN ###################################
 print("Olá, você está em um simulador do RARS\n")
@@ -94,7 +114,9 @@ if caminho_asm:
     except:
         print("Alguma coisa de errado não deu certo")
     finally:
-        os.unlink(nome_temp)
+        #os.unlink(nome_temp)
+        pass
+
 
 ################# IDEIAS SOBRE O CÓDIGO
 
