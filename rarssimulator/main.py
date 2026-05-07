@@ -38,11 +38,21 @@ Penso que essa função será como o PC do código em Assembly
 def executa_codigo(nome_arquivo):
     with open(nome_arquivo, 'r', encoding='utf-8') as arquivo:
         for linha in arquivo:
+            ## Estamos assumindo que só temos os dois campos de códigos ".data" e ".text"
+            if linha == ".data":
+                for linha in arquivo: ## Veja se continua do mesmo ponto do arquivo
+                    if linha == ".text":
+                        break
+
+            if linha == ".text":
+                for linha in arquivo:
+                    if linha == ".data":
+                        break
             partes = linha.strip().split()
             instrucao = partes[0]
             try:
                 operandos: partes[1:] # Estamos tentando achar as instruções que não tem os operandos
-            except
+            except:
                 print("Instrução sem operandos")
             
         print("chegamos aqui")
@@ -60,6 +70,8 @@ def tratar_ws(linhas_arquivo):
         linha_limpa = re.sub(r'#.*', '', linha).strip()
         
         linha_limpa = re.sub(r'\s+', ' ', linha_limpa)
+
+        linha_limpa = linha_limpa.lower()
         
         if linha_limpa:
             linhas_tratadas.append(linha_limpa)
