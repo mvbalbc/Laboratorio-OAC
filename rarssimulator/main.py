@@ -38,8 +38,13 @@ Penso que essa função será como o PC do código em Assembly
 def executa_codigo(nome_arquivo):
     with open(nome_arquivo, 'r', encoding='utf-8') as arquivo:
         for linha in arquivo:
-            if linha:
-                pass
+            partes = linha.strip().split()
+            instrucao = partes[0]
+            try:
+                operandos: partes[1:] # Estamos tentando achar as instruções que não tem os operandos
+            except
+                print("Instrução sem operandos")
+            
         print("chegamos aqui")
 
 #################### TRATAMENTO DO CONTEUDO DO ARQUIVO ########
@@ -91,6 +96,22 @@ class RAM:
         self.memoria.get(endereco, 0)
 
 
+################# CLASSE TIPO-I ##############################
+
+
+################## CLASSE TIPO-U #############################
+
+
+################## CLASSE TIPO-J #############################
+
+
+################## CLASSE TIPO-S #############################
+
+
+################## CLASSE TIPO-B #############################
+
+
+
 ###################### MAIN ###################################
 print("Olá, você está em um simulador do RARS\n")
 
@@ -102,21 +123,20 @@ caminho_asm = entrada_arquivo(nome_arquivo)
 if caminho_asm:
     conteudo_original = ler_arquivo(caminho_asm)
     conteudo_limpo = tratar_ws(conteudo_original)
-    temp_file_obj = cria_arquivo_temp(nome_arquivo)
-    print(temp_file_obj)
+    obj_arquivo_temp = cria_arquivo_temp(nome_arquivo)
+    print(obj_arquivo_temp)
     
     try:
-        alterar_arquivo_temp(conteudo_limpo, temp_file_obj)
-        nome_temp = temp_file_obj.name
+        alterar_arquivo_temp(conteudo_limpo, obj_arquivo_temp)
+        nome_temp = obj_arquivo_temp.name
         print(nome_temp)
-        temp_file_obj.close() 
+        obj_arquivo_temp.close() 
         executa_codigo(nome_temp)
     except:
-        print("Alguma coisa de errado não deu certo")
+        print("Alguma coisa de errado não está certa")
     finally:
-        #os.unlink(nome_temp)
+        os.unlink(nome_temp)
         pass
-
 
 ################# IDEIAS SOBRE O CÓDIGO
 
@@ -128,6 +148,10 @@ gerará uma exceção, o que poder ser bom, para retornarmos uma mensagem para o
 
 Eu estou pengando um arquivo em .asm e lendo ele como se fosse .txt, existe algum erro possível nisso ?
 
+
+arquivo.flush()
+re.sub(r'#.*', '', linha).strip()        
+re.sub(r'\s+', ' ', linha_limpa)
 """
 
 
