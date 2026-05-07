@@ -116,78 +116,82 @@ def executar_Instrucoes(lista_inst):
             if rd_idx == 0: continue
 
             match op:
-                # --- INTEIROS: ARITMÉTICA R-TYPE (Rd, Rs1, Rs2) ---
-                case "add":
-                    v1 = registradores[get_reg_idx(inst[2])][4]
-                    v2 = registradores[get_reg_idx(inst[3])][4]
-                    registradores[rd_idx][4] = (v1 + v2) & 0xFFFFFFFF
-                case "sub":
-                    v1 = registradores[get_reg_idx(inst[2])][4]
-                    v2 = registradores[get_reg_idx(inst[3])][4]
-                    registradores[rd_idx][4] = (v1 - v2) & 0xFFFFFFFF
-                case "and":
-                    v1 = registradores[get_reg_idx(inst[2])][4]
-                    v2 = registradores[get_reg_idx(inst[3])][4]
-                    registradores[rd_idx][4] = v1 & v2
-                case "or":
-                    v1 = registradores[get_reg_idx(inst[2])][4]
-                    v2 = registradores[get_reg_idx(inst[3])][4]
-                    registradores[rd_idx][4] = v1 | v2
-                case "xor":
-                    v1 = registradores[get_reg_idx(inst[2])][4]
-                    v2 = registradores[get_reg_idx(inst[3])][4]
-                    registradores[rd_idx][4] = v1 ^ v2
+                    # --- INTEIROS: ARITMÉTICA R-TYPE ---
+                    case "add":
+                        v1 = registradores[get_reg_idx(inst[2])][4]
+                        v2 = registradores[get_reg_idx(inst[3])][4]
+                        registradores[rd_idx][4] = (v1 + v2) & 0xFFFFFFFF
+                    case "sub":
+                        v1 = registradores[get_reg_idx(inst[2])][4]
+                        v2 = registradores[get_reg_idx(inst[3])][4]
+                        registradores[rd_idx][4] = (v1 - v2) & 0xFFFFFFFF
+                    
+                    # --- INTEIROS: IMEDIATOS (I-TYPE / U-TYPE) ---
+                    case "addi":
+                        v1 = registradores[get_reg_idx(inst[2])][4]
+                        imm = int(inst[3])
+                        registradores[rd_idx][4] = (v1 + imm) & 0xFFFFFFFF
+                    case "li": # Pseudo-instrução Load Immediate
+                        registradores[rd_idx][4] = int(inst[2]) & 0xFFFFFFFF
+                    case "lui": # Load Upper Immediate (Carrega nos 20 bits superiores)
+                        imm = int(inst[2])
+                        registradores[rd_idx][4] = (imm << 12) & 0xFFFFFFFF
+                    
+                    # --- LÓGICA E DESLOCAMENTO (Inteiros Imediato e Registro) ---
+                    case "slli": # Shift Left Logical Immediate
+                        v1 = registradores[get_reg_idx(inst[2])][4]
+                        shamt = int(inst[3]) & 0x1F # Máximo 31
+                        registradores[rd_idx][4] = (v1 << shamt) & 0xFFFFFFFF
+                    case "srli": # Shift Right Logical Immediate
+                        v1 = registradores[get_reg_idx(inst[2])][4]
+                        shamt = int(inst[3]) & 0x1F
+                        registradores[rd_idx][4] = (v1 >> shamt) & 0xFFFFFFFF
+                    case "andi":
+                        v1 = registradores[get_reg_idx(inst[2])][4]
+                        imm = int(inst[3])
+                        registradores[rd_idx][4] = v1 & imm
 
-                # --- INTEIROS: IMEDIATOS I-TYPE (Rd, Rs1, Imm) ---
-                case "addi":
-                    v1 = registradores[get_reg_idx(inst[2])][4]
-                    imm = int(inst[3])
-                    registradores[rd_idx][4] = (v1 + imm) & 0xFFFFFFFF
-                case "andi":
-                    v1 = registradores[get_reg_idx(inst[2])][4]
-                    imm = int(inst[3])
-                    registradores[rd_idx][4] = v1 & imm
-                case "li": # Pseudo-instrução Load Immediate
-                    registradores[rd_idx][4] = int(inst[2]) & 0xFFFFFFFF
+                    # --- PONTO FLUTUANTE: ARITMÉTICA ---
+                    case "fadd.s":
+                        f1 = registradores[get_reg_idx(inst[2])][4]
+                        f2 = registradores[get_reg_idx(inst[3])][4]
+                        registradores[rd_idx][4] = float(f1 + f2)
+                    case "fsub.s":
+                        f1 = registradores[get_reg_idx(inst[2])][4]
+                        f2 = registradores[get_reg_idx(inst[3])][4]
+                        registradores[rd_idx][4] = float(f1 - f2)
+                    case "fmul.s":
+                        f1 = registradores[get_reg_idx(inst[2])][4]
+                        f2 = registradores[get_reg_idx(inst[3])][4]
+                        registradores[rd_idx][4] = float(f1 * f2)
 
-                # --- EXTENSÃO M: MULTIPLICAÇÃO/DIVISÃO ---
-                case "mul":
-                    v1 = registradores[get_reg_idx(inst[2])][4]
-                    v2 = registradores[get_reg_idx(inst[3])][4]
-                    registradores[rd_idx][4] = (v1 * v2) & 0xFFFFFFFF
-                case "div":
-                    v1 = registradores[get_reg_idx(inst[2])][4]
-                    v2 = registradores[get_reg_idx(inst[3])][4]
-                    registradores[rd_idx][4] = (v1 // v2) if v2 != 0 else 0
+                    # --- "IMEDIATO" PARA FLUTUANTE (Pseudo-instrução de Simulação) ---
+                    # Como o RISC-V não tem 'faddi', simulamos uma carga direta para testes
+                    case "fli.s": 
+                        # fli.s fa0, 3.14 (Útil para simular sem precisar de load da memória)
+                        registradores[rd_idx][4] = float(inst[2])
 
-                # --- PONTO FLUTUANTE: RV32F (frd, frs1, frs2) ---
-                case "fadd.s":
-                    f1 = registradores[get_reg_idx(inst[2])][4]
-                    f2 = registradores[get_reg_idx(inst[3])][4]
-                    registradores[rd_idx][4] = float(f1 + f2)
-                case "fsub.s":
-                    f1 = registradores[get_reg_idx(inst[2])][4]
-                    f2 = registradores[get_reg_idx(inst[3])][4]
-                    registradores[rd_idx][4] = float(f1 - f2)
-                case "fmul.s":
-                    f1 = registradores[get_reg_idx(inst[2])][4]
-                    f2 = registradores[get_reg_idx(inst[3])][4]
-                    registradores[rd_idx][4] = float(f1 * f2)
-                case "fdiv.s":
-                    f1 = registradores[get_reg_idx(inst[2])][4]
-                    f2 = registradores[get_reg_idx(inst[3])][4]
-                    registradores[rd_idx][4] = float(f1 / f2) if f2 != 0 else float('inf')
-                
-                # --- CONVERSÕES ---
-                case "fcvt.s.w": # Int para Float
-                    val_int = registradores[get_reg_idx(inst[2])][4]
-                    registradores[rd_idx][4] = float(val_int)
-                case "fcvt.w.s": # Float para Int
-                    val_float = registradores[get_reg_idx(inst[2])][4]
-                    registradores[rd_idx][4] = int(val_float) & 0xFFFFFFFF
+                    # --- CONVERSÕES (A ponte entre Inteiro e Flutuante) ---
+                    case "fcvt.s.w": # Converte Inteiro (x) para Float (f)
+                        val_int = registradores[get_reg_idx(inst[2])][4]
+                        # Trata o inteiro como sinalizado de 32 bits antes de converter
+                        if val_int & 0x80000000:
+                            val_int -= 0x100000000
+                        registradores[rd_idx][4] = float(val_int)
+                    
+                    case "fcvt.w.s": # Converte Float (f) para Inteiro (x)
+                        val_float = registradores[get_reg_idx(inst[2])][4]
+                        registradores[rd_idx][4] = int(val_float) & 0xFFFFFFFF
 
-                case _:
-                    print(f"Instrução '{op}' não implementada ou não reconhecida.")
+                    # --- MULTIPLICAÇÃO / DIVISÃO (Extensão M) ---
+                    case "mul":
+                        v1 = registradores[get_reg_idx(inst[2])][4]
+                        v2 = registradores[get_reg_idx(inst[3])][4]
+                        registradores[rd_idx][4] = (v1 * v2) & 0xFFFFFFFF
+                    case "div":
+                        v1 = registradores[get_reg_idx(inst[2])][4]
+                        v2 = registradores[get_reg_idx(inst[3])][4]
+                        registradores[rd_idx][4] = (v1 // v2) if v2 != 0 else 0
 
         except Exception as e:
             print(f"Erro ao processar '{inst}': {e}")
