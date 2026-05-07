@@ -1,185 +1,220 @@
-riscv_32_registers = [
-    # --- Registradores de Propósito Geral (Inteiros) ---
-    ["x0",  "zero", "Constante zero (sempre 0)",          "N/A"],
-    ["x1",  "ra",   "Endereço de retorno (Return Address)", "Caller"],
-    ["x2",  "sp",   "Ponteiro de Pilha (Stack Pointer)",    "Callee"],
-    ["x3",  "gp",   "Ponteiro Global (Global Pointer)",     "N/A"],
-    ["x4",  "tp",   "Ponteiro de Thread (Thread Pointer)",  "N/A"],
-    ["x5",  "t0",   "Temporário 0",                         "Caller"],
-    ["x6",  "t1",   "Temporário 1",                         "Caller"],
-    ["x7",  "t2",   "Temporário 2",                         "Caller"],
-    ["x8",  "s0/fp","Registrador Salvo 0 / Frame Pointer", "Callee"],
-    ["x9",  "s1",   "Registrador Salvo 1",                  "Callee"],
-    ["x10", "a0",   "Argumento 0 / Valor de Retorno",       "Caller"],
-    ["x11", "a1",   "Argumento 1 / Valor de Retorno",       "Caller"],
-    ["x12", "a2",   "Argumento 2",                          "Caller"],
-    ["x13", "a3",   "Argumento 3",                          "Caller"],
-    ["x14", "a4",   "Argumento 4",                          "Caller"],
-    ["x15", "a5",   "Argumento 5",                          "Caller"],
-    ["x16", "a6",   "Argumento 6",                          "Caller"],
-    ["x17", "a7",   "Argumento 7",                          "Caller"],
-    ["x18", "s2",   "Registrador Salvo 2",                  "Callee"],
-    ["x19", "s3",   "Registrador Salvo 3",                  "Callee"],
-    ["x20", "s4",   "Registrador Salvo 4",                  "Callee"],
-    ["x21", "s5",   "Registrador Salvo 5",                  "Callee"],
-    ["x22", "s6",   "Registrador Salvo 6",                  "Callee"],
-    ["x23", "s7",   "Registrador Salvo 7",                  "Callee"],
-    ["x24", "s8",   "Registrador Salvo 8",                  "Callee"],
-    ["x25", "s9",   "Registrador Salvo 9",                  "Callee"],
-    ["x26", "s10",  "Registrador Salvo 10",                 "Callee"],
-    ["x27", "s11",  "Registrador Salvo 11",                 "Callee"],
-    ["x28", "t3",   "Temporário 3",                         "Caller"],
-    ["x29", "t4",   "Temporário 4",                         "Caller"],
-    ["x30", "t5",   "Temporário 5",                         "Caller"],
-    ["x31", "t6",   "Temporário 6",                         "Caller"],
+import math
 
-    # --- Registradores de Ponto Flutuante (Floating-Point) ---
-    ["f0",  "ft0",  "FP Temporário 0",                      "Caller"],
-    ["f1",  "ft1",  "FP Temporário 1",                      "Caller"],
-    ["f2",  "ft2",  "FP Temporário 2",                      "Caller"],
-    ["f3",  "ft3",  "FP Temporário 3",                      "Caller"],
-    ["f4",  "ft4",  "FP Temporário 4",                      "Caller"],
-    ["f5",  "ft5",  "FP Temporário 5",                      "Caller"],
-    ["f6",  "ft6",  "FP Temporário 6",                      "Caller"],
-    ["f7",  "ft7",  "FP Temporário 7",                      "Caller"],
-    ["f8",  "fs0",  "FP Salvo 0",                           "Callee"],
-    ["f9",  "fs1",  "FP Salvo 1",                           "Callee"],
-    ["f10", "fa0",  "FP Argumento 0 / Retorno",             "Caller"],
-    ["f11", "fa1",  "FP Argumento 1 / Retorno",             "Caller"],
-    ["f12", "fa2",  "FP Argumento 2",                       "Caller"],
-    ["f13", "fa3",  "FP Argumento 3",                       "Caller"],
-    ["f14", "fa4",  "FP Argumento 4",                       "Caller"],
-    ["f15", "fa5",  "FP Argumento 5",                       "Caller"],
-    ["f16", "fa6",  "FP Argumento 6",                       "Caller"],
-    ["f17", "fa7",  "FP Argumento 7",                       "Caller"],
-    ["f18", "fs2",  "FP Salvo 2",                           "Callee"],
-    ["f19", "fs3",  "FP Salvo 3",                           "Callee"],
-    ["f20", "fs4",  "FP Salvo 4",                           "Callee"],
-    ["f21", "fs5",  "FP Salvo 5",                           "Callee"],
-    ["f22", "fs6",  "FP Salvo 6",                           "Callee"],
-    ["f23", "fs7",  "FP Salvo 7",                           "Callee"],
-    ["f24", "fs8",  "FP Salvo 8",                           "Callee"],
-    ["f25", "fs9",  "FP Salvo 9",                           "Callee"],
-    ["f26", "fs10", "FP Salvo 10",                          "Callee"],
-    ["f27", "fs11", "FP Salvo 11",                          "Callee"],
-    ["f28", "ft8",  "FP Temporário 8",                      "Caller"],
-    ["f29", "ft9",  "FP Temporário 9",                      "Caller"],
-    ["f30", "ft10", "FP Temporário 10",                     "Caller"],
-    ["f31", "ft11", "FP Temporário 11",                     "Caller"],
-
-    # --- Registradores Especiais (CSRs comuns) ---
-    ["pc",   "pc",    "Contador de Programa (Instrução atual)", "N/A"],
-    ["fcsr", "fcsr",  "Controle/Status de Ponto Flutuante",     "N/A"]
+# -----------------------------------------------------------------------------
+# 1. ESTRUTURA DE DADOS: [Nome, ABI, Descrição, Salvo por, VALOR]
+# -----------------------------------------------------------------------------
+# Registradores x0-x31 (Inteiros) e f0-f31 (Ponto Flutuante)
+registradores = [
+    # Inteiros (Iniciam com 0)
+    ["x0",  "zero", "Constante zero", "N/A", 0],
+    ["x1",  "ra",   "Return Address", "Caller", 0],
+    ["x2",  "sp",   "Stack Pointer",  "Callee", 0],
+    ["x3",  "gp",   "Global Pointer", "N/A", 0],
+    ["x4",  "tp",   "Thread Pointer", "N/A", 0],
+    ["x5",  "t0",   "Temporário 0",    "Caller", 0],
+    ["x6",  "t1",   "Temporário 1",    "Caller", 0],
+    ["x7",  "t2",   "Temporário 2",    "Caller", 0],
+    ["x8",  "s0",   "Frame Pointer",  "Callee", 0],
+    ["x9",  "s1",   "Salvo 1",         "Callee", 0],
+    ["x10", "a0",   "Arg 0 / Retorno", "Caller", 0],
+    ["x11", "a1",   "Arg 1 / Retorno", "Caller", 0],
+    ["x12", "a2",   "Argumento 2",     "Caller", 0],
+    ["x13", "a3",   "Argumento 3",     "Caller", 0],
+    ["x14", "a4",   "Argumento 4",     "Caller", 0],
+    ["x15", "a5",   "Argumento 5",     "Caller", 0],
+    ["x16", "a6",   "Argumento 6",     "Caller", 0],
+    ["x17", "a7",   "Argumento 7",     "Caller", 0],
+    ["x18", "s2",   "Salvo 2",         "Callee", 0],
+    ["x19", "s3",   "Salvo 3",         "Callee", 0],
+    ["x20", "s4",   "Salvo 4",         "Callee", 0],
+    ["x21", "s5",   "Salvo 5",         "Callee", 0],
+    ["x22", "s6",   "Salvo 6",         "Callee", 0],
+    ["x23", "s7",   "Salvo 7",         "Callee", 0],
+    ["x24", "s8",   "Salvo 8",         "Callee", 0],
+    ["x25", "s9",   "Salvo 9",         "Callee", 0],
+    ["x26", "s10",  "Salvo 10",        "Callee", 0],
+    ["x27", "s11",  "Salvo 11",        "Callee", 0],
+    ["x28", "t3",   "Temporário 3",    "Caller", 0],
+    ["x29", "t4",   "Temporário 4",    "Caller", 0],
+    ["x30", "t5",   "Temporário 5",    "Caller", 0],
+    ["x31", "t6",   "Temporário 6",    "Caller", 0],
+    
+    # Ponto Flutuante (Iniciam com 0.0)
+    ["f0",  "ft0",  "FP Temp 0",       "Caller", 0.0],
+    ["f1",  "ft1",  "FP Temp 1",       "Caller", 0.0],
+    ["f2",  "ft2",  "FP Temp 2",       "Caller", 0.0],
+    ["f3",  "ft3",  "FP Temp 3",       "Caller", 0.0],
+    ["f4",  "ft4",  "FP Temp 4",       "Caller", 0.0],
+    ["f5",  "ft5",  "FP Temp 5",       "Caller", 0.0],
+    ["f6",  "ft6",  "FP Temp 6",       "Caller", 0.0],
+    ["f7",  "ft7",  "FP Temp 7",       "Caller", 0.0],
+    ["f8",  "fs0",  "FP Salvo 0",      "Callee", 0.0],
+    ["f9",  "fs1",  "FP Salvo 1",      "Callee", 0.0],
+    ["f10", "fa0",  "FP Arg 0 / Ret",  "Caller", 0.0],
+    ["f11", "fa1",  "FP Arg 1 / Ret",  "Caller", 0.0],
+    ["f12", "fa2",  "FP Arg 2",        "Caller", 0.0],
+    ["f13", "fa3",  "FP Arg 3",        "Caller", 0.0],
+    ["f14", "fa4",  "FP Arg 4",        "Caller", 0.0],
+    ["f15", "fa5",  "FP Arg 5",        "Caller", 0.0],
+    ["f16", "fa6",  "FP Arg 6",        "Caller", 0.0],
+    ["f17", "fa7",  "FP Arg 7",        "Caller", 0.0],
+    ["f18", "fs2",  "FP Salvo 2",      "Callee", 0.0],
+    ["f19", "fs3",  "FP Salvo 3",      "Callee", 0.0],
+    ["f20", "fs4",  "FP Salvo 4",      "Callee", 0.0],
+    ["f21", "fs5",  "FP Salvo 5",      "Callee", 0.0],
+    ["f22", "fs6",  "FP Salvo 6",      "Callee", 0.0],
+    ["f23", "fs7",  "FP Salvo 7",      "Callee", 0.0],
+    ["f24", "fs8",  "FP Salvo 8",      "Callee", 0.0],
+    ["f25", "fs9",  "FP Salvo 9",      "Callee", 0.0],
+    ["f26", "fs10", "FP Salvo 10",     "Callee", 0.0],
+    ["f27", "fs11", "FP Salvo 11",     "Callee", 0.0],
+    ["f28", "ft8",  "FP Temp 8",       "Caller", 0.0],
+    ["f29", "ft9",  "FP Temp 9",       "Caller", 0.0],
+    ["f30", "ft10", "FP Temp 10",      "Caller", 0.0],
+    ["f31", "ft11", "FP Temp 11",      "Caller", 0.0]
 ]
 
-# Exemplo de como acessar:
-# for reg in riscv_32_registers:
-#     print(f"Registrador: {reg[0]} | ABI: {reg[1]} | Função: {reg[2]}")
+# -----------------------------------------------------------------------------
+# 2. FUNÇÕES DE SUPORTE
+# -----------------------------------------------------------------------------
 
-def ler_arquivo (caminho):
-    with open(caminho, 'r') as programa:
-        return programa.readlines()
-    
-def limpar_linhas (arquivo):
-    instrucoes = []
-    for linha in arquivo:
-        linha_limpa = linha.strip()
-        linha_limpa = linha_limpa.split("#")[0]
-        linha_limpa = linha_limpa.replace(",", " ")
+def get_reg_idx(nome):
+    """Retorna o índice na lista 'registradores' baseado no nome xN ou ABI."""
+    nome = nome.lower().strip()
+    for i, reg in enumerate(registradores):
+        if reg[0] == nome or reg[1] == nome:
+            return i
+    raise ValueError(f"Registrador '{nome}' não existe.")
 
-        if ((not linha_limpa) or (linha_limpa[0] == "#")):
+def limpar_linhas(linhas):
+    """Remove comentários, vírgulas e organiza as partes da instrução."""
+    instrucoes_limpas = []
+    for linha in linhas:
+        # Remove comentários (#) e espaços extras
+        processada = linha.split("#")[0].strip()
+        if not processada:
             continue
+        
+        # Substitui vírgulas por espaços e separa os termos
+        partes = processada.replace(",", " ").split()
+        instrucoes_limpas.append(partes)
+    return instrucoes_limpas
 
-        linha_limpa = linha_limpa.strip()
-        if len(linha_limpa) == 4:
-            instrucao = linha_limpa[0].lower()
-            rd = linha_limpa[1]
-            rs1 = linha_limpa[2]
-            rs2 = linha_limpa[3]
-            instrucoes.append([instrucao, rd, rs1, rs2])
+# -----------------------------------------------------------------------------
+# 3. MOTOR DE EXECUÇÃO (MATCH-CASE)
+# -----------------------------------------------------------------------------
 
-    return instrucoes
-
-def ler_Instrucoes (lista):
-    try:
-        for instrucao in lista:
+def executar_Instrucoes(lista_inst):
+    for inst in lista_inst:
+        op = inst[0].lower()
+        
+        try:
+            # Rd é quase sempre o primeiro argumento após o opcode
+            rd_idx = get_reg_idx(inst[1])
             
-            # Regra de Ouro: Escritas no x0 (zero) são sempre ignoradas
-                if instrucao[1] == 0 and instrucao[0] not in ["fadd.s", "fsub.s", "fmul.s"]: # Simplificação
-                    if not instrucao[0].startswith("f"): # Se for registrador inteiro
-                        return
+            # x0 é imutável (Hardwired zero)
+            if rd_idx == 0: continue
+
+            match op:
+                # --- INTEIROS: ARITMÉTICA R-TYPE (Rd, Rs1, Rs2) ---
+                case "add":
+                    v1 = registradores[get_reg_idx(inst[2])][4]
+                    v2 = registradores[get_reg_idx(inst[3])][4]
+                    registradores[rd_idx][4] = (v1 + v2) & 0xFFFFFFFF
+                case "sub":
+                    v1 = registradores[get_reg_idx(inst[2])][4]
+                    v2 = registradores[get_reg_idx(inst[3])][4]
+                    registradores[rd_idx][4] = (v1 - v2) & 0xFFFFFFFF
+                case "and":
+                    v1 = registradores[get_reg_idx(inst[2])][4]
+                    v2 = registradores[get_reg_idx(inst[3])][4]
+                    registradores[rd_idx][4] = v1 & v2
+                case "or":
+                    v1 = registradores[get_reg_idx(inst[2])][4]
+                    v2 = registradores[get_reg_idx(inst[3])][4]
+                    registradores[rd_idx][4] = v1 | v2
+                case "xor":
+                    v1 = registradores[get_reg_idx(inst[2])][4]
+                    v2 = registradores[get_reg_idx(inst[3])][4]
+                    registradores[rd_idx][4] = v1 ^ v2
+
+                # --- INTEIROS: IMEDIATOS I-TYPE (Rd, Rs1, Imm) ---
+                case "addi":
+                    v1 = registradores[get_reg_idx(inst[2])][4]
+                    imm = int(inst[3])
+                    registradores[rd_idx][4] = (v1 + imm) & 0xFFFFFFFF
+                case "andi":
+                    v1 = registradores[get_reg_idx(inst[2])][4]
+                    imm = int(inst[3])
+                    registradores[rd_idx][4] = v1 & imm
+                case "li": # Pseudo-instrução Load Immediate
+                    registradores[rd_idx][4] = int(inst[2]) & 0xFFFFFFFF
+
+                # --- EXTENSÃO M: MULTIPLICAÇÃO/DIVISÃO ---
+                case "mul":
+                    v1 = registradores[get_reg_idx(inst[2])][4]
+                    v2 = registradores[get_reg_idx(inst[3])][4]
+                    registradores[rd_idx][4] = (v1 * v2) & 0xFFFFFFFF
+                case "div":
+                    v1 = registradores[get_reg_idx(inst[2])][4]
+                    v2 = registradores[get_reg_idx(inst[3])][4]
+                    registradores[rd_idx][4] = (v1 // v2) if v2 != 0 else 0
+
+                # --- PONTO FLUTUANTE: RV32F (frd, frs1, frs2) ---
+                case "fadd.s":
+                    f1 = registradores[get_reg_idx(inst[2])][4]
+                    f2 = registradores[get_reg_idx(inst[3])][4]
+                    registradores[rd_idx][4] = float(f1 + f2)
+                case "fsub.s":
+                    f1 = registradores[get_reg_idx(inst[2])][4]
+                    f2 = registradores[get_reg_idx(inst[3])][4]
+                    registradores[rd_idx][4] = float(f1 - f2)
+                case "fmul.s":
+                    f1 = registradores[get_reg_idx(inst[2])][4]
+                    f2 = registradores[get_reg_idx(inst[3])][4]
+                    registradores[rd_idx][4] = float(f1 * f2)
+                case "fdiv.s":
+                    f1 = registradores[get_reg_idx(inst[2])][4]
+                    f2 = registradores[get_reg_idx(inst[3])][4]
+                    registradores[rd_idx][4] = float(f1 / f2) if f2 != 0 else float('inf')
                 
-                match instrucao[0]:
-                    # --- ARITMÉTICA E LÓGICA (R-TYPE) ---
-                    case "add":
-                        regs_int[rd] = (rs1_val + rs2_val) & 0xFFFFFFFF
-                    case "sub":
-                        regs_int[rd] = (rs1_val - rs2_val) & 0xFFFFFFFF
-                    case "sll": # Shift Left Logical
-                        regs_int[rd] = (rs1_val << (rs2_val & 0x1F)) & 0xFFFFFFFF
-                    case "srl": # Shift Right Logical
-                        regs_int[rd] = (rs1_val >> (rs2_val & 0x1F)) & 0xFFFFFFFF
-                    case "sra": # Shift Right Arithmetic
-                        regs_int[rd] = (rs1_val >> (rs2_val & 0x1F)) # Python trata sinal em int
-                    case "and":
-                        regs_int[rd] = rs1_val & rs2_val
-                    case "or":
-                        regs_int[rd] = rs1_val | rs2_val
-                    case "xor":
-                        regs_int[rd] = rs1_val ^ rs2_val
-                    case "slt": # Set Less Than (Signed)
-                        regs_int[rd] = 1 if rs1_val < rs2_val else 0
+                # --- CONVERSÕES ---
+                case "fcvt.s.w": # Int para Float
+                    val_int = registradores[get_reg_idx(inst[2])][4]
+                    registradores[rd_idx][4] = float(val_int)
+                case "fcvt.w.s": # Float para Int
+                    val_float = registradores[get_reg_idx(inst[2])][4]
+                    registradores[rd_idx][4] = int(val_float) & 0xFFFFFFFF
 
-                    # --- ARITMÉTICA COM IMEDIATOS (I-TYPE) ---
-                    case "addi":
-                        regs_int[rd] = (rs1_val + imm) & 0xFFFFFFFF
-                    case "slli":
-                        regs_int[rd] = (rs1_val << imm) & 0xFFFFFFFF
-                    case "srli":
-                        regs_int[rd] = (rs1_val >> imm) & 0xFFFFFFFF
-                    case "andi":
-                        regs_int[rd] = rs1_val & imm
-                    case "ori":
-                        regs_int[rd] = rs1_val | imm
+                case _:
+                    print(f"Instrução '{op}' não implementada ou não reconhecida.")
 
-                    # --- CARREGAMENTO DE MEMÓRIA (LOADS) ---
-                    case "lw": # Load Word
-                        # O valor viria da memória: Mem[rs1 + imm]
-                        regs_int[rd] = rs1_val # Representação simplificada
-                    case "lui": # Load Upper Immediate
-                        regs_int[rd] = (imm << 12) & 0xFFFFFFFF
+        except Exception as e:
+            print(f"Erro ao processar '{inst}': {e}")
 
-                    # --- EXTENSÃO M (MULTIPLICAÇÃO/DIVISÃO) ---
-                    case "mul":
-                        regs_int[rd] = (rs1_val * rs2_val) & 0xFFFFFFFF
-                    case "div":
-                        regs_int[rd] = (rs1_val // rs2_val) if rs2_val != 0 else -1
-                    case "rem":
-                        regs_int[rd] = (rs1_val % rs2_val) if rs2_val != 0 else rs1_val
-
-                    # --- PONTO FLUTUANTE (RV32F) ---
-                    case "fadd.s":
-                        regs_fp[rd] = rs1_val + rs2_val
-                    case "fsub.s":
-                        regs_fp[rd] = rs1_val - rs2_val
-                    case "fmul.s":
-                        regs_fp[rd] = rs1_val * rs2_val
-                    case "fdiv.s":
-                        regs_fp[rd] = rs1_val / rs2_val if rs2_val != 0 else float('inf')
-                    case "fcvt.s.w": # Converte Inteiro para Float
-                        regs_fp[rd] = float(rs1_val)
-                    case "fcvt.w.s": # Converte Float para Inteiro
-                        regs_int[rd] = int(rs1_val) & 0xFFFFFFFF
-
-                    case _:
-                        print(f"Instrução {instrucao} não reconhecida.")
-    except Exception as e:
-        print(f"Erro ao ler instruções: {e}")
-    return
-
-
-
-
+# -----------------------------------------------------------------------------
+# 4. EXECUÇÃO DE EXEMPLO
+# -----------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    print()
+    # Simulando um código assembly RISC-V
+    codigo_exemplo = [
+        "addi a0, zero, 20      # Carrega 20 em a0",
+        "li t0, 5               # t0 = 5 (usando li)",
+        "mul a1, a0, t0         # a1 = 20 * 5 = 100",
+        "fcvt.s.w ft0, a1       # Converte 100 para float em ft0",
+        "fadd.s fa0, ft0, ft0   # fa0 = 100.0 + 100.0 = 200.0",
+        "sub x0, a0, a1         # Tentativa de escrita no zero (deve ser ignorada)"
+    ]
+
+    print("--- Iniciando Simulação ---")
+    insts = limpar_linhas(codigo_exemplo)
+    executar_Instrucoes(insts)
+
+    print("\n--- Estado Final dos Registradores Alterados ---")
+    print(f"{'Reg':<5} | {'ABI':<5} | {'Valor':<10} | {'Tipo'}")
+    print("-" * 35)
+    for r in registradores:
+        if r[4] != 0 and r[4] != 0.0:
+            tipo = "Float" if isinstance(r[4], float) else "Int"
+            print(f"{r[0]:<5} | {r[1]:<5} | {r[4]:<10} | {tipo}")
