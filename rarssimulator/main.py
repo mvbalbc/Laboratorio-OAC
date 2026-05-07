@@ -95,23 +95,77 @@ class RAM:
     def read(self, endereco):
         self.memoria.get(endereco, 0)
 
-
 ################# CLASSE TIPO-I ##############################
+class TipoI:
+    def __init__(self, opcode, rd, funct3, rs1, imm):
+        self.rd = f"{rd:05b}"
+        self.rs1 = f"{rs1:05b}"
+        self.opcode = f"{opcode:07b}"
+        self.imm = f"{imm & 0xFFF:012b}"
+        self.funct3 = f"{funct3:03b}"
+    
+    def montar(self):
+        return self.rd + self.rs1 + self.opcode + self.imm + self.funct3
 
+"""registrador com n pequeno de bits (12)"""
+################## CLASSE TIPO-U #############################    
+class TipoU:
+    def __init__(self, rd, opcode, imm):
+        self.rd = f"{rd:05b}"
+        self.opcode = f"{opcode:07b}"
+        self.imm = f"{imm & 0xFFFFF:020b}"
 
-################## CLASSE TIPO-U #############################
-
-
+    def montar(self):
+        return self.rd + self.opcode + self.imm
+    
+"""carregar n grande de bits no registrador (20)"""
 ################## CLASSE TIPO-J #############################
+class TipoJ:
+    def __init__(self, rd, opcode, imm):
+        self.rd = f"{rd:05b}"
+        self.opcode = f"{opcode:07b}"
+        imm_bin = f"{imm & 0x1FFFFF:021b}"
+        self.imm10_1 = imm_bin[10:20]
+        self.imm19_12 = imm_bin[1:9]
+        self.imm11 = imm_bin[9]
+        self.imm20 = imm_bin[0]
 
+    def montar(self):
+        return self.rd + self.opcode + self.imm10_1 + self.imm19_12 + self.imm11 + self.imm20
 
+"""usado p dar saltos p partes distantes do codigo"""
 ################## CLASSE TIPO-S #############################
+class TipoS:
+    def __init__(self, rs1, rs2, opcode, funct3, imm):
+        self.rs1 = f"{rs1:05b}"
+        self.rs2 = f"{rs2:05b}"
+        self.opcode = f"{opcode:07b}"
+        self.funct3 = f"{funct3:03b}"
+        imm_bin = f"{imm & 0xFFF:012b}"
+        self.imm4_0 = imm_bin[7:]
+        self.imm11_5 = imm_bin[:7]
 
+    def montar(self):
+        return self.rs1 + self.rs2 + self.opcode + self.funct3 + self.imm4_0 + self.imm11_5
 
+"""salvar dados na memoria"""
 ################## CLASSE TIPO-B #############################
+class TipoB:
+    def __init__(self, rs1, rs2, opcode, funct3, imm):
+        self.rs1 = f"{rs1:05b}"
+        self.rs2 = f"{rs2:05b}"
+        self.opcode = f"{opcode:07b}"
+        self.funct3 = f"{funct3:03b}"
+        imm_bin = f"{imm & 0x1FFF:013b}"
+        self.imm4_1 = imm_bin[8:12]
+        self.imm11 = imm_bin[1]
+        self.imm12 = imm_bin[0]
+        self.imm10_5 = imm_bin[2:8]
 
+    def montar(self):
+        return self.rs1 + self.rs2 + self.opcode + self.funct3 + self.imm4_1 + self.imm11 + self.im12 + self.imm10_5
 
-
+"""tipo um if, se for verdadeiro, da um salto curto de codigo"""
 ###################### MAIN ###################################
 print("Olá, você está em um simulador do RARS\n")
 
