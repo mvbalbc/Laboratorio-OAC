@@ -99,13 +99,47 @@ def alterar_arquivo_temp(linhas_codigo, arquivo_temp):
 
 class RAM:
     def __init__(self):
-        self.memoria = {}
-    
-    def write(self, endereco, valor):
-        self.memoria[endereco] = valor
+        self.text_segment = {} 
+        self.data_segment = {}
+        self.TEXT_BASE = 0x00400000
+        self.DATA_BASE = 0x10010000
+        self.MIF_DEPTH = 1024 # Quantidade de palavras (32-bits) por arquivo
 
-    def read(self, endereco):
-        self.memoria.get(endereco, 0)
+    def _get_target(self, endereco):
+        """Identifica em qual segmento o endereço cai e calcula o índice."""
+        if self.TEXT_BASE <= endereco < self.TEXT_BASE + (self.MIF_DEPTH * 4):
+            return self.text_segment, (endereco - self.TEXT_BASE) // 4
+        
+        elif self.DATA_BASE <= endereco < self.DATA_BASE + (self.MIF_DEPTH * 4):
+            return self.data_segment, (endereco - self.DATA_BASE) // 4
+        else:
+            return None, None
+
+    def write_word(self, endereco, valor):
+        """Escreve 32 bits respeitando o mapa de memória do RARS."""
+        if isinstance(endereco, str):
+            endereco = int(endereco, 0)
+        segmento, idx = self._get_target(endereco)
+        if segmento is not None:
+            segmento[idx] = valor & 0xFFFFFFFF
+        else:
+            print(f"Erro: Endereço 0x{endereco:08x} fora dos limites RARS.")
+
+    def write_byte(self, endereco, valor):
+        """Escreve 1 byte (útil para .byte ou .asciz em .data)."""
+        if isinstance(endereco, str):
+            endereco = int(endereco, 0)
+            
+        segmento, idx = self._get_target(endereco)
+        
+        if segmento is not None:
+
+            bi = endereco % 4 
+            w = segmento.get(idx, 0)
+            w = (w & ~(0xFF << (bi * 8))) | ((valor & 0xFF) << (bi * 8))
+            segmento[idx] = w
+        else:
+            print(f"Erro: Endereço 0x{endereco:08x} fora dos limites.")
 
 ################# CLASSE TIPO-I ##############################
 class TipoI:
@@ -179,30 +213,31 @@ class TipoB:
 
 """tipo um if, se for verdadeiro, da um salto curto de codigo"""
 ###################### MAIN ###################################
-print("Olá, você está em um simulador do RARS\n")
+if __name__ == '__main__':
+    print("Olá, você está em um simulador do RARS\n")
 
-# nome_arquivo = input("Digite o nome do arquivo de extesão .asm para ser 'montado':")
+    # nome_arquivo = input("Digite o nome do arquivo de extesão .asm para ser 'montado':")
 
-nome_arquivo = "exemplo-lab1"
-caminho_asm = entrada_arquivo(nome_arquivo)
+    nome_arquivo = "exemplo-lab1"
+    caminho_asm = entrada_arquivo(nome_arquivo)
 
-if caminho_asm:
-    conteudo_original = ler_arquivo(caminho_asm)
-    conteudo_limpo = tratar_ws(conteudo_original)
-    obj_arquivo_temp = cria_arquivo_temp(nome_arquivo)
-    print(obj_arquivo_temp)
-    
-    try:
-        alterar_arquivo_temp(conteudo_limpo, obj_arquivo_temp)
-        nome_temp = obj_arquivo_temp.name
-        print(nome_temp)
-        obj_arquivo_temp.close() 
-        executa_codigo(nome_temp)
-    except:
-        print("Alguma coisa de errado não está certa")
-    finally:
-        os.unlink(nome_temp)
-        pass
+    if caminho_asm:
+        conteudo_original = ler_arquivo(caminho_asm)
+        conteudo_limpo = tratar_ws(conteudo_original)
+        obj_arquivo_temp = cria_arquivo_temp(nome_arquivo)
+        print(obj_arquivo_temp)
+        
+        try:
+            alterar_arquivo_temp(conteudo_limpo, obj_arquivo_temp)
+            nome_temp = obj_arquivo_temp.name
+            print(nome_temp)
+            obj_arquivo_temp.close() 
+            executa_codigo(nome_temp)
+        except:
+            print("Alguma coisa de errado não está certa")
+        finally:
+            os.unlink(nome_temp)
+            pass
 
 ################# IDEIAS SOBRE O CÓDIGO
 
