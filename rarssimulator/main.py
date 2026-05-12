@@ -5,6 +5,43 @@ import re
 import tempfile
 import os
 
+#################### TABELAS DE REGISTRADORES ##############
+
+REG_NAMES = {
+    'zero': 0, 'x0': 0,
+    'ra': 1,   'x1': 1,
+    'sp': 2,   'x2': 2,
+    'gp': 3,   'x3': 3,
+    'tp': 4,   'x4': 4,
+    't0': 5,   'x5': 5,
+    't1': 6,   'x6': 6,
+    't2': 7,   'x7': 7,
+    's0': 8,   'fp': 8,  'x8': 8,
+    's1': 9,   'x9': 9,
+    'a0': 10,  'x10': 10,
+    'a1': 11,  'x11': 11,
+    'a2': 12,  'x12': 12,
+    'a3': 13,  'x13': 13,
+    'a4': 14,  'x14': 14,
+    'a5': 15,  'x15': 15,
+    'a6': 16,  'x16': 16,
+    'a7': 17,  'x17': 17,
+    's2': 18,  'x18': 18,
+    's3': 19,  'x19': 19,
+    's4': 20,  'x20': 20,
+    's5': 21,  'x21': 21,
+    's6': 22,  'x22': 22,
+    's7': 23,  'x23': 23,
+    's8': 24,  'x24': 24,
+    's9': 25,  'x25': 25,
+    's10': 26, 'x26': 26,
+    's11': 27, 'x27': 27,
+    't3': 28,  'x28': 28,
+    't4': 29,  'x29': 29,
+    't5': 30,  'x30': 30,
+    't6': 31,  'x31': 31,
+}
+
 #################### ENTRADA DO ARQUIVO ####################
 
 def entrada_arquivo(nome_arquivo):
@@ -38,6 +75,7 @@ Penso que essa função será como o PC do código em Assembly
 def executa_codigo(nome_arquivo):
     with open(nome_arquivo, 'r', encoding='utf-8') as arquivo:
         for linha in arquivo:
+            linha = linha.strip()
             ## Estamos assumindo que só temos os dois campos de códigos ".data" e ".text"
             if linha == ".data":
                 for linha in arquivo: ## Veja se continua do mesmo ponto do arquivo
@@ -151,7 +189,7 @@ class TipoI:
         self.funct3 = f"{funct3:03b}"
     
     def montar(self):
-        return self.rd + self.rs1 + self.opcode + self.imm + self.funct3
+        return self.imm + self.rs1 + self.funct3 + self.rd + self.opcode 
 
 """registrador com n pequeno de bits (12)"""
 ################## CLASSE TIPO-U #############################    
@@ -209,7 +247,7 @@ class TipoB:
         self.imm10_5 = imm_bin[2:8]
 
     def montar(self):
-        return self.rs1 + self.rs2 + self.opcode + self.funct3 + self.imm4_1 + self.imm11 + self.im12 + self.imm10_5
+        return self.rs1 + self.rs2 + self.opcode + self.funct3 + self.imm4_1 + self.imm11 + self.imm12 + self.imm10_5
 
 """tipo um if, se for verdadeiro, da um salto curto de codigo"""
 ###################### MAIN ###################################
