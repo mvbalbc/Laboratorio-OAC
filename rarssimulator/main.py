@@ -2,8 +2,8 @@
 
 from pathlib import Path
 import re
-import tempfile
 import os
+import sys
 
 #################### TABELAS DE REGISTRADORES ##############
 
@@ -42,255 +42,614 @@ REG_NAMES = {
     't6': 31,  'x31': 31,
 }
 
+#################### MAPA DE MEMORIA DO RARS ###############
+
+"""
+endereços base do RARS para as duas áreas que a gente precisa. A .text começa em 0x00400000 e a .data em 0x10010000
+"""
+
+TEXT_BASE = 0x00400000
+DATA_BASE = 0x10010000
+
+#################### TABELA DE INSTRUCOES ##################
+
+"""
+para cada minemonico eu guardo (formato, opcode, funct3, funct7). Quando o campo nao existe coloco none.
+"""
+"""
+os formatos IS, IM e IJ sao variacoes do tipo I
+"""
+
+TABELA_INSTRUCOES = {
+    'add':   ('R',  0x33, 0x0, 0x00),
+    'sub':   ('R',  0x33, 0x0, 0x20),
+    'and':   ('R',  0x33, 0x7, 0x00),
+    'or':    ('R',  0x33, 0x6, 0x00),
+    'xor':   ('R',  0x33, 0x4, 0x00),
+    'sll':   ('R',  0x33, 0x1, 0x00),
+    'srl':   ('R',  0x33, 0x5, 0x00),
+    'slt':   ('R',  0x33, 0x2, 0x00),
+    'addi':  ('I',  0x13, 0x0, None),
+    'andi':  ('I',  0x13, 0x7, None),
+    'ori':   ('I',  0x13, 0x6, None),
+    'xori':  ('I',  0x13, 0x4, None),
+    'slti':  ('I',  0x13, 0x2, None),
+    'slli':  ('IS', 0x13, 0x1, 0x00),
+    'srli':  ('IS', 0x13, 0x5, 0x00),
+    'srai':  ('IS', 0x13, 0x5, 0x20),
+    'lw':    ('IM', 0x03, 0x2, None),
+    'lhu':   ('IM', 0x03, 0x5, None),
+    'jalr':  ('IJ', 0x67, 0x0, None),
+    'sw':    ('S',  0x23, 0x2, None),
+    'beq':   ('B',  0x63, 0x0, None),
+    'bne':   ('B',  0x63, 0x1, None),
+    'lui':   ('U',  0x37, None, None),
+    'auipc': ('U',  0x17, None, None),
+    'jal':   ('J',  0x6F, None, None),
+}
+
 #################### ENTRADA DO ARQUIVO ####################
 
-def entrada_arquivo(nome_arquivo):
-    arquivos_asm = list(Path('.').glob('*.asm'))
-    nome_completo_arquivo = f"{nome_arquivo}" + ".asm"
-    if arquivos_asm:
-        if Path(nome_completo_arquivo).exists():
-            print(f"O arquivo de nome {nome_completo_arquivo} existe.")
-            return nome_completo_arquivo
-        else:
-            print(f"O nome do arquivo não foi encontrado")
-            print(arquivos_asm)
-
-    else:
-        print(f"Nenhum arquivo .asm foi encontrado.")
+def entrada_arquivo(caminho):
+    """ verifica se o arquivo existe e se tem a extensao .asm """
+    p = Path(caminho)
+    if p.suffix.lower() != '.asm':
+        print(f"arquivo precisa ter extensao .asm (recebi '{p.name}')")
         return None
+    if not p.exists():
+        print(f"o arquivo '{caminho}' nao foi encontrado")
+        return None
+    print(f"arquivo de nome {p.name} existe")
+    return p
 
-##################### LEITURA DE ARQUIVO #######################
+##################### LEITURA DE ARQUIVO ###################
 
 def ler_arquivo(arquivo):
-    print("Lendo arquivo")
-    with open(arquivo, 'r', encoding='utf-8') as arquivo:
-        conteudo = arquivo.readlines()
+    print("lendo arquivo, sr stark")
+    with open(arquivo, 'r', encoding='utf-8') as arq:
+        conteudo = arq.readlines()
     return conteudo
 
-##################### EXECUCAO DO CODIGO #######################
-"""
-Penso que essa função será como o PC do código em Assembly
-"""
-
-def executa_codigo(nome_arquivo):
-    with open(nome_arquivo, 'r', encoding='utf-8') as arquivo:
-        for linha in arquivo:
-            linha = linha.strip()
-            ## Estamos assumindo que só temos os dois campos de códigos ".data" e ".text"
-            if linha == ".data":
-                for linha in arquivo: ## Veja se continua do mesmo ponto do arquivo
-                    if linha == ".text":
-                        break
-
-            if linha == ".text":
-                for linha in arquivo:
-                    if linha == ".data":
-                        break
-            partes = linha.strip().split()
-            instrucao = partes[0]
-            try:
-                operandos: partes[1:] # Estamos tentando achar as instruções que não tem os operandos
-            except:
-                print("Instrução sem operandos")
-            
-        print("chegamos aqui")
-
-#################### TRATAMENTO DO CONTEUDO DO ARQUIVO ########
+#################### TRATAMENTO DAS LINHAS #################
 
 def tratar_ws(linhas_arquivo):
-    """
-    Podemos fazer tratamentos das linhas mais sofisticados
-    """
-    print("Tratando as linhas do arquivo...")
+    print("tirando coments e espacos sobrando")
     linhas_tratadas = []
-    
-    for linha in linhas_arquivo:
-        linha_limpa = re.sub(r'#.*', '', linha).strip()
-        
-        linha_limpa = re.sub(r'\s+', ' ', linha_limpa)
 
-        linha_limpa = linha_limpa.lower()
-        
+    for linha in linhas_arquivo:
+        ## Remove o #
+        saida = []
+        dentro_de_aspas = False
+        for c in linha:
+            if c == '"':
+                dentro_de_aspas = not dentro_de_aspas
+            if c == '#' and not dentro_de_aspas:
+                break
+            saida.append(c)
+        linha_limpa = ''.join(saida).rstrip()
+        linha_limpa = linha_limpa.strip()
+
         if linha_limpa:
             linhas_tratadas.append(linha_limpa)
-            
     return linhas_tratadas
 
-#################### CRIACAO DO ARQUIVO TEMPORARIO ############
+##################### PARTICIONA AS SECOES #################
 
-def cria_arquivo_temp(nome_arquivo):
-    print("Criando arquivo temporário")
-    arquivo_temp = tempfile.NamedTemporaryFile(mode='w+', delete=False, encoding='utf-8', dir='.')
-    return arquivo_temp
-     
-################### ALTERAR O ARQUIVO TEMPORARIO #############
- 
-def alterar_arquivo_temp(linhas_codigo, arquivo_temp):
-    print("Alterando o arquivo")
-    for linha in linhas_codigo:
-        arquivo_temp.write(linha + '\n')
-    arquivo_temp.flush()
-    arquivo_temp.seek(0)
-    return arquivo_temp.name # Retornamos o caminho para a próxima função
+"""
+separa o .data do .text
+"""
 
-################# CLASSE RAM ##################################
+def particionar_secoes(linhas):
+    linhas_text = []
+    linhas_data = []
+    secao_atual = None
 
-class RAM:
-    def __init__(self):
-        self.text_segment = {} 
-        self.data_segment = {}
-        self.TEXT_BASE = 0x00400000
-        self.DATA_BASE = 0x10010000
-        self.MIF_DEPTH = 1024 # Quantidade de palavras (32-bits) por arquivo
+    for numero, linha in enumerate(linhas, start=1):
+        baixa = linha.lower()
 
-    def _get_target(self, endereco):
-        """Identifica em qual segmento o endereço cai e calcula o índice."""
-        if self.TEXT_BASE <= endereco < self.TEXT_BASE + (self.MIF_DEPTH * 4):
-            return self.text_segment, (endereco - self.TEXT_BASE) // 4
-        
-        elif self.DATA_BASE <= endereco < self.DATA_BASE + (self.MIF_DEPTH * 4):
-            return self.data_segment, (endereco - self.DATA_BASE) // 4
-        else:
-            return None, None
+        if baixa.startswith('.data'):
+            secao_atual = linhas_data
+            resto = linha[5:].strip()
+            if resto:
+                secao_atual.append((numero, resto))
+            continue
 
-    def write_word(self, endereco, valor):
-        """Escreve 32 bits respeitando o mapa de memória do RARS."""
-        if isinstance(endereco, str):
-            endereco = int(endereco, 0)
-        segmento, idx = self._get_target(endereco)
-        if segmento is not None:
-            segmento[idx] = valor & 0xFFFFFFFF
-        else:
-            print(f"Erro: Endereço 0x{endereco:08x} fora dos limites RARS.")
+        if baixa.startswith('.text'):
+            secao_atual = linhas_text
+            resto = linha[5:].strip()
+            if resto:
+                secao_atual.append((numero, resto))
+            continue
 
-    def write_byte(self, endereco, valor):
-        """Escreve 1 byte (útil para .byte ou .asciz em .data)."""
-        if isinstance(endereco, str):
-            endereco = int(endereco, 0)
-            
-        segmento, idx = self._get_target(endereco)
-        
-        if segmento is not None:
+        if secao_atual is not None:
+            secao_atual.append((numero, linha))
+    return linhas_text, linhas_data
 
-            bi = endereco % 4 
-            w = segmento.get(idx, 0)
-            w = (w & ~(0xFF << (bi * 8))) | ((valor & 0xFF) << (bi * 8))
-            segmento[idx] = w
-        else:
-            print(f"Erro: Endereço 0x{endereco:08x} fora dos limites.")
+###################### TIPO-R ##############################
 
-################# CLASSE TIPO-I ##############################
+class TipoR:
+    def __init__(self, opcode, rd, funct3, rs1, rs2, funct7):
+        self.opcode = f"{opcode & 0x7F:07b}"
+        self.rd     = f"{rd     & 0x1F:05b}"
+        self.funct3 = f"{funct3 & 0x07:03b}"
+        self.rs1    = f"{rs1    & 0x1F:05b}"
+        self.rs2    = f"{rs2    & 0x1F:05b}"
+        self.funct7 = f"{funct7 & 0x7F:07b}"
+
+    def montar(self):
+        return self.funct7 + self.rs2 + self.rs1 + self.funct3 + self.rd + self.opcode
+
+"""entre regists"""
+
+###################### TIPO-I ##############################
+
 class TipoI:
     def __init__(self, opcode, rd, funct3, rs1, imm):
-        self.rd = f"{rd:05b}"
-        self.rs1 = f"{rs1:05b}"
-        self.opcode = f"{opcode:07b}"
-        self.imm = f"{imm & 0xFFF:012b}"
-        self.funct3 = f"{funct3:03b}"
-    
-    def montar(self):
-        return self.imm + self.rs1 + self.funct3 + self.rd + self.opcode 
-
-"""registrador com n pequeno de bits (12)"""
-################## CLASSE TIPO-U #############################    
-class TipoU:
-    def __init__(self, rd, opcode, imm):
-        self.rd = f"{rd:05b}"
-        self.opcode = f"{opcode:07b}"
-        self.imm = f"{imm & 0xFFFFF:020b}"
+        self.opcode = f"{opcode & 0x7F:07b}"
+        self.rd     = f"{rd     & 0x1F:05b}"
+        self.funct3 = f"{funct3 & 0x07:03b}"
+        self.rs1    = f"{rs1    & 0x1F:05b}"
+        self.imm    = f"{imm    & 0xFFF:012b}"
 
     def montar(self):
-        return self.rd + self.opcode + self.imm
-    
-"""carregar n grande de bits no registrador (20)"""
-################## CLASSE TIPO-J #############################
-class TipoJ:
-    def __init__(self, rd, opcode, imm):
-        self.rd = f"{rd:05b}"
-        self.opcode = f"{opcode:07b}"
-        imm_bin = f"{imm & 0x1FFFFF:021b}"
-        self.imm10_1 = imm_bin[10:20]
-        self.imm19_12 = imm_bin[1:9]
-        self.imm11 = imm_bin[9]
-        self.imm20 = imm_bin[0]
+        return self.imm + self.rs1 + self.funct3 + self.rd + self.opcode
 
-    def montar(self):
-        return self.rd + self.opcode + self.imm10_1 + self.imm19_12 + self.imm11 + self.imm20
+"""pequeno de 12 bits"""
 
-"""usado p dar saltos p partes distantes do codigo"""
-################## CLASSE TIPO-S #############################
+###################### TIPO-S ##############################
+
 class TipoS:
-    def __init__(self, rs1, rs2, opcode, funct3, imm):
-        self.rs1 = f"{rs1:05b}"
-        self.rs2 = f"{rs2:05b}"
-        self.opcode = f"{opcode:07b}"
-        self.funct3 = f"{funct3:03b}"
+    def __init__(self, opcode, funct3, rs1, rs2, imm):
+        self.opcode = f"{opcode & 0x7F:07b}"
+        self.funct3 = f"{funct3 & 0x07:03b}"
+        self.rs1    = f"{rs1    & 0x1F:05b}"
+        self.rs2    = f"{rs2    & 0x1F:05b}"
         imm_bin = f"{imm & 0xFFF:012b}"
-        self.imm4_0 = imm_bin[7:]
-        self.imm11_5 = imm_bin[:7]
+        self.imm11_5 = imm_bin[0:7]
+        self.imm4_0  = imm_bin[7:12]
 
     def montar(self):
-        return self.rs1 + self.rs2 + self.opcode + self.funct3 + self.imm4_0 + self.imm11_5
+        return self.imm11_5 + self.rs2 + self.rs1 + self.funct3 + self.imm4_0 + self.opcode
 
-"""salvar dados na memoria"""
-################## CLASSE TIPO-B #############################
+"""salva dados na memoria"""
+
+###################### TIPO-B ##############################
+
 class TipoB:
-    def __init__(self, rs1, rs2, opcode, funct3, imm):
-        self.rs1 = f"{rs1:05b}"
-        self.rs2 = f"{rs2:05b}"
-        self.opcode = f"{opcode:07b}"
-        self.funct3 = f"{funct3:03b}"
+    def __init__(self, opcode, funct3, rs1, rs2, imm):
+        self.opcode = f"{opcode & 0x7F:07b}"
+        self.funct3 = f"{funct3 & 0x07:03b}"
+        self.rs1    = f"{rs1    & 0x1F:05b}"
+        self.rs2    = f"{rs2    & 0x1F:05b}"
         imm_bin = f"{imm & 0x1FFF:013b}"
-        self.imm4_1 = imm_bin[8:12]
-        self.imm11 = imm_bin[1]
-        self.imm12 = imm_bin[0]
+        self.imm12   = imm_bin[0]
+        self.imm11   = imm_bin[1]
         self.imm10_5 = imm_bin[2:8]
+        self.imm4_1  = imm_bin[8:12]
 
     def montar(self):
-        return self.rs1 + self.rs2 + self.opcode + self.funct3 + self.imm4_1 + self.imm11 + self.imm12 + self.imm10_5
+        return (self.imm12 + self.imm10_5 + self.rs2 + self.rs1 +
+                self.funct3 + self.imm4_1 + self.imm11 + self.opcode)
 
-"""tipo um if, se for verdadeiro, da um salto curto de codigo"""
-###################### MAIN ###################################
+"""tipo um if, se der bom da um salto curto"""
+
+###################### TIPO-U ##############################
+
+class TipoU:
+    def __init__(self, opcode, rd, imm):
+        self.opcode = f"{opcode & 0x7F:07b}"
+        self.rd     = f"{rd     & 0x1F:05b}"
+        self.imm    = f"{imm    & 0xFFFFF:020b}"
+
+    def montar(self):
+        return self.imm + self.rd + self.opcode
+
+"""carrega n grande de bits no registrador"""
+
+###################### TIPO-J ##############################
+
+class TipoJ:
+    def __init__(self, opcode, rd, imm):
+        self.opcode = f"{opcode & 0x7F:07b}"
+        self.rd     = f"{rd     & 0x1F:05b}"
+        imm_bin = f"{imm & 0x1FFFFF:021b}"
+        self.imm20    = imm_bin[0]
+        self.imm19_12 = imm_bin[1:9]
+        self.imm11    = imm_bin[9]
+        self.imm10_1  = imm_bin[10:20]
+
+    def montar(self):
+        return (self.imm20 + self.imm10_1 + self.imm11 +
+                self.imm19_12 + self.rd + self.opcode)
+
+"""salto longo"""
+
+################### PARSING DE OPERANDOS ###################
+
+def pegar_registrador(token):
+    """ aceita 'zero', 'ra', 't0', 'x5', e tals, Retorna o numero de 0 a 31"""
+    t = token.strip().lower()
+    if t not in REG_NAMES:
+        raise ValueError(f"registrador inválido: '{token}'")
+    return REG_NAMES[t]
+
+
+def pegar_imediato(token, dicionario_labels=None):
+    """
+    aceita decimal, hexadecimal e negativos
+    """
+    t = token.strip()
+
+    m = re.match(r'(?i)%hi\(\s*(\w+)\s*\)', t)
+    if m:
+        rotulo = m.group(1)
+        if not dicionario_labels or rotulo not in dicionario_labels:
+            raise ValueError(f"label não definida em %hi: '{rotulo}'")
+        endereco = dicionario_labels[rotulo]
+        return ((endereco + 0x800) >> 12) & 0xFFFFF
+
+    m = re.match(r'(?i)%lo\(\s*(\w+)\s*\)', t)
+    if m:
+        rotulo = m.group(1)
+        if not dicionario_labels or rotulo not in dicionario_labels:
+            raise ValueError(f"label não definida em %lo: '{rotulo}'")
+        endereco = dicionario_labels[rotulo]
+        baixo = endereco & 0xFFF
+        ## Se o bit mais alto dos 12 bits ta ligado, dale negativo
+        return baixo - 0x1000 if baixo >= 0x800 else baixo
+
+    try:
+        return int(t, 0)
+    except ValueError:
+        raise ValueError(f"imediato inválido: '{token}'")
+
+
+def pegar_operando_memoria(token):
+    """ quebra um operando do tipo 'imediato(registrador)', tipo '4(t1)' """
+    m = re.match(r'^(.*?)\(\s*(\w+)\s*\)\s*$', token.strip())
+    if not m:
+        raise ValueError(f"operando de memória mal formado: '{token}'")
+    return m.group(1).strip(), m.group(2).strip()
+
+
+def quebrar_operandos(resto_da_linha):
+    """ recebe 'rd, rs1, imm' e devolve ['rd', 'rs1', 'imm'] """
+    return [x.strip() for x in resto_da_linha.split(',') if x.strip()]
+
+
+def pegar_alvo_branch(token, pc_atual, dicionario_labels):
+    """
+    para branches e jumps, o operando pode ser um label ou um num msm
+    """
+    if dicionario_labels and token in dicionario_labels:
+        return dicionario_labels[token] - pc_atual
+    return pegar_imediato(token, dicionario_labels)
+
+################# CODIFICAR UMA INSTRUCAO ##################
+
+def codificar_instrucao(mnemonico, pedacos, pc=0, dicionario_labels=None):
+    """
+    funcao principal do montas. Recebe o mnemonico e a lista de operandos e devlve a string de 32 bits
+    """
+    mnemonico = mnemonico.lower()
+    if mnemonico not in TABELA_INSTRUCOES:
+        raise ValueError(f"opcode desconhecido: '{mnemonico}'")
+
+    formato, opcode, funct3, funct7 = TABELA_INSTRUCOES[mnemonico]
+
+    if formato == 'R':
+        if len(pedacos) != 3:
+            raise ValueError(f"{mnemonico}: esperados 3 operandos")
+        rd  = pegar_registrador(pedacos[0])
+        rs1 = pegar_registrador(pedacos[1])
+        rs2 = pegar_registrador(pedacos[2])
+        return TipoR(opcode, rd, funct3, rs1, rs2, funct7).montar()
+
+    if formato == 'I':
+        if len(pedacos) != 3:
+            raise ValueError(f"{mnemonico}: esperados 3 operandos")
+        rd  = pegar_registrador(pedacos[0])
+        rs1 = pegar_registrador(pedacos[1])
+        imm = pegar_imediato(pedacos[2], dicionario_labels)
+        return TipoI(opcode, rd, funct3, rs1, imm).montar()
+
+    if formato == 'IS':
+        if len(pedacos) != 3:
+            raise ValueError(f"{mnemonico}: esperados 3 operandos")
+        rd    = pegar_registrador(pedacos[0])
+        rs1   = pegar_registrador(pedacos[1])
+        shamt = pegar_imediato(pedacos[2], dicionario_labels) & 0x1F
+        imm   = (funct7 << 5) | shamt
+        return TipoI(opcode, rd, funct3, rs1, imm).montar()
+
+    if formato == 'IM':
+        if len(pedacos) != 2:
+            raise ValueError(f"{mnemonico}: esperado formato rd, imm(rs1)")
+        rd = pegar_registrador(pedacos[0])
+        parte_imm, parte_rs1 = pegar_operando_memoria(pedacos[1])
+        rs1 = pegar_registrador(parte_rs1)
+        imm = pegar_imediato(parte_imm, dicionario_labels)
+        return TipoI(opcode, rd, funct3, rs1, imm).montar()
+
+    if formato == 'IJ':
+        rd = pegar_registrador(pedacos[0])
+        if len(pedacos) == 2:
+            parte_imm, parte_rs1 = pegar_operando_memoria(pedacos[1])
+            rs1 = pegar_registrador(parte_rs1)
+            imm = pegar_imediato(parte_imm, dicionario_labels)
+        elif len(pedacos) == 3:
+            rs1 = pegar_registrador(pedacos[1])
+            imm = pegar_imediato(pedacos[2], dicionario_labels)
+        else:
+            raise ValueError("jalr: número de operandos inválido")
+        return TipoI(opcode, rd, funct3, rs1, imm).montar()
+
+    if formato == 'S':
+        if len(pedacos) != 2:
+            raise ValueError(f"{mnemonico}: esperado formato rs2, imm(rs1)")
+        rs2 = pegar_registrador(pedacos[0])
+        parte_imm, parte_rs1 = pegar_operando_memoria(pedacos[1])
+        rs1 = pegar_registrador(parte_rs1)
+        imm = pegar_imediato(parte_imm, dicionario_labels)
+        return TipoS(opcode, funct3, rs1, rs2, imm).montar()
+
+    if formato == 'B':
+        if len(pedacos) != 3:
+            raise ValueError(f"{mnemonico}: esperados 3 operandos")
+        rs1 = pegar_registrador(pedacos[0])
+        rs2 = pegar_registrador(pedacos[1])
+        imm = pegar_alvo_branch(pedacos[2], pc, dicionario_labels)
+        if imm % 2 != 0:
+            raise ValueError(f"{mnemonico}: offset de branch precisa ser par")
+        return TipoB(opcode, funct3, rs1, rs2, imm).montar()
+
+    if formato == 'U':
+        if len(pedacos) != 2:
+            raise ValueError(f"{mnemonico}: esperados 2 operandos")
+        rd  = pegar_registrador(pedacos[0])
+        imm = pegar_imediato(pedacos[1], dicionario_labels)
+        return TipoU(opcode, rd, imm & 0xFFFFF).montar()
+
+    if formato == 'J':
+        if len(pedacos) == 1:
+            rd  = REG_NAMES['ra']
+            imm = pegar_alvo_branch(pedacos[0], pc, dicionario_labels)
+        elif len(pedacos) == 2:
+            rd  = pegar_registrador(pedacos[0])
+            imm = pegar_alvo_branch(pedacos[1], pc, dicionario_labels)
+        else:
+            raise ValueError("jal: nume de operando invlido")
+        if imm % 2 != 0:
+            raise ValueError(f"{mnemonico}: offset de jal tem q ser par")
+        return TipoJ(opcode, rd, imm).montar()
+    raise ValueError(f"formato '{formato}' ainda nao tem kk")
+
+################# MONTAGEM DA SECAO .DATA ##################
+"""
+vai vendo as .word, .half, .string e tals e vai colocando os bytes em um pilha em um vetor
+"""
+"""
+quando vem o rotulo (nome), gaurdo o adress atual na tabelinha o usar o .text dps
+"""
+
+ESCAPES = {'n': '\n', 't': '\t', 'r': '\r', '0': '\0',
+           '\\': '\\', '"': '"', "'": "'"}
+
+
+def decodificar_string(literal):
+    """ trata escapes tipo \\n, \\t, \\0, e depois converte pra bytes UTF-8 """
+    saida = []
+    i = 0
+    while i < len(literal):
+        c = literal[i]
+        if c == '\\' and i + 1 < len(literal):
+            saida.append(ESCAPES.get(literal[i + 1], literal[i + 1]))
+            i += 2
+        else:
+            saida.append(c)
+            i += 1
+    return ''.join(saida).encode('utf-8')
+
+
+def montar_data(linhas_data):
+    lista_bytes = bytearray()
+    dicionario_labels = {}
+
+    def alinhar(n):
+        while len(lista_bytes) % n != 0:
+            lista_bytes.append(0)
+
+    for numero, linha in linhas_data:
+        while True:
+            m = re.match(r'^(\w+)\s*:\s*(.*)$', linha)
+            if not m:
+                break
+            dicionario_labels[m.group(1)] = DATA_BASE + len(lista_bytes)
+            linha = m.group(2).strip()
+            if not linha:
+                break
+        if not linha:
+            continue
+        partes = linha.split(None, 1)
+        diretiva = partes[0].lower()
+        argumentos = partes[1] if len(partes) > 1 else ''
+
+        try:
+            if diretiva == '.word':
+                alinhar(4)
+                for v in argumentos.split(','):
+                    numero_int = int(v.strip(), 0)
+                    lista_bytes.extend((numero_int & 0xFFFFFFFF).to_bytes(4, 'little'))
+
+            elif diretiva == '.half':
+                alinhar(2)
+                for v in argumentos.split(','):
+                    numero_int = int(v.strip(), 0)
+                    lista_bytes.extend((numero_int & 0xFFFF).to_bytes(2, 'little'))
+
+            elif diretiva == '.byte':
+                for v in argumentos.split(','):
+                    lista_bytes.append(int(v.strip(), 0) & 0xFF)
+
+            elif diretiva in ('.string', '.asciz', '.asciiz'):
+                m = re.match(r'^"(.*)"\s*$', argumentos)
+                if not m:
+                    raise ValueError("string mal formada")
+                lista_bytes.extend(decodificar_string(m.group(1)))
+                lista_bytes.append(0)
+
+            elif diretiva == '.ascii':
+                m = re.match(r'^"(.*)"\s*$', argumentos)
+                if not m:
+                    raise ValueError("string mal formada")
+                lista_bytes.extend(decodificar_string(m.group(1)))
+
+            elif diretiva == '.space' or diretiva == '.zero':
+                lista_bytes.extend(b'\x00' * int(argumentos.strip(), 0))
+
+            elif diretiva == '.align':
+                alinhar(1 << int(argumentos.strip(), 0))
+
+            else:
+                raise ValueError(f"diretiva desconhecida em .data: '{diretiva}'")
+
+        except ValueError as e:
+            raise ValueError(f"linha {numero}: {e}") from None
+
+    while len(lista_bytes) % 4 != 0:
+        lista_bytes.append(0)
+    palavras = []
+    for i in range(0, len(lista_bytes), 4):
+        palavras.append(int.from_bytes(lista_bytes[i:i + 4], 'little'))
+    return palavras, dicionario_labels
+
+################# MONTAGEM DA SECAO .TEXT ##################
+"""
+faz duaas passagens no .text, pra pegar o endreco de cada label e dps codifcar em em binario
+"""
+
+def primeira_passagem(linhas_text):
+    dicionario_labels = {}
+    pc = TEXT_BASE
+    for numero, linha in linhas_text:
+        while True:
+            m = re.match(r'^(\w+)\s*:\s*(.*)$', linha)
+            if not m:
+                break
+            dicionario_labels[m.group(1)] = pc
+            linha = m.group(2).strip()
+            if not linha:
+                break
+        if linha:
+            pc += 4
+    return dicionario_labels
+
+
+def segunda_passagem(linhas_text, dicionario_labels):
+    palavras = []
+    pc = TEXT_BASE
+    for numero, linha in linhas_text:
+        while True:
+            m = re.match(r'^(\w+)\s*:\s*(.*)$', linha)
+            if not m:
+                break
+            linha = m.group(2).strip()
+            if not linha:
+                break
+        if not linha:
+            continue
+
+        try:
+            partes = linha.split(None, 1)
+            mnemonico = partes[0]
+            if len(partes) > 1:
+                pedacos = quebrar_operandos(partes[1])
+            else:
+                pedacos = []
+            bits = codificar_instrucao(mnemonico, pedacos,
+                                       pc=pc, dicionario_labels=dicionario_labels)
+            palavras.append(int(bits, 2))
+        except ValueError as e:
+            raise ValueError(f"linha {numero}: {e}") from None
+        pc += 4
+    return palavras
+
+################# GERACAO DO ARQUIVO MIF ###################
+
+def gerar_arquivo_mif(caminho_saida, palavras, depth):
+    """
+    escreve o file no padrao do mif, so escreve o que tem dado, o resto eh zero
+    """
+    with open(caminho_saida, 'w', encoding='ascii') as f:
+        f.write(f"DEPTH = {depth};\n")
+        f.write("WIDTH = 32;\n")
+        f.write("ADDRESS_RADIX = HEX;\n")
+        f.write("DATA_RADIX = HEX;\n")
+        f.write("CONTENT\n")
+        f.write("BEGIN\n")
+        
+        if not palavras:
+            f.write(f"{0:08x} : {0:08x};\n")
+        else:
+            for i, valor in enumerate(palavras):
+                f.write(f"{i:08x} : {valor:08x};\n")
+        f.write("END;\n")
+
+###################### MAIN ################################
+
 if __name__ == '__main__':
-    print("Olá, você está em um simulador do RARS\n")
-
-    # nome_arquivo = input("Digite o nome do arquivo de extesão .asm para ser 'montado':")
-
-    nome_arquivo = "exemplo-lab1"
+    print("jarvis, ligar o simulador de rars\n")
+    
+    """
+    O verificador chama o assembler passndo o caminho do .asm pela linha de comando, ai pega no sys.argv
+    """
+    if len(sys.argv) > 1:
+        nome_arquivo = sys.argv[1]
+    else:
+        nome_arquivo = "exemplo-lab1.asm"
     caminho_asm = entrada_arquivo(nome_arquivo)
 
     if caminho_asm:
-        conteudo_original = ler_arquivo(caminho_asm)
-        conteudo_limpo = tratar_ws(conteudo_original)
-        obj_arquivo_temp = cria_arquivo_temp(nome_arquivo)
-        print(obj_arquivo_temp)
-        
         try:
-            alterar_arquivo_temp(conteudo_limpo, obj_arquivo_temp)
-            nome_temp = obj_arquivo_temp.name
-            print(nome_temp)
-            obj_arquivo_temp.close() 
-            executa_codigo(nome_temp)
-        except:
-            print("Alguma coisa de errado não está certa")
-        finally:
-            os.unlink(nome_temp)
-            pass
+            conteudo_original = ler_arquivo(caminho_asm)
+            conteudo_limpo = tratar_ws(conteudo_original)
 
-################# IDEIAS SOBRE O CÓDIGO
+            linhas_text, linhas_data = particionar_secoes(conteudo_limpo)
+            palavras_data, simbolos_data = montar_data(linhas_data)
+
+            simbolos_text = primeira_passagem(linhas_text)
+            dicionario_labels = {**simbolos_data, **simbolos_text}
+            palavras_text = segunda_passagem(linhas_text, dicionario_labels)
+
+            base = caminho_asm.parent / caminho_asm.stem
+            saida_text = base.with_name(base.name + '.text.mif')
+            saida_data = base.with_name(base.name + '.data.mif')
+
+            gerar_arquivo_mif(saida_text, palavras_text, depth=16384)
+            gerar_arquivo_mif(saida_data, palavras_data, depth=32768)
+
+            print(f"gerado: {saida_text}")
+            print(f"gerado: {saida_data}")
+
+        except ValueError as erro:
+            print(f"erro de montagem: {erro}")
+            sys.exit(1)
+
+        except Exception:
+            print("alguma coisa de errado nao esta certa, jarvis fez cagada")
+            sys.exit(1)
+
+################# IDEIAS SOBRE O CÓDIGO ####################
 
 """
-A memória RAM  pode ser uma tabela hash em que geramos o endereço em hexadecimal como a chave e colocamos o conteúdo como valor;
+A memoria RAM pode ser uma tabela hash em que geramos o endereço em hexadecimal como a chave e colocamos o conteudo como valor;
 
-Se quisermos ser rígidos com os caracteres de entrada do arquivo lido, podemos mudar o tipo de encoding para 'ascii' assim, qualquer caracter que não for ascii
-gerará uma exceção, o que poder ser bom, para retornarmos uma mensagem para o usuário.
+Se quisermos ser rígidos com os caracteres de entrada do arquivo lido podemos mudar o tipo de encoding para 'ascii' assim, qualquer caracter que nao for ascii 
+gerará uma exceção.
 
-Eu estou pengando um arquivo em .asm e lendo ele como se fosse .txt, existe algum erro possível nisso ?
-
+Estou pegando um arquivo em .asm e lendo ele como se fosse .txt, existe algum erro possível nisso ?
 
 arquivo.flush()
-re.sub(r'#.*', '', linha).strip()        
-re.sub(r'\s+', ' ', linha_limpa)
+re.sub(r'#.*', '', linha).strip()
+re.sub(r'\\s+', ' ', linha_limpa)
 """
-
-
