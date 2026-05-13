@@ -99,13 +99,12 @@ def entrada_arquivo(caminho):
     if not p.exists():
         print(f"o arquivo '{caminho}' nao foi encontrado")
         return None
-    print(f"arquivo de nome {p.name} existe")
     return p
 
 ##################### LEITURA DE ARQUIVO ###################
 
 def ler_arquivo(arquivo):
-    print("lendo arquivo, sr stark")
+    print("lendo arquivo, sr stark\n")
     with open(arquivo, 'r', encoding='utf-8') as arq:
         conteudo = arq.readlines()
     return conteudo
@@ -113,7 +112,6 @@ def ler_arquivo(arquivo):
 #################### TRATAMENTO DAS LINHAS #################
 
 def tratar_ws(linhas_arquivo):
-    print("tirando coments e espacos sobrando")
     linhas_tratadas = []
 
     for linha in linhas_arquivo:
