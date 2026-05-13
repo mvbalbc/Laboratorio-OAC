@@ -626,8 +626,7 @@ if __name__ == '__main__':
             gerar_arquivo_mif(saida_text, palavras_text, depth=16384)
             gerar_arquivo_mif(saida_data, palavras_data, depth=32768)
 
-            print(f"gerado: {saida_text}")
-            print(f"gerado: {saida_data}")
+            print(f"aqui estao os arquivos senhor, {saida_text} e {saida_data}")
 
         except ValueError as erro:
             print(f"erro de montagem: {erro}")
