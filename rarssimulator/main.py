@@ -99,13 +99,11 @@ def entrada_arquivo(caminho):
     if not p.exists():
         print(f"o arquivo '{caminho}' nao foi encontrado")
         return None
-    print(f"arquivo de nome {p.name} existe")
     return p
 
 ##################### LEITURA DE ARQUIVO ###################
 
 def ler_arquivo(arquivo):
-    print("lendo arquivo, sr stark\n")
     with open(arquivo, 'r', encoding='utf-8') as arq:
         conteudo = arq.readlines()
     return conteudo
@@ -113,11 +111,9 @@ def ler_arquivo(arquivo):
 #################### TRATAMENTO DAS LINHAS #################
 
 def tratar_ws(linhas_arquivo):
-    print("tirando coments e espacos sobrando")
     linhas_tratadas = []
 
     for linha in linhas_arquivo:
-        ## Remove o #
         saida = []
         dentro_de_aspas = False
         for c in linha:
@@ -270,7 +266,7 @@ def pegar_registrador(token):
     """ aceita 'zero', 'ra', 't0', 'x5', e tals, Retorna o numero de 0 a 31"""
     t = token.strip().lower()
     if t not in REG_NAMES:
-        raise ValueError(f"registrador inválido: '{token}'")
+        raise ValueError(f"registrador invalido: '{token}'")
     return REG_NAMES[t]
 
 
@@ -295,20 +291,19 @@ def pegar_imediato(token, dicionario_labels=None):
             raise ValueError(f"label não definida em %lo: '{rotulo}'")
         endereco = dicionario_labels[rotulo]
         baixo = endereco & 0xFFF
-        ## Se o bit mais alto dos 12 bits ta ligado, dale negativo
         return baixo - 0x1000 if baixo >= 0x800 else baixo
 
     try:
         return int(t, 0)
     except ValueError:
-        raise ValueError(f"imediato inválido: '{token}'")
+        raise ValueError(f"imediato invalido: '{token}'")
 
 
 def pegar_operando_memoria(token):
     """ quebra um operando do tipo 'imediato(registrador)', tipo '4(t1)' """
     m = re.match(r'^(.*?)\(\s*(\w+)\s*\)\s*$', token.strip())
     if not m:
-        raise ValueError(f"operando de memória mal formado: '{token}'")
+        raise ValueError(f"operando de memoria mal formado: '{token}'")
     return m.group(1).strip(), m.group(2).strip()
 
 
@@ -580,9 +575,11 @@ def segunda_passagem(linhas_text, dicionario_labels):
 
 ################# GERACAO DO ARQUIVO MIF ###################
 
-def gerar_arquivo_mif(caminho_saida, palavras, depth):
+def gerar_arquivo_mif(caminho_saida, palavras, depth, eh_data=False):
     """
-    escreve o file no padrao do mif, so escreve o que tem dado, o resto eh zero
+    escreve o file no padrao do mif, imprime os comentarios se houver.
+    Se for o .data, ele trava em 1024 pra ficar gigante igual o gabarito.
+    Se for o .text, so imprime as linhas certas.
     """
     with open(caminho_saida, 'w', encoding='ascii') as f:
         f.write(f"DEPTH = {depth};\n")
@@ -592,15 +589,22 @@ def gerar_arquivo_mif(caminho_saida, palavras, depth):
         f.write("CONTENT\n")
         f.write("BEGIN\n")
         
-        if not palavras:
-            f.write(f"{0:08x} : {0:08x};\n")
+        if eh_data:
+            limite = 1024
         else:
-            for i, item in enumerate(palavras):
+            limite = len(palavras) if palavras else 1
+            
+        for i in range(limite):
+            if i < len(palavras):
+                item = palavras[i]
                 if isinstance(item, tuple):
                     valor, coments = item
                     f.write(f"{i:08x} : {valor:08x};   {coments}\n")
                 else:
                     f.write(f"{i:08x} : {item:08x};\n")
+            else:
+                f.write(f"{i:08x} : {0:08x};\n")
+                
         f.write("END;\n")
 
 ###################### MAIN ################################
@@ -633,8 +637,8 @@ if __name__ == '__main__':
             saida_text = base.with_name(base.name + '.text.mif')
             saida_data = base.with_name(base.name + '.data.mif')
 
-            gerar_arquivo_mif(saida_text, palavras_text, depth=16384)
-            gerar_arquivo_mif(saida_data, palavras_data, depth=32768)
+            gerar_arquivo_mif(saida_text, palavras_text, depth=16384, eh_data=False)
+            gerar_arquivo_mif(saida_data, palavras_data, depth=32768, eh_data=True)
 
             print(f"aqui estao os arquivos senhor, {saida_text} e {saida_data}")
 
