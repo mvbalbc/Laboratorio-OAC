@@ -99,6 +99,7 @@ def entrada_arquivo(caminho):
     if not p.exists():
         print(f"o arquivo '{caminho}' nao foi encontrado")
         return None
+    print(f"arquivo de nome {p.name} existe")
     return p
 
 ##################### LEITURA DE ARQUIVO ###################
@@ -112,6 +113,7 @@ def ler_arquivo(arquivo):
 #################### TRATAMENTO DAS LINHAS #################
 
 def tratar_ws(linhas_arquivo):
+    print("tirando coments e espacos sobrando")
     linhas_tratadas = []
 
     for linha in linhas_arquivo:
@@ -546,7 +548,8 @@ def primeira_passagem(linhas_text):
 def segunda_passagem(linhas_text, dicionario_labels):
     palavras = []
     pc = TEXT_BASE
-    for numero, linha in linhas_text:
+    for numero, linha_original in linhas_text:
+        linha = linha_original
         while True:
             m = re.match(r'^(\w+)\s*:\s*(.*)$', linha)
             if not m:
@@ -566,7 +569,10 @@ def segunda_passagem(linhas_text, dicionario_labels):
                 pedacos = []
             bits = codificar_instrucao(mnemonico, pedacos,
                                        pc=pc, dicionario_labels=dicionario_labels)
-            palavras.append(int(bits, 2))
+            
+            comentario_rars = f"% {numero}: {linha_original} %"
+            palavras.append((int(bits, 2), comentario_rars))
+            
         except ValueError as e:
             raise ValueError(f"linha {numero}: {e}") from None
         pc += 4
@@ -589,8 +595,12 @@ def gerar_arquivo_mif(caminho_saida, palavras, depth):
         if not palavras:
             f.write(f"{0:08x} : {0:08x};\n")
         else:
-            for i, valor in enumerate(palavras):
-                f.write(f"{i:08x} : {valor:08x};\n")
+            for i, item in enumerate(palavras):
+                if isinstance(item, tuple):
+                    valor, coments = item
+                    f.write(f"{i:08x} : {valor:08x};   {coments}\n")
+                else:
+                    f.write(f"{i:08x} : {item:08x};\n")
         f.write("END;\n")
 
 ###################### MAIN ################################
