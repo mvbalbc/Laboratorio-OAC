@@ -26,14 +26,7 @@ U-type : lui, auipc
 
 ## Passo a passo — Quartus II
 
-### 1. Converter os arquivos MIF do Lab01
 
-```
-python3 mif2hex.py UnicicloInst.mif UnicicloInst.hex
-python3 mif2hex.py UnicicloData.mif UnicicloData.hex
-```
-
-Copie os `.hex` gerados para a **pasta raiz do projeto Quartus**.
 
 ### 2. Criar o projeto Quartus II
 
