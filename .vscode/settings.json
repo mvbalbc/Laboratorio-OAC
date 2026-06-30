@@ -1,0 +1,13 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        "**/Trabalho_OAC_LAB1.aux": true,
+        "**/Trabalho_OAC_LAB1.log": true,
+        "**/Trabalho_OAC_LAB1.gz": true,
+        "**/Trabalho_OAC_LAB1.out": true
+    }
+}

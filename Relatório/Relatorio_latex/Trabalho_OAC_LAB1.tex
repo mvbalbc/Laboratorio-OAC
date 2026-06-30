@@ -40,25 +40,33 @@
 
 \begin{document}
 
-\title{Desenvolvimento de um Assembler para a Arquitetura RISC V32I}
+\title{Desenvolvimento de um Assembler para a Arquitetura RISC-V32I}
 
 \author{
-\IEEEauthorblockN{Dem\'{e}trius Mendes Miranda Rocha}
-\IEEEauthorblockA{Departamento de Ci\^{e}ncia da Computa\c{c}\~{a}o\\
-Universidade de Bras\'{i}lia\\
-Bras\'{i}lia, Brasil\\
-232012974}
-% Caso existam outros integrantes, inserir novos blocos \IEEEauthorblockN e \IEEEauthorblockA.
+\IEEEauthorblockN{Demétrius Mendes Miranda Rocha}
+\IEEEauthorblockA{232012974}
+\and
+\IEEEauthorblockN{Lucas Silva Nóbrega}
+\IEEEauthorblockA{180035096}
+\and
+\IEEEauthorblockN{João Gabriel Melo de Lima}
+\IEEEauthorblockA{241032617}
+\and
+\IEEEauthorblockN{Marcus Vinicius Balbino Cavalcante}
+\IEEEauthorblockA{160135974}
+\and
+\IEEEauthorblockN{Samuel Carvalho Dos Santos}
+\IEEEauthorblockA{211010388}
 }
 
 \maketitle
 
 \begin{abstract}
-Este artigo apresenta o desenvolvimento de um assembler para um subconjunto da arquitetura RISC V32I. A aplica\c{c}\~{a}o foi implementada em Python com o objetivo de processar arquivos escritos em Assembly, interpretar instru\c{c}\~{o}es e dados, e produzir arquivos de inicializa\c{c}\~{a}o de mem\'{o}ria no formato MIF. O trabalho descreve os fundamentos da codifica\c{c}\~{a}o de instru\c{c}\~{o}es, a metodologia de implementa\c{c}\~{a}o, a organiza\c{c}\~{a}o do programa, os testes previstos e a an\'{a}lise dos resultados esperados. Dessa forma, o projeto relaciona conceitos de organiza\c{c}\~{a}o e arquitetura de computadores, linguagem Assembly, representa\c{c}\~{a}o hexadecimal e manipula\c{c}\~{a}o de arquivos.
+Este artigo apresenta o desenvolvimento de um assembler para um subconjunto da arquitetura RISC-V32I. A aplicação foi implementada em Python, em arquivo único, com o objetivo de processar arquivos Assembly com extensão \texttt{.asm}, interpretar instruções e dados, resolver rótulos e gerar arquivos de inicialização de memória no formato MIF. O trabalho aborda os fundamentos da codificação de instruções, a organização das seções \texttt{.text} e \texttt{.data}, a metodologia adotada na implementação e os resultados obtidos com a geração dos arquivos \texttt{.text.mif} e \texttt{.data.mif}. Dessa forma, o projeto relaciona conceitos de Organização e Arquitetura de Computadores, linguagem Assembly, representação hexadecimal, manipulação de arquivos e funcionamento básico de um assembler.
 \end{abstract}
 
 \begin{IEEEkeywords}
-RISC V32I, Assembly, assembler, Python, MIF, arquitetura de computadores.
+RISC-V32I, Assembly, assembler, Python, MIF, arquitetura de computadores.
 \end{IEEEkeywords}
 
 \begin{table}[!ht]
@@ -79,15 +87,15 @@ Tema & Assembler para Assembly RISC V32I \\
 
 \section{Introdução}
 
-A linguagem Assembly é uma representação simbólica de baixo nível utilizada para descrever instruções executadas diretamente por um processador. Diferentemente das linguagens de alto nível, em que muitas operações são abstraídas por compiladores e bibliotecas, o Assembly permite observar de forma mais direta a relação entre instruções, registradores, memória e fluxo de execução. Por esse motivo, seu estudo é fundamental em disciplinas de Organização e Arquitetura de Computadores, especialmente para compreender como programas são representados internamente em uma máquina.
+A linguagem Assembly é uma representação simbólica de baixo nível utilizada para descrever instruções executadas diretamente por um processador. Por permitir uma relação mais direta com registradores, memória e fluxo de execução, seu estudo é fundamental em Organização e Arquitetura de Computadores.
 
-No contexto da arquitetura RISC-V, as instruções seguem uma organização padronizada e são codificadas em palavras de 32 bits. A variante RV32I define um conjunto básico de instruções inteiras, incluindo operações aritméticas, lógicas, instruções com imediatos, acessos à memória, desvios condicionais e saltos. Cada instrução pertence a um formato específico, como R, I, S, B, U ou J, e cada formato determina a posição dos campos necessários para a codificação, como \texttt{opcode}, \texttt{rd}, \texttt{rs1}, \texttt{rs2}, \texttt{funct3}, \texttt{funct7} e imediato.
+Na arquitetura RISC-V, as instruções são codificadas em palavras de 32 bits e seguem formatos padronizados, como R, I, S, B, U e J. A variante RV32I define um conjunto básico de instruções inteiras, incluindo operações aritméticas, lógicas, acessos à memória, desvios condicionais e saltos. Cada formato determina a posição dos campos necessários para a codificação, como \texttt{opcode}, \texttt{rd}, \texttt{rs1}, \texttt{rs2}, \texttt{funct3}, \texttt{funct7} e imediato.
 
-O processo de montagem, realizado por um assembler, consiste em converter instruções escritas em Assembly para uma representação equivalente em código de máquina. Para isso, o programa deve identificar o mnemônico de cada instrução, interpretar seus operandos, reconhecer registradores, tratar valores imediatos, processar rótulos e calcular deslocamentos quando necessário. Além disso, deve organizar corretamente as informações presentes nas seções do arquivo de entrada, principalmente \texttt{.text}, responsável pelas instruções do programa, e \texttt{.data}, responsável pela declaração de dados.
+O processo de montagem, realizado por um assembler, consiste em converter instruções escritas em Assembly para código de máquina. Para isso, é necessário identificar mnemônicos, interpretar operandos, reconhecer registradores, tratar valores imediatos, processar rótulos e organizar as seções do arquivo, principalmente \texttt{.text}, referente às instruções, e \texttt{.data}, referente aos dados.
 
-Neste projeto, foi desenvolvido um assembler em Python para um subconjunto da arquitetura RISC-V32I. A aplicação recebe como entrada um arquivo Assembly com extensão \texttt{.asm}, realiza o processamento das instruções e dos dados declarados e gera arquivos de saída no formato \texttt{.mif}. Esse formato é utilizado para inicialização de memória em ambientes de simulação e projetos digitais, permitindo que o conteúdo gerado seja carregado posteriormente em uma memória de instruções ou de dados.
+Neste projeto, foi desenvolvido um assembler em Python para um subconjunto da arquitetura RISC-V32I. A aplicação recebe um arquivo Assembly com extensão \texttt{.asm}, processa as instruções e os dados declarados e gera arquivos de saída no formato \texttt{.mif}, utilizado para inicialização de memórias em ambientes de simulação e projetos digitais.
 
-Dessa forma, o projeto integra conceitos fundamentais da disciplina, como codificação de instruções, organização de memória, manipulação de arquivos, representação hexadecimal, uso de registradores e funcionamento básico de um assembler. Além de possibilitar a aplicação prática da arquitetura RISC-V32I, a implementação permite compreender com maior clareza as etapas necessárias para transformar um programa Assembly em uma representação compatível com o hardware ou com ambientes de simulação.
+Dessa forma, o projeto aplica conceitos como codificação de instruções, organização de memória, representação hexadecimal, manipulação de arquivos e funcionamento básico de um assembler, permitindo compreender as etapas necessárias para transformar um programa Assembly em uma representação compatível com o hardware ou com ambientes de simulação.
 
 \section{Objetivos}
 
@@ -98,83 +106,31 @@ De forma espec\'{i}fica, o projeto busca compreender a estrutura da arquitetura 
 
 \section{Fundamentação Teórica}
 
-Esta seção apresenta os principais conceitos necessários para compreender o desenvolvimento do assembler proposto. São abordados os fundamentos da arquitetura RISC-V32I, a organização dos registradores, os formatos de instrução, a função das seções \texttt{.text} e \texttt{.data} e o formato de saída MIF.
-
 \subsection{Arquitetura RISC-V32I}
 
-RISC-V é uma arquitetura de conjunto de instruções baseada no princípio RISC, ou seja, em um conjunto de instruções reduzido, regular e organizado de forma a simplificar a implementação do processador. A variante RV32I corresponde ao conjunto base inteiro de 32 bits, no qual as instruções operam sobre registradores inteiros e utilizam palavras de instrução com tamanho fixo de 32 bits \cite{riscv-spec}.
+A arquitetura RISC-V é baseada no princípio RISC, caracterizado por um conjunto de instruções reduzido, regular e organizado para simplificar a implementação do processador. Neste projeto, utiliza-se a variante RV32I, que corresponde ao conjunto base inteiro de 32 bits. Nessa arquitetura, as instruções possuem tamanho fixo de 32 bits e operam sobre 32 registradores inteiros de propósito geral, identificados de \texttt{x0} a \texttt{x31} \cite{riscv-spec}.
 
-No RV32I, existem 32 registradores inteiros de propósito geral, identificados de \texttt{x0} até \texttt{x31}. Cada registrador possui 32 bits de largura. O registrador \texttt{x0} possui comportamento especial, pois sempre armazena o valor zero; qualquer escrita nele é descartada. Os demais registradores podem ser utilizados para armazenar operandos, resultados intermediários, endereços e valores manipulados durante a execução do programa.
+O registrador \texttt{x0} possui comportamento especial, pois mantém sempre o valor zero, descartando qualquer tentativa de escrita. Os demais registradores podem armazenar operandos, resultados intermediários, endereços e valores utilizados durante a execução do programa. Além da identificação numérica, os registradores também possuem nomes definidos pela ABI, como \texttt{zero}, \texttt{ra}, \texttt{sp}, \texttt{t0}, \texttt{s0} e \texttt{a0}, que facilitam a leitura do código Assembly. Durante a montagem, esses nomes são convertidos para seus respectivos códigos de registrador.
 
-Além dos nomes numéricos, como \texttt{x1}, \texttt{x2} e \texttt{x3}, os registradores também possuem nomes convencionais definidos pela ABI, como \texttt{zero}, \texttt{ra}, \texttt{sp}, \texttt{gp}, \texttt{tp}, \texttt{t0}, \texttt{s0} e \texttt{a0}. Esses nomes facilitam a leitura do código Assembly, mas, no processo de montagem, todos precisam ser convertidos para seus respectivos números binários de registrador.
-
-\begin{table}[!ht]
-\centering
-\caption{Exemplos de registradores RISC-V}
-\label{tab:registradores}
-\begin{tabular}{lll}
-\toprule
-Nome ABI & Registrador & Função usual \\
-\midrule
-\texttt{zero} & \texttt{x0} & Constante zero \\
-\texttt{ra} & \texttt{x1} & Endereço de retorno \\
-\texttt{sp} & \texttt{x2} & Ponteiro de pilha \\
-\texttt{t0--t6} & \texttt{x5--x7, x28--x31} & Temporários \\
-\texttt{s0--s11} & \texttt{x8--x9, x18--x27} & Salvos \\
-\texttt{a0--a7} & \texttt{x10--x17} & Argumentos/retornos \\
-\bottomrule
-\end{tabular}
-\end{table}
+As instruções da arquitetura RISC-V32I são organizadas em formatos padronizados, como R, I, S, B, U e J. Cada formato define a posição dos campos dentro da palavra de 32 bits, incluindo \texttt{opcode}, \texttt{rd}, \texttt{rs1}, \texttt{rs2}, \texttt{funct3}, \texttt{funct7} e campos de imediato. O formato R é usado em operações entre registradores, como \texttt{add} e \texttt{sub}; o formato I em instruções com imediatos, cargas e saltos indiretos; o formato S em armazenamentos na memória; o formato B em desvios condicionais; o formato U em imediatos superiores; e o formato J em saltos incondicionais.
 
 \subsection{Processo de Montagem}
 
-O assembler é o programa responsável por converter instruções escritas em linguagem Assembly para código de máquina. No caso deste projeto, essa conversão resulta em valores hexadecimais correspondentes às instruções de 32 bits da arquitetura RISC-V32I.
+O assembler é responsável por converter instruções escritas em Assembly para código de máquina. Para isso, o programa deve ler o arquivo de entrada, remover comentários e espaços desnecessários, identificar diretivas, rótulos, instruções e dados, além de interpretar registradores, imediatos e operandos.
 
-Durante esse processo, o assembler deve realizar várias etapas. Primeiro, o arquivo de entrada é lido e suas linhas são analisadas. Comentários e espaços desnecessários são removidos, enquanto diretivas, rótulos, instruções e dados são identificados. Em seguida, os registradores são convertidos para seus códigos numéricos, os imediatos são interpretados e os campos de cada instrução são posicionados conforme o formato adequado.
-
-Quando existem rótulos, o assembler também precisa associar cada rótulo a um endereço. Essa informação é necessária principalmente em instruções de desvio e salto, pois o deslocamento codificado na instrução depende da diferença entre o endereço da instrução atual e o endereço do rótulo de destino.
-
-\subsection{Formatos de Instrução}
-
-As instruções do RISC-V32I são organizadas em formatos fixos. Cada formato determina a posição dos campos dentro da palavra de 32 bits. Entre os campos mais importantes estão \texttt{opcode}, que identifica a classe da instrução; \texttt{rd}, que indica o registrador de destino; \texttt{rs1} e \texttt{rs2}, que indicam registradores fonte; \texttt{funct3} e \texttt{funct7}, que diferenciam operações dentro de uma mesma classe; e os campos de imediato, utilizados para constantes, deslocamentos ou endereços.
-
-\begin{table}[!ht]
-\centering
-\caption{Formatos de instrução utilizados no RV32I}
-\label{tab:formatos}
-\begin{tabular}{p{0.16\linewidth} p{0.38\linewidth} p{0.34\linewidth}}
-\toprule
-Formato & Uso principal & Exemplos \\
-\midrule
-R & Operações entre registradores & \texttt{add}, \texttt{sub}, \texttt{and}, \texttt{or} \\
-I & Imediatos, cargas e saltos indiretos & \texttt{addi}, \texttt{lw}, \texttt{jalr} \\
-S & Armazenamento em memória & \texttt{sw}, \texttt{sh}, \texttt{sb} \\
-B & Desvios condicionais & \texttt{beq}, \texttt{bne}, \texttt{blt} \\
-U & Imediato superior & \texttt{lui}, \texttt{auipc} \\
-J & Salto incondicional & \texttt{jal} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-No formato R, a instrução utiliza dois registradores fonte e um registrador de destino. Esse formato é comum em operações como soma, subtração e operações lógicas entre registradores. No formato I, um dos operandos é um valor imediato, sendo utilizado em instruções como \texttt{addi}, \texttt{lw} e \texttt{jalr}. O formato S é usado para instruções de armazenamento em memória, nas quais o imediato é dividido em duas partes dentro da instrução.
-
-O formato B é utilizado em desvios condicionais, como \texttt{beq} e \texttt{bne}. Nesse caso, o imediato representa um deslocamento relativo ao contador de programa. O formato U trabalha com imediatos de 20 bits posicionados na parte superior da instrução, enquanto o formato J é utilizado em saltos incondicionais, como \texttt{jal}, também com deslocamento relativo.
+Quando há rótulos, o assembler também precisa associá-los aos seus respectivos endereços. Essa etapa é importante porque instruções de desvio e salto dependem do cálculo de deslocamentos relativos entre a instrução atual e o destino indicado pelo rótulo. Ao final do processo, os campos de cada instrução são posicionados conforme o formato correspondente da arquitetura RISC-V32I.
 
 \subsection{Seções \texttt{.text} e \texttt{.data}}
 
-Em programas Assembly, é comum separar o conteúdo do arquivo em seções. A seção \texttt{.text} armazena as instruções do programa, ou seja, o código que será executado pelo processador. Já a seção \texttt{.data} armazena dados estáticos, como constantes, vetores, palavras de memória e valores inicializados.
+Em programas Assembly, as seções \texttt{.text} e \texttt{.data} organizam o conteúdo do arquivo. A seção \texttt{.text} armazena as instruções que serão executadas pelo processador, enquanto a seção \texttt{.data} contém dados estáticos, como constantes, vetores e valores inicializados.
 
-Essa separação é importante porque instruções e dados normalmente ocupam regiões diferentes da memória. No contexto do assembler desenvolvido, o conteúdo da seção \texttt{.text} deve ser convertido para o arquivo MIF correspondente à memória de instruções, enquanto o conteúdo da seção \texttt{.data} deve ser convertido para o arquivo MIF correspondente à memória de dados.
-
-Dessa forma, o programa precisa identificar em qual seção cada linha do arquivo de entrada se encontra. Instruções localizadas em \texttt{.text} devem ser tratadas como comandos Assembly a serem codificados. Já declarações localizadas em \texttt{.data} devem ser interpretadas como valores que serão armazenados diretamente na memória.
+Essa separação é importante porque instruções e dados costumam ocupar regiões distintas da memória. No assembler desenvolvido, o conteúdo da seção \texttt{.text} é convertido para a memória de instruções, enquanto os valores da seção \texttt{.data} são direcionados para a memória de dados.
 
 \subsection{Formato MIF}
 
-O formato MIF, ou \textit{Memory Initialization File}, é utilizado para representar o conteúdo inicial de uma memória. Esse tipo de arquivo é comum em ferramentas de simulação e em projetos digitais, pois permite definir previamente quais valores estarão armazenados em determinados endereços de memória \cite{mif}.
+O formato MIF, ou \textit{Memory Initialization File}, é utilizado para representar o conteúdo inicial de uma memória em ferramentas de simulação e projetos digitais \cite{mif}. Esse arquivo permite definir previamente os valores armazenados em determinados endereços de memória.
 
-Um arquivo MIF geralmente possui informações de cabeçalho, como profundidade da memória, largura dos dados, base de representação dos endereços e base de representação dos valores armazenados. Após o cabeçalho, é indicado o conteúdo da memória, associando cada endereço ao valor que deve ser carregado.
-
-No caso deste projeto, os arquivos MIF gerados representam separadamente a memória de instruções e a memória de dados. A memória de instruções armazena os valores hexadecimais correspondentes às instruções Assembly codificadas, enquanto a memória de dados armazena os valores declarados na seção \texttt{.data}. Assim, a geração correta dos arquivos MIF é uma etapa essencial para permitir que o programa montado seja utilizado posteriormente em simulações ou em ambientes de teste.
+No contexto deste projeto, são gerados arquivos MIF separados para a memória de instruções e para a memória de dados. A memória de instruções recebe os valores hexadecimais correspondentes às instruções codificadas, enquanto a memória de dados recebe os valores declarados na seção \texttt{.data}.
 
 \begin{lstlisting}[style=asmstyle, caption={Estrutura geral de um arquivo MIF.}, label={lst:exemplomif}]
 WIDTH=32;
@@ -191,475 +147,69 @@ END;
 
 \section{Materiais e Métodos}
 
-Esta seção descreve os recursos utilizados no desenvolvimento do assembler e o procedimento metodológico adotado para transformar um arquivo Assembly RISC-V32I em arquivos de saída no formato MIF. A metodologia foi definida com base nos requisitos do laboratório, que exigem a implementação em um único arquivo Python, o processamento de arquivos \texttt{.asm} e a geração de arquivos \texttt{.mif} separados para as áreas \texttt{.text} e \texttt{.data}.
-
 \subsection{Materiais Utilizados}
 
-Para o desenvolvimento da aplicação, foram utilizados recursos de software compatíveis com os requisitos definidos para o laboratório. O projeto foi implementado em linguagem Python, em arquivo único, de forma a atender à exigência de submissão do código-fonte em apenas um arquivo \texttt{.py}. Não foram utilizadas bibliotecas externas, apenas módulos pertencentes à biblioteca padrão da linguagem.
+O projeto foi desenvolvido em linguagem Python 3.7 ou superior, em um único arquivo-fonte denominado \texttt{main.py}. Foram utilizadas apenas bibliotecas da própria linguagem, como \texttt{pathlib}, para manipulação de caminhos, \texttt{re}, para reconhecimento de padrões textuais, e \texttt{sys}, para leitura de argumentos pela linha de comando.
 
-Os principais materiais e recursos utilizados foram:
+Como entrada, a aplicação utiliza arquivos Assembly RISC-V32I com extensão \texttt{.asm}. Como saída, são gerados arquivos no formato \texttt{.mif}, utilizados para inicialização de memória. O simulador RARS foi utilizado como referência para a sintaxe das instruções e para o mapa de memória adotado \cite{rars}, considerando os endereços-base \texttt{TEXT\_BASE = 0x00400000} e \texttt{DATA\_BASE = 0x10010000}.
 
-\begin{itemize}
-    \item linguagem Python 3.7 ou superior;
-    \item arquivo-fonte único, denominado \texttt{main.py};
-    \item bibliotecas padrão do Python: \texttt{pathlib}, \texttt{re}, \texttt{os} e \texttt{sys};
-    \item arquivos de entrada em Assembly RISC-V32I, com extensão \texttt{.asm};
-    \item arquivos de saída em formato MIF, com extensão \texttt{.mif};
-    \item simulador RARS como referência para o mapa de memória e para a sintaxe Assembly RISC-V32I;
-    \item interface de execução por terminal, recebendo o caminho do arquivo de entrada por argumento de linha de comando.
-\end{itemize}
+\subsection{Procedimento Metodológico}
 
-A biblioteca \texttt{pathlib} foi utilizada para manipulação de caminhos e verificação da extensão do arquivo de entrada. A biblioteca \texttt{re} foi utilizada para o reconhecimento de padrões textuais, como rótulos, operandos de memória, diretivas e expressões especiais. A biblioteca \texttt{sys} foi empregada para receber argumentos pela linha de comando e encerrar a execução em caso de erro de montagem. A biblioteca \texttt{os} foi importada no arquivo principal, embora a maior parte da manipulação de caminhos tenha sido realizada por meio de \texttt{pathlib}.
+A metodologia adotada consistiu em dividir o processo de montagem em etapas sequenciais. Inicialmente, o arquivo Assembly de entrada é validado, verificando-se a existência do arquivo e a extensão \texttt{.asm}. Em seguida, o conteúdo é lido e submetido a um pré-processamento, no qual são removidos comentários, espaços desnecessários e linhas vazias, preservando caracteres especiais quando presentes dentro de strings.
 
-\subsection{Organização Geral da Implementação}
+Após o tratamento inicial, o programa separa o conteúdo nas seções \texttt{.text} e \texttt{.data}. A seção \texttt{.text} é destinada à montagem das instruções, enquanto a seção \texttt{.data} é utilizada para a geração da memória de dados. Para representar o mapa de memória utilizado, foram adotados os endereços-base \texttt{TEXT\_BASE = 0x00400000} e \texttt{DATA\_BASE = 0x10010000}.
 
-A implementação foi organizada em etapas funcionais, de modo que cada parte do programa fosse responsável por uma fase específica do processo de montagem. Inicialmente, o arquivo \texttt{.asm} é validado e lido. Em seguida, ocorre o pré-processamento das linhas, a separação das seções \texttt{.text} e \texttt{.data}, a identificação de rótulos, a codificação das instruções e, por fim, a geração dos arquivos MIF.
+A montagem da seção \texttt{.text} foi realizada em duas passagens. Na primeira, são identificados os rótulos e seus respectivos endereços. Na segunda, as instruções são codificadas, utilizando as informações previamente armazenadas para calcular deslocamentos em instruções de desvio e salto. Já a seção \texttt{.data} é processada separadamente, interpretando diretivas como \texttt{.word}, \texttt{.half}, \texttt{.byte}, \texttt{.string}, \texttt{.ascii}, \texttt{.space}, \texttt{.zero} e \texttt{.align}.
 
-O código utiliza duas constantes principais para representar os endereços-base do mapa de memória adotado:
+\subsection{Validação da Saída}
 
-\begin{itemize}
-    \item \texttt{TEXT\_BASE = 0x00400000}, correspondente ao início da seção de instruções;
-    \item \texttt{DATA\_BASE = 0x10010000}, correspondente ao início da seção de dados.
-\end{itemize}
+Ao final do processo, a aplicação gera dois arquivos no formato MIF: um correspondente à memória de instruções, com sufixo \texttt{.text.mif}, e outro correspondente à memória de dados, com sufixo \texttt{.data.mif}. Cada arquivo contém cabeçalho com profundidade, largura da palavra, base dos endereços e base dos dados, utilizando representação hexadecimal.
 
-Esses valores são utilizados no cálculo dos endereços associados aos rótulos das seções \texttt{.text} e \texttt{.data}. Dessa forma, o assembler consegue resolver referências simbólicas presentes no código Assembly.
-
-\subsection{Entrada e Validação do Arquivo}
-
-A entrada da aplicação ocorre por meio da linha de comando. Caso o usuário informe um argumento ao executar o programa, esse argumento é interpretado como o caminho do arquivo Assembly de entrada. Caso contrário, o programa utiliza como padrão o arquivo \texttt{exemplo-lab1.asm}.
-
-Antes da leitura do arquivo, é feita uma validação para verificar se o arquivo possui extensão \texttt{.asm} e se existe no caminho informado. Essa verificação impede que o assembler tente processar arquivos com formato inadequado ou caminhos inválidos.
-
-Após a validação, o arquivo é lido linha por linha. A leitura foi implementada com codificação \texttt{UTF-8}, mantendo compatibilidade com arquivos ASCII, que são exigidos no enunciado do laboratório. O conteúdo lido é armazenado em uma lista de linhas para posterior tratamento.
-
-\subsection{Pré-processamento das Linhas}
-
-Depois da leitura, o programa realiza o tratamento textual do arquivo de entrada. Essa etapa tem como objetivo remover elementos que não interferem diretamente na montagem das instruções.
-
-O pré-processamento executa as seguintes operações:
-
-\begin{enumerate}
-    \item percorre cada linha do arquivo original;
-    \item remove comentários iniciados pelo caractere \texttt{\#};
-    \item preserva o caractere \texttt{\#} quando ele aparece dentro de aspas;
-    \item remove espaços em branco no início e no fim da linha;
-    \item descarta linhas vazias.
-\end{enumerate}
-
-A preservação de caracteres dentro de aspas é importante para evitar que strings declaradas na seção \texttt{.data} sejam interpretadas incorretamente como comentários. Assim, uma cadeia de caracteres contendo o símbolo \texttt{\#} não é cortada indevidamente durante o pré-processamento.
-
-\subsection{Particionamento das Seções \texttt{.text} e \texttt{.data}}
-
-Após o pré-processamento, o programa separa as linhas pertencentes à seção \texttt{.text} das linhas pertencentes à seção \texttt{.data}. Essa separação é feita pela identificação das diretivas \texttt{.text} e \texttt{.data} no arquivo Assembly.
-
-As linhas da seção \texttt{.text} são armazenadas para posterior montagem das instruções, enquanto as linhas da seção \texttt{.data} são processadas para geração da memória de dados. Além disso, cada linha é armazenada juntamente com seu número original no arquivo. Essa informação é usada para apresentar mensagens de erro mais precisas quando ocorre algum problema de montagem.
-
-\subsection{Tabela de Registradores}
-
-Para reconhecer os registradores utilizados nas instruções, foi criada uma tabela de registradores associando os nomes da ABI e os nomes numéricos aos seus respectivos códigos. Assim, o assembler aceita tanto registradores no formato \texttt{x0}, \texttt{x1}, \texttt{x2} etc., quanto nomes convencionais como \texttt{zero}, \texttt{ra}, \texttt{sp}, \texttt{t0}, \texttt{s0} e \texttt{a0}.
-
-Durante a montagem, cada registrador lido no arquivo Assembly é convertido para um número inteiro entre 0 e 31. Caso o nome informado não exista na tabela, o programa gera uma mensagem de erro indicando registrador inválido.
-
-\subsection{Tabela de Instruções}
-
-As instruções suportadas foram organizadas em uma tabela interna chamada \texttt{TABELA\_INSTRUCOES}. Para cada mnemônico, a tabela armazena quatro informações principais:
-
-\begin{itemize}
-    \item formato da instrução;
-    \item \texttt{opcode};
-    \item \texttt{funct3};
-    \item \texttt{funct7}, quando aplicável.
-\end{itemize}
-
-A tabela contempla instruções dos formatos R, I, S, B, U e J. Também foram criadas variações internas do formato I para diferenciar instruções imediatas comuns, instruções de deslocamento, instruções de acesso à memória e a instrução \texttt{jalr}. Essa organização facilita a escolha da rotina de montagem adequada para cada instrução.
-
-Entre as instruções implementadas estão \texttt{add}, \texttt{sub}, \texttt{and}, \texttt{or}, \texttt{xor}, \texttt{sll}, \texttt{srl}, \texttt{slt}, \texttt{addi}, \texttt{andi}, \texttt{ori}, \texttt{xori}, \texttt{slti}, \texttt{lw}, \texttt{lhu}, \texttt{jalr}, \texttt{sw}, \texttt{beq}, \texttt{bne}, \texttt{lui}, \texttt{auipc} e \texttt{jal}.
-
-\subsection{Montagem dos Formatos de Instrução}
-
-Para montar as instruções, foram criadas classes específicas para os formatos R, I, S, B, U e J. Cada classe recebe os campos necessários da instrução e os organiza na ordem correta dentro de uma palavra de 32 bits.
-
-No formato R, são posicionados os campos \texttt{funct7}, \texttt{rs2}, \texttt{rs1}, \texttt{funct3}, \texttt{rd} e \texttt{opcode}. No formato I, são utilizados o imediato de 12 bits, \texttt{rs1}, \texttt{funct3}, \texttt{rd} e \texttt{opcode}. No formato S, o imediato é dividido em duas partes, pois seus bits são armazenados em posições diferentes da instrução.
-
-No formato B, utilizado por desvios condicionais, o imediato também é reorganizado em campos separados, seguindo a disposição definida pela arquitetura RISC-V. O mesmo ocorre no formato J, usado pela instrução \texttt{jal}. No formato U, o imediato ocupa os 20 bits mais significativos da instrução, seguido por \texttt{rd} e \texttt{opcode}.
-
-Após a montagem dos campos binários, a instrução completa é convertida para um valor inteiro e posteriormente escrita em hexadecimal no arquivo MIF.
-
-\subsection{Tratamento de Operandos e Imediatos}
-
-O tratamento dos operandos foi dividido em funções auxiliares. A função responsável pelos registradores converte os nomes simbólicos ou numéricos para seus códigos correspondentes. A função responsável pelos imediatos aceita valores decimais, valores negativos e valores em hexadecimal, utilizando a conversão automática da função \texttt{int} com base zero.
-
-Também foi implementado suporte às expressões \texttt{\%hi(rotulo)} e \texttt{\%lo(rotulo)}, utilizadas para extrair partes altas e baixas de endereços associados a rótulos. Quando o rótulo informado nessas expressões não existe na tabela de símbolos, o programa gera uma mensagem de erro.
-
-Para instruções de acesso à memória, como \texttt{lw}, \texttt{lhu}, \texttt{sw} e \texttt{jalr}, o assembler reconhece operandos no formato \texttt{imediato(registrador)}, por exemplo \texttt{4(t1)}. Nesses casos, o programa separa o deslocamento imediato do registrador base antes de realizar a codificação.
-
-\subsection{Montagem da Seção \texttt{.data}}
-
-A seção \texttt{.data} é processada por uma rotina específica. Nessa etapa, o programa percorre as linhas da seção de dados, identifica rótulos e associa cada rótulo ao endereço correspondente, calculado a partir de \texttt{DATA\_BASE} e da quantidade de bytes já armazenada.
-
-Foram implementadas diretivas para diferentes tipos de dados, incluindo:
-
-\begin{itemize}
-    \item \texttt{.word}, para armazenamento de palavras de 32 bits;
-    \item \texttt{.half}, para valores de 16 bits;
-    \item \texttt{.byte}, para valores de 8 bits;
-    \item \texttt{.string}, \texttt{.asciz} e \texttt{.asciiz}, para cadeias de caracteres terminadas por zero;
-    \item \texttt{.ascii}, para cadeias de caracteres sem terminador nulo;
-    \item \texttt{.space} e \texttt{.zero}, para reserva de bytes preenchidos com zero;
-    \item \texttt{.align}, para alinhamento de memória.
-\end{itemize}
-
-Os valores são armazenados inicialmente em uma sequência de bytes. Para diretivas como \texttt{.word} e \texttt{.half}, o programa realiza alinhamento adequado antes de inserir os dados. Ao final, a sequência de bytes é completada até múltiplo de quatro e convertida em palavras de 32 bits, utilizando organização \textit{little-endian}.
-
-\subsection{Montagem da Seção \texttt{.text}}
-
-A montagem da seção \texttt{.text} foi implementada em duas passagens. Essa estratégia é necessária porque algumas instruções podem referenciar rótulos que aparecem posteriormente no arquivo.
-
-Na primeira passagem, o programa percorre as linhas da seção de instruções e identifica todos os rótulos encontrados. Cada rótulo é associado ao valor atual do contador de programa, iniciado em \texttt{TEXT\_BASE}. A cada instrução válida encontrada, o contador de programa é incrementado em 4 bytes, pois as instruções RV32I possuem tamanho fixo de 32 bits.
-
-Na segunda passagem, o programa percorre novamente a seção \texttt{.text}. Dessa vez, as instruções são efetivamente codificadas. Para cada linha, o mnemônico é separado dos operandos, os operandos são tratados e a função de codificação seleciona o formato apropriado com base na tabela de instruções.
-
-Quando uma instrução de desvio ou salto utiliza um rótulo como destino, o programa calcula o deslocamento pela diferença entre o endereço associado ao rótulo e o contador de programa da instrução atual. Além disso, para instruções de desvio e salto, é feita uma verificação para garantir que o deslocamento seja par.
-
-\subsection{Geração dos Arquivos MIF}
-
-Após a montagem das seções \texttt{.text} e \texttt{.data}, o programa gera dois arquivos de saída no formato MIF. Os arquivos são criados com base no nome do arquivo de entrada:
-
-\begin{itemize}
-    \item \texttt{nome\_do\_arquivo.text.mif}, contendo as instruções montadas;
-    \item \texttt{nome\_do\_arquivo.data.mif}, contendo os dados montados.
-\end{itemize}
-
-A função responsável pela geração do MIF escreve um cabeçalho contendo a profundidade da memória, a largura da palavra, a base dos endereços e a base dos dados. A largura utilizada é de 32 bits, com endereços e dados representados em hexadecimal.
-
-Para a memória de instruções, foi utilizada profundidade igual a 16384 posições. Para a memória de dados, foi utilizada profundidade igual a 32768 posições. Cada palavra montada é escrita em uma linha do arquivo, associando o endereço sequencial ao valor hexadecimal correspondente.
-
-A estrutura geral dos arquivos gerados segue o seguinte formato:
-
-\begin{lstlisting}[style=asmstyle, caption={Estrutura geral dos arquivos MIF gerados.}, label={lst:mif_metodos}]
-DEPTH = 16384;
-WIDTH = 32;
-ADDRESS_RADIX = HEX;
-DATA_RADIX = HEX;
-CONTENT
-BEGIN
-00000000 : 00000013;
-00000001 : 00100093;
-END;
-\end{lstlisting}
-
-\subsection{Tratamento de Erros}
-
-O programa possui tratamento de erros para diferentes situações que podem ocorrer durante a montagem. Entre os erros tratados estão:
-
-\begin{itemize}
-    \item arquivo de entrada com extensão diferente de \texttt{.asm};
-    \item arquivo inexistente;
-    \item registrador inválido;
-    \item imediato inválido;
-    \item operando de memória mal formado;
-    \item rótulo não definido em expressões \texttt{\%hi} ou \texttt{\%lo};
-    \item opcode desconhecido;
-    \item quantidade incorreta de operandos;
-    \item diretiva desconhecida na seção \texttt{.data};
-    \item deslocamento inválido em instruções de branch ou jump.
-\end{itemize}
-
-Quando um erro de montagem é identificado, o programa informa a causa do problema e interrompe a execução. Em erros associados a linhas específicas do arquivo de entrada, a mensagem também inclui o número da linha, facilitando a localização e correção do problema.
-
-\subsection{Fluxo Geral do Método}
-
-De forma resumida, o procedimento adotado pela aplicação pode ser descrito pelo seguinte fluxo:
-
-\begin{enumerate}
-    \item receber o caminho do arquivo \texttt{.asm} pela linha de comando;
-    \item verificar se o arquivo existe e possui extensão válida;
-    \item ler o conteúdo do arquivo de entrada;
-    \item remover comentários e linhas vazias;
-    \item separar as linhas das seções \texttt{.text} e \texttt{.data};
-    \item montar a seção \texttt{.data}, armazenando dados e rótulos;
-    \item realizar a primeira passagem da seção \texttt{.text}, identificando rótulos;
-    \item unir os símbolos da seção \texttt{.data} e da seção \texttt{.text};
-    \item realizar a segunda passagem da seção \texttt{.text}, codificando as instruções;
-    \item converter as instruções e os dados para palavras de 32 bits;
-    \item gerar os arquivos \texttt{.text.mif} e \texttt{.data.mif};
-    \item apresentar mensagem de sucesso ou erro ao usuário.
-\end{enumerate}
-
-Esse fluxo permitiu organizar o processo de montagem em etapas bem definidas, aproximando a implementação do funcionamento de um assembler real. A separação em duas passagens na seção \texttt{.text} foi essencial para permitir o uso de rótulos antes ou depois das instruções que os referenciam.
+Além da geração dos arquivos, o programa realiza verificações para identificar erros durante a montagem, como arquivo inexistente, extensão inválida, registrador incorreto, imediato mal formado, operando de memória inválido, rótulo não definido, opcode desconhecido, quantidade inadequada de operandos e diretiva inválida na seção \texttt{.data}. Essas verificações auxiliam na correção do arquivo de entrada e tornam o processo de montagem mais seguro.
 
 \section{Implementação do Assembler}
 
-Esta seção apresenta a estrutura interna da aplicação desenvolvida para realizar a montagem de programas escritos em Assembly RISC-V32I. A implementação foi concentrada em um único arquivo Python, denominado \texttt{main.py}, conforme exigido na especificação do laboratório. O programa foi organizado em blocos funcionais responsáveis pela leitura da entrada, tratamento textual, separação das seções do arquivo Assembly, codificação das instruções, montagem da seção de dados e geração dos arquivos de saída no formato MIF.
+Esta seção apresenta a estrutura interna da aplicação desenvolvida para realizar a montagem de programas escritos em Assembly RISC-V32I. A implementação foi concentrada em um único arquivo Python, denominado \texttt{main.py}, conforme exigido na especificação do laboratório. O programa foi organizado em etapas responsáveis pela leitura da entrada, tratamento das linhas, separação das seções, montagem das instruções e geração dos arquivos de saída no formato MIF.
 
-\subsection{Estrutura Geral do Código}
+\subsection{Estrutura Interna do Código}
 
-A implementação foi dividida em etapas sequenciais, de modo que o arquivo de entrada passasse por um fluxo de transformação até a geração dos arquivos finais. Inicialmente, o programa valida o arquivo \texttt{.asm}, lê seu conteúdo e remove comentários e linhas vazias. Em seguida, as linhas são separadas entre as seções \texttt{.text} e \texttt{.data}. Depois disso, a seção de dados é montada, os rótulos são identificados, as instruções são codificadas e os arquivos MIF são gerados.
+A implementação do assembler foi organizada em funções e classes responsáveis por etapas específicas da montagem. As funções iniciais realizam a validação do arquivo de entrada, a leitura do conteúdo, o tratamento das linhas e a separação das seções \texttt{.text} e \texttt{.data}.
 
-O fluxo principal da aplicação pode ser resumido da seguinte forma:
+Em seguida, o programa utiliza tabelas internas para reconhecer registradores e instruções suportadas. A tabela \texttt{REG\_NAMES} associa os nomes numéricos e os nomes da ABI aos códigos dos registradores, enquanto a tabela \texttt{TABELA\_INSTRUCOES} armazena, para cada mnemônico, o formato da instrução, o \texttt{opcode}, o \texttt{funct3} e, quando necessário, o \texttt{funct7}.
 
-\begin{enumerate}
-    \item validação do arquivo de entrada;
-    \item leitura das linhas do arquivo \texttt{.asm};
-    \item remoção de comentários e espaços desnecessários;
-    \item separação das seções \texttt{.text} e \texttt{.data};
-    \item montagem dos dados declarados em \texttt{.data};
-    \item identificação dos rótulos da seção \texttt{.text};
-    \item união dos símbolos de dados e de instruções;
-    \item codificação das instruções Assembly;
-    \item geração dos arquivos \texttt{.text.mif} e \texttt{.data.mif}.
-\end{enumerate}
+A partir dessas estruturas, a implementação realiza a montagem das instruções e dos dados, gerando ao final os arquivos \texttt{.text.mif} e \texttt{.data.mif}. Dessa forma, a seção de implementação passa a enfatizar a organização interna do código, enquanto a seção de materiais e métodos fica responsável por descrever o procedimento adotado no projeto.
 
-Essa organização permite que cada fase do processo de montagem seja executada de maneira independente e controlada, facilitando a identificação de erros e a manutenção do código.
+\subsection{Tabelas de Registradores e Instruções}
 
-\subsection{Tabela de Registradores}
+Para reconhecer os registradores da arquitetura RISC-V32I, foi criada a tabela \texttt{REG\_NAMES}. Essa tabela associa os nomes numéricos dos registradores, como \texttt{x0}, \texttt{x1} e \texttt{x2}, aos nomes convencionais da ABI, como \texttt{zero}, \texttt{ra}, \texttt{sp}, \texttt{t0}, \texttt{s0} e \texttt{a0}. Durante a montagem, cada registrador é convertido para seu respectivo número inteiro entre 0 e 31.
 
-Para permitir o reconhecimento dos registradores da arquitetura RISC-V32I, foi criada uma tabela chamada \texttt{REG\_NAMES}. Essa tabela associa tanto os nomes numéricos dos registradores, como \texttt{x0}, \texttt{x1} e \texttt{x2}, quanto os nomes convencionais da ABI, como \texttt{zero}, \texttt{ra}, \texttt{sp}, \texttt{t0}, \texttt{s0} e \texttt{a0}, aos seus respectivos números inteiros.
+As instruções suportadas foram organizadas na tabela \texttt{TABELA\_INSTRUCOES}. Para cada mnemônico, a tabela armazena o formato da instrução, o \texttt{opcode}, o \texttt{funct3} e, quando necessário, o \texttt{funct7}. Essa organização centraliza as informações de codificação e facilita a seleção da rotina adequada para cada tipo de instrução.
 
-Dessa forma, a aplicação permite que o usuário escreva instruções utilizando diferentes formas válidas de identificação dos registradores. Por exemplo, os registradores \texttt{x0} e \texttt{zero} são interpretados como o registrador de número 0. O mesmo ocorre com outros registradores que possuem nomes simbólicos na ABI.
-
-A conversão é realizada pela função \texttt{pegar\_registrador}. Essa função recebe um token textual, remove espaços desnecessários, converte o conteúdo para letras minúsculas e verifica se o registrador existe na tabela. Caso o registrador não seja encontrado, é gerado um erro de montagem.
-
-\begin{lstlisting}[style=pythonstyle, caption={Exemplo simplificado da conversão de registradores.}, label={lst:registradores}]
-def pegar_registrador(token):
-    t = token.strip().lower()
-    if t not in REG_NAMES:
-        raise ValueError(f"registrador inválido: '{token}'")
-    return REG_NAMES[t]
-\end{lstlisting}
-
-\subsection{Tabela de Instruções}
-
-As instruções suportadas pelo assembler foram armazenadas em uma tabela interna chamada \texttt{TABELA\_INSTRUCOES}. Nessa tabela, cada mnemônico é associado ao formato da instrução, ao \texttt{opcode}, ao campo \texttt{funct3} e, quando necessário, ao campo \texttt{funct7}.
-
-Essa estratégia evita a repetição de valores fixos ao longo do código e centraliza as informações necessárias para a codificação das instruções. Assim, quando uma instrução é lida, o programa consulta a tabela para descobrir qual formato deve ser usado e quais campos fixos precisam ser inseridos na palavra de 32 bits.
-
-A tabela contempla instruções dos formatos R, I, S, B, U e J. Além disso, foram utilizadas variações internas do formato I, como \texttt{IS}, \texttt{IM} e \texttt{IJ}, para diferenciar instruções de deslocamento imediato, instruções de acesso à memória e a instrução \texttt{jalr}.
-
-\begin{lstlisting}[style=pythonstyle, caption={Exemplo simplificado da tabela de instruções.}, label={lst:tabela_instrucoes}]
-TABELA_INSTRUCOES = {
-    'add':  ('R',  0x33, 0x0, 0x00),
-    'sub':  ('R',  0x33, 0x0, 0x20),
-    'addi': ('I',  0x13, 0x0, None),
-    'lw':   ('IM', 0x03, 0x2, None),
-    'sw':   ('S',  0x23, 0x2, None),
-    'beq':  ('B',  0x63, 0x0, None),
-    'lui':  ('U',  0x37, None, None),
-    'jal':  ('J',  0x6F, None, None),
-}
-\end{lstlisting}
-
-Entre as instruções implementadas estão \texttt{add}, \texttt{sub}, \texttt{and}, \texttt{or}, \texttt{xor}, \texttt{sll}, \texttt{srl}, \texttt{slt}, \texttt{addi}, \texttt{andi}, \texttt{ori}, \texttt{xori}, \texttt{slti}, \texttt{slli}, \texttt{srli}, \texttt{srai}, \texttt{lw}, \texttt{lhu}, \texttt{jalr}, \texttt{sw}, \texttt{beq}, \texttt{bne}, \texttt{lui}, \texttt{auipc} e \texttt{jal}.
-
-\subsection{Validação e Leitura do Arquivo de Entrada}
-
-A entrada do programa é feita por linha de comando. Quando o usuário fornece um argumento, esse valor é tratado como o caminho do arquivo Assembly a ser montado. Caso nenhum argumento seja informado, o programa utiliza um arquivo padrão chamado \texttt{exemplo-lab1.asm}.
-
-Antes da leitura, a função \texttt{entrada\_arquivo} verifica se o arquivo possui extensão \texttt{.asm} e se o caminho informado existe. Essa etapa impede que arquivos inválidos sejam processados.
-
-Após a validação, a função \texttt{ler\_arquivo} realiza a leitura do conteúdo do arquivo. As linhas são armazenadas em uma lista para que possam ser processadas nas etapas seguintes.
-
-\begin{lstlisting}[style=pythonstyle, caption={Validação do arquivo de entrada.}, label={lst:entrada_arquivo}]
-def entrada_arquivo(caminho):
-    p = Path(caminho)
-    if p.suffix.lower() != '.asm':
-        print(f"arquivo precisa ter extensao .asm")
-        return None
-    if not p.exists():
-        print(f"o arquivo '{caminho}' nao foi encontrado")
-        return None
-    return p
-\end{lstlisting}
-
-\subsection{Tratamento das Linhas}
-
-Após a leitura, o conteúdo do arquivo passa por uma etapa de limpeza textual. Essa etapa é feita pela função \texttt{tratar\_ws}, responsável por remover comentários, retirar espaços desnecessários e eliminar linhas vazias.
-
-Os comentários são identificados pelo caractere \texttt{\#}. Entretanto, o programa verifica se esse caractere aparece dentro de aspas. Caso esteja dentro de uma string, ele não é removido. Esse cuidado é importante para permitir que cadeias de caracteres na seção \texttt{.data} contenham o símbolo \texttt{\#} sem que parte da string seja interpretada como comentário.
-
-Essa etapa reduz o arquivo de entrada apenas às linhas relevantes para a montagem, simplificando o processamento posterior.
-
-\subsection{Separação das Seções \texttt{.text} e \texttt{.data}}
-
-Depois da limpeza das linhas, o programa separa o conteúdo nas seções \texttt{.text} e \texttt{.data}. Essa tarefa é realizada pela função \texttt{particionar\_secoes}. A função percorre as linhas tratadas e altera a seção atual sempre que encontra as diretivas \texttt{.text} ou \texttt{.data}.
-
-As linhas pertencentes à seção \texttt{.text} são armazenadas em uma lista específica para instruções. Já as linhas da seção \texttt{.data} são armazenadas em outra lista para posterior montagem dos dados.
-
-Além disso, cada linha é armazenada junto ao seu número original. Essa decisão facilita a geração de mensagens de erro mais claras, pois permite indicar ao usuário em qual linha do arquivo ocorreu o problema.
-
-\subsection{Classes de Montagem dos Formatos}
-
-A codificação das instruções foi implementada por meio de classes específicas para cada formato da arquitetura RISC-V32I. Foram criadas classes para os formatos \texttt{TipoR}, \texttt{TipoI}, \texttt{TipoS}, \texttt{TipoB}, \texttt{TipoU} e \texttt{TipoJ}.
-
-Cada classe recebe os campos necessários da instrução e os converte para strings binárias com o tamanho correto. Em seguida, o método \texttt{montar} concatena os campos na ordem definida pela arquitetura.
-
-No formato R, por exemplo, os campos são organizados na seguinte ordem: \texttt{funct7}, \texttt{rs2}, \texttt{rs1}, \texttt{funct3}, \texttt{rd} e \texttt{opcode}. Essa organização é usada em instruções como \texttt{add}, \texttt{sub}, \texttt{and}, \texttt{or}, \texttt{xor}, \texttt{sll}, \texttt{srl} e \texttt{slt}.
-
-\begin{lstlisting}[style=pythonstyle, caption={Classe utilizada para montar instruções do tipo R.}, label={lst:tipor}]
-class TipoR:
-    def __init__(self, opcode, rd, funct3, rs1, rs2, funct7):
-        self.opcode = f"{opcode & 0x7F:07b}"
-        self.rd     = f"{rd     & 0x1F:05b}"
-        self.funct3 = f"{funct3 & 0x07:03b}"
-        self.rs1    = f"{rs1    & 0x1F:05b}"
-        self.rs2    = f"{rs2    & 0x1F:05b}"
-        self.funct7 = f"{funct7 & 0x7F:07b}"
-
-    def montar(self):
-        return self.funct7 + self.rs2 + self.rs1 + \
-               self.funct3 + self.rd + self.opcode
-\end{lstlisting}
-
-O mesmo princípio foi aplicado aos demais formatos. Nos formatos S, B e J, os bits do imediato precisam ser divididos e reposicionados em diferentes partes da instrução. Por isso, essas classes realizam o fatiamento do imediato antes da concatenação final dos campos.
-
-\subsection{Tratamento de Imediatos e Operandos}
-
-O assembler possui funções auxiliares para interpretar os operandos das instruções. A função \texttt{quebrar\_operandos} separa os operandos usando vírgulas como delimitadores. A função \texttt{pegar\_operando\_memoria} trata operandos no formato \texttt{imediato(registrador)}, usado em instruções de acesso à memória, como \texttt{lw}, \texttt{lhu} e \texttt{sw}.
-
-A função \texttt{pegar\_imediato} interpreta valores imediatos em diferentes formatos. Ela aceita números decimais, números negativos e valores hexadecimais, pois utiliza a conversão \texttt{int(t, 0)}. Também há tratamento para expressões do tipo \texttt{\%hi(rotulo)} e \texttt{\%lo(rotulo)}, utilizadas para obter partes de endereços associados a rótulos.
-
-\begin{lstlisting}[style=pythonstyle, caption={Tratamento simplificado de imediatos.}, label={lst:imediatos}]
-def pegar_imediato(token, dicionario_labels=None):
-    t = token.strip()
-
-    try:
-        return int(t, 0)
-    except ValueError:
-        raise ValueError(f"imediato inválido: '{token}'")
-\end{lstlisting}
-
-Para instruções de desvio e salto, a função \texttt{pegar\_alvo\_branch} verifica se o destino informado é um rótulo. Caso seja, o deslocamento é calculado pela diferença entre o endereço associado ao rótulo e o valor atual do contador de programa. Caso contrário, o valor é tratado como imediato numérico.
+A tabela contempla instruções dos formatos R, I, S, B, U e J, incluindo \texttt{add}, \texttt{sub}, \texttt{and}, \texttt{or}, \texttt{xor}, \texttt{sll}, \texttt{srl}, \texttt{slt}, \texttt{addi}, \texttt{andi}, \texttt{ori}, \texttt{xori}, \texttt{slti}, \texttt{lw}, \texttt{lhu}, \texttt{jalr}, \texttt{sw}, \texttt{beq}, \texttt{bne}, \texttt{lui}, \texttt{auipc} e \texttt{jal}.
 
 \subsection{Codificação das Instruções}
 
-A função central da montagem é \texttt{codificar\_instrucao}. Ela recebe o mnemônico, a lista de operandos, o contador de programa atual e o dicionário de rótulos. Inicialmente, a função verifica se o mnemônico existe na tabela de instruções. Caso não exista, é gerado um erro de opcode desconhecido.
+A codificação das instruções foi implementada por meio de classes específicas para os formatos \texttt{TipoR}, \texttt{TipoI}, \texttt{TipoS}, \texttt{TipoB}, \texttt{TipoU} e \texttt{TipoJ}. Cada classe recebe os campos necessários da instrução e os organiza na ordem definida pela arquitetura RISC-V32I, formando uma palavra binária de 32 bits.
 
-Depois dessa verificação, a função obtém o formato, o \texttt{opcode}, o \texttt{funct3} e o \texttt{funct7} da instrução. Com base no formato, ela valida a quantidade de operandos, converte registradores e imediatos e chama a classe de montagem correspondente.
+A função principal dessa etapa é \texttt{codificar\_instrucao}. Ela recebe o mnemônico, os operandos, o contador de programa atual e o dicionário de rótulos. A partir do mnemônico, o programa consulta a tabela de instruções, identifica o formato correspondente, valida a quantidade de operandos e converte registradores e imediatos.
 
-O comportamento da função varia de acordo com o formato:
+Nos formatos B e J, utilizados em desvios e saltos, o programa calcula o deslocamento relativo entre a instrução atual e o rótulo de destino. Esse deslocamento é então reorganizado conforme a posição dos bits exigida pelo formato da instrução. Após a montagem dos campos, a instrução é convertida para inteiro e posteriormente escrita em hexadecimal no arquivo MIF.
 
-\begin{itemize}
-    \item no formato R, são esperados três operandos: \texttt{rd}, \texttt{rs1} e \texttt{rs2};
-    \item no formato I, são esperados \texttt{rd}, \texttt{rs1} e um imediato;
-    \item no formato IM, são esperados \texttt{rd} e \texttt{imm(rs1)};
-    \item no formato S, são esperados \texttt{rs2} e \texttt{imm(rs1)};
-    \item no formato B, são esperados \texttt{rs1}, \texttt{rs2} e um destino;
-    \item no formato U, são esperados \texttt{rd} e um imediato de 20 bits;
-    \item no formato J, é aceito um destino ou o par \texttt{rd}, destino.
-\end{itemize}
+\subsection{Montagem das Seções \texttt{.text} e \texttt{.data}}
 
-Após montar a instrução em binário, a função retorna uma string de 32 bits. Posteriormente, essa string é convertida para inteiro e escrita em hexadecimal no arquivo MIF.
+A montagem da seção \texttt{.text} foi realizada em duas passagens. Na primeira passagem, o programa percorre as linhas da seção de instruções e identifica os rótulos, associando cada um ao endereço correspondente. O contador de programa é iniciado em \texttt{TEXT\_BASE = 0x00400000} e incrementado em 4 bytes a cada instrução, pois as instruções RV32I possuem tamanho fixo de 32 bits.
 
-\subsection{Montagem da Seção \texttt{.data}}
+Na segunda passagem, as instruções são efetivamente codificadas. Para cada linha, o mnemônico é separado dos operandos, os registradores e imediatos são interpretados e a função de codificação é chamada. Quando uma instrução utiliza um rótulo como destino, o endereço previamente armazenado é usado para calcular o deslocamento correto.
 
-A seção \texttt{.data} é processada pela função \texttt{montar\_data}. Essa função percorre as linhas da seção de dados, identifica rótulos e associa cada rótulo ao endereço correspondente na memória de dados. O endereço é calculado a partir da constante \texttt{DATA\_BASE} somada à quantidade de bytes já armazenada.
+A seção \texttt{.data} é processada separadamente. Nessa etapa, o programa identifica rótulos e associa cada um a um endereço calculado a partir de \texttt{DATA\_BASE = 0x10010000}. Os dados são armazenados inicialmente em um \texttt{bytearray}, permitindo a inserção de valores byte a byte e o tratamento de diretivas de diferentes tamanhos.
 
-Os dados são armazenados inicialmente em um objeto do tipo \texttt{bytearray}. Essa escolha permite inserir valores byte a byte e facilita o tratamento de diretivas com tamanhos diferentes.
-
-A função implementa suporte às seguintes diretivas:
-
-\begin{itemize}
-    \item \texttt{.word}, para valores de 32 bits;
-    \item \texttt{.half}, para valores de 16 bits;
-    \item \texttt{.byte}, para valores de 8 bits;
-    \item \texttt{.string}, \texttt{.asciz} e \texttt{.asciiz}, para strings terminadas por zero;
-    \item \texttt{.ascii}, para strings sem terminador nulo;
-    \item \texttt{.space} e \texttt{.zero}, para reserva de espaço preenchido com zeros;
-    \item \texttt{.align}, para alinhamento de memória.
-\end{itemize}
-
-Nos casos de \texttt{.word} e \texttt{.half}, a implementação realiza alinhamento antes de inserir os valores. Os números são convertidos usando ordem \textit{little-endian}. Ao final do processamento, a quantidade de bytes é completada até múltiplo de quatro, e os dados são convertidos em palavras de 32 bits.
-
-\begin{lstlisting}[style=pythonstyle, caption={Trecho representativo da montagem da seção .data.}, label={lst:montar_data}]
-if diretiva == '.word':
-    alinhar(4)
-    for v in argumentos.split(','):
-        numero_int = int(v.strip(), 0)
-        lista_bytes.extend(
-            (numero_int & 0xFFFFFFFF).to_bytes(4, 'little')
-        )
-\end{lstlisting}
-
-\subsection{Montagem da Seção \texttt{.text}}
-
-A seção \texttt{.text} foi montada em duas passagens. Essa estratégia foi adotada porque instruções de desvio e salto podem referenciar rótulos definidos em linhas posteriores do arquivo. Se o assembler tentasse montar tudo em uma única passagem, poderia encontrar uma referência a um rótulo cujo endereço ainda não foi identificado.
-
-Na primeira passagem, realizada pela função \texttt{primeira\_passagem}, o programa percorre todas as linhas da seção \texttt{.text} e identifica os rótulos. Cada rótulo é associado ao valor atual do contador de programa, que começa em \texttt{TEXT\_BASE}. A cada instrução encontrada, o contador de programa é incrementado em 4 bytes, pois as instruções RV32I possuem tamanho fixo de 32 bits.
-
-Na segunda passagem, realizada pela função \texttt{segunda\_passagem}, o programa percorre novamente a seção \texttt{.text}. Nessa etapa, as instruções são efetivamente codificadas. Para cada linha, o mnemônico é separado dos operandos, os operandos são interpretados e a função \texttt{codificar\_instrucao} é chamada.
-
-\begin{lstlisting}[style=pythonstyle, caption={Uso da função de codificação na segunda passagem.}, label={lst:segunda_passagem}]
-bits = codificar_instrucao(
-    mnemonico,
-    pedacos,
-    pc=pc,
-    dicionario_labels=dicionario_labels
-)
-palavras.append(int(bits, 2))
-\end{lstlisting}
-
-O resultado da segunda passagem é uma lista de palavras inteiras, cada uma representando uma instrução de 32 bits já codificada. Essa lista é posteriormente utilizada para gerar o arquivo \texttt{.text.mif}.
+Foram implementadas diretivas como \texttt{.word}, \texttt{.half}, \texttt{.byte}, \texttt{.string}, \texttt{.ascii}, \texttt{.space}, \texttt{.zero} e \texttt{.align}. Ao final do processamento, os bytes são completados até múltiplos de quatro e convertidos em palavras de 32 bits no formato \textit{little-endian}.
 
 \subsection{Geração dos Arquivos MIF}
 
-A geração dos arquivos MIF é feita pela função \texttt{gerar\_arquivo\_mif}. Essa função recebe o caminho de saída, a lista de palavras a serem gravadas e a profundidade da memória.
+Após a montagem das seções, o programa gera dois arquivos de saída no formato MIF. O primeiro arquivo, com sufixo \texttt{.text.mif}, armazena as instruções codificadas. O segundo, com sufixo \texttt{.data.mif}, armazena os dados declarados na seção \texttt{.data}.
 
-O arquivo gerado possui cabeçalho com profundidade, largura da palavra, base de endereços e base dos dados. Em seguida, o conteúdo é escrito entre as marcações \texttt{CONTENT}, \texttt{BEGIN} e \texttt{END}. Cada palavra é gravada em hexadecimal, associada a um endereço sequencial também representado em hexadecimal.
-
-\begin{lstlisting}[style=pythonstyle, caption={Geração simplificada do arquivo MIF.}, label={lst:gerar_mif}]
-def gerar_arquivo_mif(caminho_saida, palavras, depth):
-    with open(caminho_saida, 'w', encoding='ascii') as f:
-        f.write(f"DEPTH = {depth};\n")
-        f.write("WIDTH = 32;\n")
-        f.write("ADDRESS_RADIX = HEX;\n")
-        f.write("DATA_RADIX = HEX;\n")
-        f.write("CONTENT\n")
-        f.write("BEGIN\n")
-        for i, valor in enumerate(palavras):
-            f.write(f"{i:08x} : {valor:08x};\n")
-        f.write("END;\n")
-\end{lstlisting}
-
-No fluxo principal do programa, são gerados dois arquivos de saída. O primeiro possui o sufixo \texttt{.text.mif} e armazena as instruções montadas. O segundo possui o sufixo \texttt{.data.mif} e armazena os dados processados da seção \texttt{.data}. A profundidade utilizada para a memória de instruções é 16384, enquanto a profundidade utilizada para a memória de dados é 32768.
-
-\subsection{Tratamento de Erros}
-
-A implementação possui verificações para identificar problemas durante o processo de montagem. Quando ocorre um erro, o programa interrompe a execução e exibe uma mensagem indicando a causa.
-
-Entre os erros tratados pela aplicação, destacam-se:
-
-\begin{itemize}
-    \item arquivo inexistente;
-    \item arquivo com extensão diferente de \texttt{.asm};
-    \item registrador inválido;
-    \item imediato inválido;
-    \item operando de memória mal formado;
-    \item rótulo não definido em expressões \texttt{\%hi} ou \texttt{\%lo};
-    \item opcode desconhecido;
-    \item quantidade incorreta de operandos;
-    \item diretiva desconhecida na seção \texttt{.data};
-    \item deslocamento ímpar em instruções de desvio ou salto.
-\end{itemize}
-
-Essas verificações tornam a aplicação mais robusta, pois evitam que arquivos malformados sejam convertidos silenciosamente para saídas incorretas. Além disso, nos erros relacionados a linhas do arquivo Assembly, a mensagem informa o número da linha em que o problema foi detectado, facilitando a correção pelo usuário.
-
-\subsection{Fluxo Principal de Execução}
-
-O fluxo principal do programa está localizado no bloco \texttt{if \_\_name\_\_ == '\_\_main\_\_':}. Nele, o programa obtém o nome do arquivo de entrada, valida o caminho, lê o conteúdo, realiza o tratamento das linhas, monta as seções e gera os arquivos finais.
-
-O trecho principal executa a montagem na seguinte ordem:
-
-\begin{enumerate}
-    \item leitura do arquivo original;
-    \item limpeza das linhas;
-    \item separação entre \texttt{.text} e \texttt{.data};
-    \item montagem da seção \texttt{.data};
-    \item primeira passagem na seção \texttt{.text};
-    \item união dos símbolos de dados e texto;
-    \item segunda passagem na seção \texttt{.text};
-    \item definição dos nomes dos arquivos de saída;
-    \item geração dos arquivos MIF.
-\end{enumerate}
+A função responsável pela geração do arquivo escreve o cabeçalho com a profundidade da memória, a largura da palavra, a base de endereços e a base dos dados. Em seguida, cada palavra é gravada em hexadecimal, associada a um endereço sequencial.
 
 \begin{lstlisting}[style=pythonstyle, caption={Fluxo principal simplificado da aplicação.}, label={lst:main_fluxo}]
 conteudo_original = ler_arquivo(caminho_asm)
@@ -676,14 +226,98 @@ gerar_arquivo_mif(saida_text, palavras_text, depth=16384)
 gerar_arquivo_mif(saida_data, palavras_data, depth=32768)
 \end{lstlisting}
 
-Portanto, a implementação segue a estrutura básica de um assembler de duas passagens, com uma etapa específica para tratamento de dados e outra para codificação das instruções. Essa abordagem permite reconhecer rótulos, calcular deslocamentos relativos, converter instruções para palavras de 32 bits e gerar arquivos compatíveis com o formato MIF.
+\subsection{Tratamento de Erros}
 
-\section{Resultados e Discuss\~{a}o}
+A implementação possui verificações para identificar problemas durante a montagem. Entre os erros tratados estão arquivo inexistente, extensão inválida, registrador inválido, imediato mal formado, operando de memória incorreto, rótulo não definido, opcode desconhecido, quantidade incorreta de operandos e diretiva inválida na seção \texttt{.data}.
+
+Quando um erro é encontrado, o programa interrompe a execução e exibe uma mensagem indicando a causa do problema. Nos casos associados a uma linha específica do arquivo Assembly, a mensagem também informa o número da linha, facilitando a correção pelo usuário.
+
+Portanto, a implementação segue a estrutura básica de um assembler de duas passagens, com tratamento separado para dados e instruções. Essa abordagem permite reconhecer rótulos, calcular deslocamentos relativos, converter instruções para palavras de 32 bits e gerar arquivos compatíveis com o formato MIF.
+
+\section{Resultados e Discussão}
+
+\subsection{Resultados Obtidos}
+
+Como resultado da implementação, foi desenvolvido um assembler em Python capaz de receber um arquivo Assembly com extensão \texttt{.asm}, processar separadamente as seções \texttt{.text} e \texttt{.data} e gerar arquivos de saída no formato MIF. A aplicação utiliza interface por terminal, recebendo o caminho do arquivo de entrada pela linha de comando ou, na ausência desse argumento, utilizando um arquivo padrão.
+
+A seção \texttt{.text} é responsável pela montagem das instruções do programa. Para isso, o assembler identifica rótulos, interpreta mnemônicos, operandos, registradores e imediatos, e converte cada instrução para uma palavra de 32 bits. Ao final, essas palavras são gravadas no arquivo \texttt{.text.mif}.
+
+A seção \texttt{.data}, por sua vez, é processada para armazenar os dados declarados no programa Assembly. Foram tratadas diretivas como \texttt{.word}, \texttt{.half}, \texttt{.byte}, \texttt{.string}, \texttt{.ascii}, \texttt{.space}, \texttt{.zero} e \texttt{.align}. Os dados são organizados em bytes, ajustados quando necessário por alinhamento e convertidos para palavras de 32 bits em formato \textit{little-endian}, sendo gravados no arquivo \texttt{.data.mif}.
+
+\begin{table}[!ht]
+\centering
+\caption{Resumo dos principais resultados da implementação}
+\label{tab:resultados_implementacao}
+\begin{tabular}{ll}
+\toprule
+Aspecto analisado & Resultado obtido \\
+\midrule
+Linguagem utilizada & Python 3.7 ou superior \\
+Arquivo-fonte & Arquivo único \texttt{main.py} \\
+Entrada do programa & Arquivo Assembly com extensão \texttt{.asm} \\
+Saídas geradas & Arquivos \texttt{.text.mif} e \texttt{.data.mif} \\
+Registradores reconhecidos & 32 registradores inteiros e nomes ABI \\
+Formatos suportados & R, I, S, B, U e J \\
+Seções tratadas & \texttt{.text} e \texttt{.data} \\
+Arquivos MIF gerados & Um para instruções e outro para dados \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Instruções e Diretivas Suportadas}
+
+A implementação contemplou as principais instruções solicitadas no laboratório, incluindo operações aritméticas, lógicas, acessos à memória, desvios condicionais e saltos. As instruções foram organizadas em uma tabela interna contendo o formato, o \texttt{opcode}, o \texttt{funct3} e, quando necessário, o \texttt{funct7}.
+
+Entre as instruções implementadas estão \texttt{add}, \texttt{sub}, \texttt{and}, \texttt{or}, \texttt{xor}, \texttt{sll}, \texttt{srl}, \texttt{slt}, \texttt{addi}, \texttt{andi}, \texttt{ori}, \texttt{xori}, \texttt{slti}, \texttt{lw}, \texttt{lhu}, \texttt{sw}, \texttt{beq}, \texttt{bne}, \texttt{jal}, \texttt{jalr}, \texttt{lui} e \texttt{auipc}. Além disso, a implementação também inclui instruções de deslocamento imediato, como \texttt{slli}, \texttt{srli} e \texttt{srai}.
+
+\begin{table}[!ht]
+\centering
+\caption{Síntese quantitativa das funcionalidades implementadas}
+\label{tab:sintese_quantitativa}
+\begin{tabular}{ll}
+\toprule
+Métrica & Valor observado \\
+\midrule
+Registradores inteiros reconhecidos & 32 \\
+Formatos de instrução tratados & 6 \\
+Mnemônicos presentes na tabela interna & 25 \\
+Diretivas principais da seção \texttt{.data} & 8 \\
+Arquivos de saída gerados & 2 \\
+Passagens realizadas na seção \texttt{.text} & 2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Esses resultados indicam que o assembler desenvolvido atende ao objetivo central do laboratório, pois realiza a conversão das instruções Assembly para representação hexadecimal em arquivos MIF e também trata dados declarados na seção \texttt{.data}.
+
+\subsection{Avaliação do Funcionamento}
+
+O funcionamento do assembler foi organizado em etapas bem definidas. Primeiro, o arquivo de entrada é validado e lido. Em seguida, comentários e espaços desnecessários são removidos, preservando caracteres especiais dentro de strings. Depois disso, o conteúdo é separado entre as seções \texttt{.text} e \texttt{.data}.
+
+Na montagem da seção \texttt{.text}, o uso de duas passagens foi um resultado importante da implementação. A primeira passagem permite identificar os rótulos e associá-los aos seus endereços. A segunda passagem realiza a codificação das instruções, já com os endereços dos rótulos disponíveis. Essa abordagem permite tratar corretamente instruções de desvio e salto que referenciam rótulos definidos antes ou depois da instrução atual.
+
+Na seção \texttt{.data}, o uso de um \texttt{bytearray} permitiu armazenar dados de diferentes tamanhos antes da conversão final para palavras de 32 bits. Isso facilitou o tratamento de diretivas como \texttt{.byte}, \texttt{.half}, \texttt{.word} e strings, além de permitir a aplicação de alinhamento quando necessário.
+
+\subsection{Discussão dos Resultados}
+
+Os resultados obtidos mostram que a implementação conseguiu reproduzir as etapas fundamentais de um assembler. O programa realiza a leitura do código Assembly, interpreta registradores e imediatos, reconhece rótulos, codifica instruções em palavras de 32 bits e gera arquivos compatíveis com o formato MIF.
+
+Um ponto positivo da implementação é a separação clara entre as etapas do processo de montagem. A existência de funções específicas para leitura, tratamento das linhas, particionamento das seções, montagem de dados, identificação de rótulos, codificação de instruções e geração dos arquivos MIF torna o código mais organizado e facilita futuras correções ou expansões.
+
+Outro aspecto relevante é o tratamento de erros. A aplicação identifica problemas como arquivo inexistente, extensão inválida, registrador incorreto, imediato mal formado, operando de memória inválido, opcode desconhecido, quantidade inadequada de operandos e rótulos não definidos. Isso evita que entradas inválidas sejam processadas sem aviso e facilita a localização de falhas no arquivo Assembly.
+
+Em relação ao desempenho, a implementação apresenta comportamento adequado para o escopo do laboratório. A seção \texttt{.data} é percorrida uma vez, enquanto a seção \texttt{.text} é percorrida duas vezes. Dessa forma, o tempo de processamento cresce de maneira aproximadamente linear em relação à quantidade de linhas do arquivo de entrada, o que é apropriado para arquivos Assembly de pequeno e médio porte.
+
+Como pontos de melhoria, seria possível ampliar a quantidade de testes automatizados, comparar os arquivos MIF gerados com saídas de referência e padronizar melhor as mensagens exibidas ao usuário. Também seria possível aperfeiçoar a geração dos arquivos MIF para preencher de forma mais completa os endereços não utilizados ou utilizar uma representação mais compacta para regiões de memória preenchidas com zero.
 
 
+\section{Conclusão}
 
-\section{Conclus\~{a}o}
+O desenvolvimento do assembler permitiu aplicar, de forma prática, conceitos fundamentais da arquitetura RISC-V32I, como codificação de instruções, uso de registradores, organização de memória, tratamento de rótulos e geração de arquivos de inicialização no formato MIF. A implementação em Python possibilitou transformar arquivos Assembly em representações hexadecimais compatíveis com memórias de instruções e de dados.
 
+De modo geral, o projeto atingiu seu objetivo principal ao realizar a leitura de arquivos \texttt{.asm}, processar as seções \texttt{.text} e \texttt{.data}, codificar instruções dos principais formatos da arquitetura e gerar arquivos \texttt{.mif} separados. Além disso, o uso de duas passagens na seção de instruções mostrou-se essencial para resolver rótulos e calcular corretamente deslocamentos em desvios e saltos.
+
+Apesar dos resultados satisfatórios, a implementação ainda pode ser aprimorada com a inclusão de mais testes automatizados, melhorias nas mensagens de erro e comparação direta com saídas de referência. Ainda assim, o trabalho cumpriu sua finalidade ao demonstrar o funcionamento básico de um assembler e reforçar a compreensão da relação entre código Assembly, código de máquina e organização da memória.
 
 
 \begin{thebibliography}{00}
@@ -695,7 +329,7 @@ RISC-V International, \textit{The RISC-V Instruction Set Manual}. [Online]. Avai
 The Third One, \textit{RARS: RISC-V Assembler and Runtime Simulator}. [Online]. Available: \url{https://github.com/TheThirdOne/rars}
 
 \bibitem{mif}
-Intel, \textit{Memory Initialization File Format}. [Online]. Available: \url{https://www.intel.com/}
+Intel, \textit{Memory Initialization File (.mif) Definition}. [Online]. Available: \url{https://www.intel.com/content/www/us/en/programmable/quartushelp/17.0/reference/glossary/def_mif.htm}
 
 \end{thebibliography}
 
