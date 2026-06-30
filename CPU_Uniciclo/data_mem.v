@@ -36,8 +36,7 @@ module data_mem (
     initial begin
         for (k = 0; k < DEPTH; k = k + 1)
             mem[k] = 32'd0;
-        initial
-    		$readmemh("UnicicloInst.mif",mem);
+        $readmemh("UnicicloData.hex", mem);
     end
 
     wire [9:0] word_addr = (addr - DATA_BASE) >> 2;

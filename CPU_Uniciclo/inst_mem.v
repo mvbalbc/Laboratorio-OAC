@@ -32,8 +32,7 @@ module inst_mem (
         for (j = 0; j < DEPTH; j = j + 1)
             mem[j] = 32'h0000_0013;
         // Carrega programa compilado
-        initial
-    		$readmemh("UnicicloInst.mif",mem);
+        $readmemh("UnicicloInst.hex", mem);
     end
 
     // Leitura combinacional — mapeia PC → índice da ROM

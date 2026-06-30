@@ -10,6 +10,7 @@
 //  0101   | SLT  — (signed a < signed b) ? 1 : 0
 //  0110   | SLL  — a << b[4:0]
 //  0111   | SRL  — a >> b[4:0]  (lógico)
+//  1000   | SRA  — a >>> b[4:0] (aritmético)
 //
 //  zero   — asserted quando result == 0 (usado por branch)
 // ============================================================
@@ -33,6 +34,7 @@ module alu (
             4'b0101: result = ($signed(a) < $signed(b)) ? 32'd1 : 32'd0;
             4'b0110: result = a << b[4:0];
             4'b0111: result = a >> b[4:0];
+            4'b1000: result = $signed(a) >>> b[4:0];
             default: result = 32'd0;
         endcase
     end

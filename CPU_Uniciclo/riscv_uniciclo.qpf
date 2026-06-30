@@ -1,0 +1,4 @@
+QUARTUS_VERSION = "13.1"
+DATE = "2026/06/30"
+
+PROJECT_REVISION = "riscv_uniciclo"

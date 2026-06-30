@@ -8,7 +8,7 @@
 //
 //  alu_op interno:
 //  0000 ADD | 0001 SUB | 0010 AND | 0011 OR
-//  0100 XOR | 0101 SLT | 0110 SLL | 0111 SRL
+//  0100 XOR | 0101 SLT | 0110 SLL | 0111 SRL | 1000 SRA
 // ============================================================
 `timescale 1ns / 1ps
 
@@ -28,6 +28,7 @@ module alu_control (
     localparam ALU_SLT = 4'b0101;
     localparam ALU_SLL = 4'b0110;
     localparam ALU_SRL = 4'b0111;
+    localparam ALU_SRA = 4'b1000;
 
     always @(*) begin
         case (ALUOp)
@@ -47,7 +48,7 @@ module alu_control (
                     3'b100: alu_op = ALU_XOR; // xor / xori
                     3'b010: alu_op = ALU_SLT; // slt / slti (signed)
                     3'b001: alu_op = ALU_SLL; // sll / slli
-                    3'b101: alu_op = ALU_SRL; // srl / srli (funct7=0000000)
+                    3'b101: alu_op = funct7[5] ? ALU_SRA : ALU_SRL;
                     default: alu_op = ALU_ADD;
                 endcase
             end
