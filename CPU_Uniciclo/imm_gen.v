@@ -18,6 +18,9 @@ module imm_gen (
     wire [6:0] opcode = instruction[6:0];
 
     always @(*) begin
+        // Fail-safe: default antes do case impede latch no Quartus
+        imm = 32'd0;
+
         case (opcode)
 
             // ── I-type ──────────────────────────────────────

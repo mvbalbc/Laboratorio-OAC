@@ -39,12 +39,16 @@ module data_mem (
         $readmemh("UnicicloData.hex", mem);
     end
 
-    wire [9:0] word_addr = (addr - DATA_BASE) >> 2;
+    // Fail-safe: protege contra endereço fora da faixa válida
+    wire [31:0] raw_idx   = (addr - DATA_BASE) >> 2;
+    wire        in_range  = (raw_idx[31:10] == 22'd0);
+    wire [9:0]  word_addr = raw_idx[9:0];
 
     // ── Leitura combinacional ──────────────────────────────
     always @(*) begin
         rdata = 32'd0;
-        if (MemRead) begin
+        // Fail-safe: leitura fora do range retorna zero
+        if (MemRead && in_range) begin
             case (funct3)
                 3'b010: // lw — palavra inteira
                     rdata = mem[word_addr];
@@ -62,10 +66,10 @@ module data_mem (
 
     // ── Escrita síncrona ───────────────────────────────────
     always @(posedge clk) begin
-        if (MemWrite) begin
+        // Fail-safe: escrita fora do range é silenciosamente ignorada
+        if (MemWrite && in_range) begin
             case (funct3)
                 3'b010: mem[word_addr] <= wdata; // sw
-                // sh / sb podem ser adicionados aqui se necessário
                 default: ; // ignora
             endcase
         end

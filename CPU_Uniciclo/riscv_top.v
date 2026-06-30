@@ -48,6 +48,9 @@ module riscv_top (
     wire [31:0] pc_next;
     wire [31:0] pc_plus4;
 
+    // Fail-safe: garante PC determinístico em t=0 antes do primeiro clock
+    initial pc = 32'h0040_0000;
+
     always @(posedge clk or posedge rst)
         pc <= rst ? 32'h0040_0000 : pc_next;
 

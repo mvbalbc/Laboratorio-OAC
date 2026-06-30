@@ -25,6 +25,9 @@ module alu (
 );
 
     always @(*) begin
+        // Fail-safe: default antes do case impede latch no Quartus
+        result = 32'd0;
+
         case (alu_op)
             4'b0000: result = a + b;
             4'b0001: result = a - b;

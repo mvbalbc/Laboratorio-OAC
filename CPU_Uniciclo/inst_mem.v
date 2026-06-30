@@ -35,8 +35,12 @@ module inst_mem (
         $readmemh("UnicicloInst.hex", mem);
     end
 
-    // Leitura combinacional — mapeia PC → índice da ROM
-    wire [9:0] word_addr = (addr - TEXT_BASE) >> 2;
-    assign rdata = mem[word_addr];
+    // Fail-safe: protege contra endereço fora da faixa válida
+    wire [31:0] raw_idx   = (addr - TEXT_BASE) >> 2;
+    wire        in_range  = (raw_idx[31:10] == 22'd0);
+    wire [9:0]  word_addr = raw_idx[9:0];
+
+    // Endereço fora do range retorna NOP (addi x0, x0, 0)
+    assign rdata = in_range ? mem[word_addr] : 32'h0000_0013;
 
 endmodule

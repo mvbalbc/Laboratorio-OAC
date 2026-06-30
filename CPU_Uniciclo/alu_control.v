@@ -31,6 +31,9 @@ module alu_control (
     localparam ALU_SRA = 4'b1000;
 
     always @(*) begin
+        // Fail-safe: default antes do case impede latch no Quartus
+        alu_op = ALU_ADD;
+
         case (ALUOp)
 
             2'b00: alu_op = ALU_ADD; // ADD forçado
