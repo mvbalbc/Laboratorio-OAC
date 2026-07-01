@@ -25,7 +25,7 @@ def mif_to_hex(input_path, output_path):
     for line in lines:
         stripped = line.strip()
 
-        if stripped.upper().startswith("CONTENT BEGIN"):
+        if stripped.upper().startswith("BEGIN"):
             in_content = True
             continue
 

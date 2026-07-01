@@ -7,39 +7,40 @@
 
 module riscv_top (
     input  wire        clk,
-    input  wire        rst,
-
-    // ── saídas de depuração para o Waveform Editor ──────────
-    output wire [31:0] dbg_pc,
-    output wire [31:0] dbg_instr,
-    output wire [31:0] dbg_alu_result,
-    output wire [31:0] dbg_mem_rdata,
-    output wire [31:0] dbg_wr_data,
-    output wire [31:0] dbg_rs1_data,
-    output wire [31:0] dbg_rs2_data,
-    output wire [31:0] dbg_imm,
-    // sinais de controle expostos
-    output wire        dbg_RegWrite,
-    output wire        dbg_MemWrite,
-    output wire        dbg_MemRead,
-    output wire        dbg_Branch,
-    output wire        dbg_Jump,
-    output wire        dbg_JumpReg,
-    output wire [1:0]  dbg_ALUOp,
-    output wire [1:0]  dbg_ResultSrc,
-    output wire [3:0]  dbg_alu_ctrl_op,
-    output wire        dbg_zero,
-    output wire        dbg_branch_taken,
-    // ── 32 registradores ────────────────────────────────────
-    output wire [31:0] dbg_x0,  dbg_x1,  dbg_x2,  dbg_x3,
-                       dbg_x4,  dbg_x5,  dbg_x6,  dbg_x7,
-                       dbg_x8,  dbg_x9,  dbg_x10, dbg_x11,
-                       dbg_x12, dbg_x13, dbg_x14, dbg_x15,
-                       dbg_x16, dbg_x17, dbg_x18, dbg_x19,
-                       dbg_x20, dbg_x21, dbg_x22, dbg_x23,
-                       dbg_x24, dbg_x25, dbg_x26, dbg_x27,
-                       dbg_x28, dbg_x29, dbg_x30, dbg_x31
+    input  wire        rst
 );
+
+    // ============================================================
+    // Sinais internos de observação (visíveis via hierarquia no
+    // Waveform Editor: riscv_top/dbg_pc, riscv_top/u_rf/regs[n])
+    // ============================================================
+    wire [31:0] dbg_pc;
+    wire [31:0] dbg_instr;
+    wire [31:0] dbg_alu_result;
+    wire [31:0] dbg_mem_rdata;
+    wire [31:0] dbg_wr_data;
+    wire [31:0] dbg_rs1_data;
+    wire [31:0] dbg_rs2_data;
+    wire [31:0] dbg_imm;
+    wire        dbg_RegWrite;
+    wire        dbg_MemWrite;
+    wire        dbg_MemRead;
+    wire        dbg_Branch;
+    wire        dbg_Jump;
+    wire        dbg_JumpReg;
+    wire [1:0]  dbg_ALUOp;
+    wire [1:0]  dbg_ResultSrc;
+    wire [3:0]  dbg_alu_ctrl_op;
+    wire        dbg_zero;
+    wire        dbg_branch_taken;
+    wire [31:0] dbg_x0,  dbg_x1,  dbg_x2,  dbg_x3,
+                dbg_x4,  dbg_x5,  dbg_x6,  dbg_x7,
+                dbg_x8,  dbg_x9,  dbg_x10, dbg_x11,
+                dbg_x12, dbg_x13, dbg_x14, dbg_x15,
+                dbg_x16, dbg_x17, dbg_x18, dbg_x19,
+                dbg_x20, dbg_x21, dbg_x22, dbg_x23,
+                dbg_x24, dbg_x25, dbg_x26, dbg_x27,
+                dbg_x28, dbg_x29, dbg_x30, dbg_x31;
 
     // ============================================================
     // PC — inicia em TEXT_BASE = 0x00400000
@@ -48,7 +49,6 @@ module riscv_top (
     wire [31:0] pc_next;
     wire [31:0] pc_plus4;
 
-    // Fail-safe: garante PC determinístico em t=0 antes do primeiro clock
     initial pc = 32'h0040_0000;
 
     always @(posedge clk or posedge rst)
@@ -202,13 +202,13 @@ module riscv_top (
     // ============================================================
     wire branch_taken = Branch & (zero ^ BranchNE);
 
-    assign pc_next = JumpReg      ? {alu_result[31:1], 1'b0} : // JALR (limpa LSB)
-                     Jump         ? pc_branch                 : // JAL
-                     branch_taken ? pc_branch                 : // BEQ/BNE
-                                    pc_plus4;                   // padrão
+    assign pc_next = JumpReg      ? {alu_result[31:1], 1'b0} :
+                     Jump         ? pc_branch                 :
+                     branch_taken ? pc_branch                 :
+                                    pc_plus4;
 
     // ============================================================
-    // Atribuição das saídas de depuração
+    // Espelhos de observação (wires internos — zero custo de I/O)
     // ============================================================
     assign dbg_pc           = pc;
     assign dbg_instr        = instruction;

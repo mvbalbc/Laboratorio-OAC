@@ -1,0 +1,1645 @@
+Analysis & Synthesis report for riscv_uniciclo
+Wed Jul 01 11:24:57 2026
+Quartus II 64-Bit Version 13.1.0 Build 162 10/23/2013 SJ Web Edition
+
+
+---------------------
+; Table of Contents ;
+---------------------
+  1. Legal Notice
+  2. Analysis & Synthesis Summary
+  3. Analysis & Synthesis Settings
+  4. Parallel Compilation
+  5. Analysis & Synthesis Source Files Read
+  6. Analysis & Synthesis Resource Usage Summary
+  7. Analysis & Synthesis Resource Utilization by Entity
+  8. Registers Removed During Synthesis
+  9. Removed Registers Triggering Further Register Optimizations
+ 10. General Register Statistics
+ 11. Inverted Register Statistics
+ 12. Multiplexer Restructuring Statistics (Restructuring Performed)
+ 13. Elapsed Time Per Partition
+ 14. Analysis & Synthesis Messages
+
+
+
+----------------
+; Legal Notice ;
+----------------
+Copyright (C) 1991-2013 Altera Corporation
+Your use of Altera Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Altera Program License 
+Subscription Agreement, Altera MegaCore Function License 
+Agreement, or other applicable license agreement, including, 
+without limitation, that your use is for the sole purpose of 
+programming logic devices manufactured by Altera and sold by 
+Altera or its authorized distributors.  Please refer to the 
+applicable agreement for further details.
+
+
+
++---------------------------------------------------------------------------------+
+; Analysis & Synthesis Summary                                                    ;
++------------------------------------+--------------------------------------------+
+; Analysis & Synthesis Status        ; Successful - Wed Jul 01 11:24:57 2026      ;
+; Quartus II 64-Bit Version          ; 13.1.0 Build 162 10/23/2013 SJ Web Edition ;
+; Revision Name                      ; riscv_uniciclo                             ;
+; Top-level Entity Name              ; riscv_top                                  ;
+; Family                             ; Cyclone IV E                               ;
+; Total logic elements               ; 57,738                                     ;
+;     Total combinational functions  ; 24,535                                     ;
+;     Dedicated logic registers      ; 33,312                                     ;
+; Total registers                    ; 33312                                      ;
+; Total pins                         ; 1,298                                      ;
+; Total virtual pins                 ; 0                                          ;
+; Total memory bits                  ; 0                                          ;
+; Embedded Multiplier 9-bit elements ; 0                                          ;
+; Total PLLs                         ; 0                                          ;
++------------------------------------+--------------------------------------------+
+
+
++----------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Settings                                                                                        ;
++----------------------------------------------------------------------------+--------------------+--------------------+
+; Option                                                                     ; Setting            ; Default Value      ;
++----------------------------------------------------------------------------+--------------------+--------------------+
+; Device                                                                     ; EP4CE115F29C7      ;                    ;
+; Top-level entity name                                                      ; riscv_top          ; riscv_uniciclo     ;
+; Family name                                                                ; Cyclone IV E       ; Cyclone IV GX      ;
+; Use smart compilation                                                      ; Off                ; Off                ;
+; Enable parallel Assembler and TimeQuest Timing Analyzer during compilation ; On                 ; On                 ;
+; Enable compact report table                                                ; Off                ; Off                ;
+; Restructure Multiplexers                                                   ; Auto               ; Auto               ;
+; Create Debugging Nodes for IP Cores                                        ; Off                ; Off                ;
+; Preserve fewer node names                                                  ; On                 ; On                 ;
+; Disable OpenCore Plus hardware evaluation                                  ; Off                ; Off                ;
+; Verilog Version                                                            ; Verilog_2001       ; Verilog_2001       ;
+; VHDL Version                                                               ; VHDL_1993          ; VHDL_1993          ;
+; State Machine Processing                                                   ; Auto               ; Auto               ;
+; Safe State Machine                                                         ; Off                ; Off                ;
+; Extract Verilog State Machines                                             ; On                 ; On                 ;
+; Extract VHDL State Machines                                                ; On                 ; On                 ;
+; Ignore Verilog initial constructs                                          ; Off                ; Off                ;
+; Iteration limit for constant Verilog loops                                 ; 5000               ; 5000               ;
+; Iteration limit for non-constant Verilog loops                             ; 250                ; 250                ;
+; Add Pass-Through Logic to Inferred RAMs                                    ; On                 ; On                 ;
+; Infer RAMs from Raw Logic                                                  ; On                 ; On                 ;
+; Parallel Synthesis                                                         ; On                 ; On                 ;
+; DSP Block Balancing                                                        ; Auto               ; Auto               ;
+; NOT Gate Push-Back                                                         ; On                 ; On                 ;
+; Power-Up Don't Care                                                        ; On                 ; On                 ;
+; Remove Redundant Logic Cells                                               ; Off                ; Off                ;
+; Remove Duplicate Registers                                                 ; On                 ; On                 ;
+; Ignore CARRY Buffers                                                       ; Off                ; Off                ;
+; Ignore CASCADE Buffers                                                     ; Off                ; Off                ;
+; Ignore GLOBAL Buffers                                                      ; Off                ; Off                ;
+; Ignore ROW GLOBAL Buffers                                                  ; Off                ; Off                ;
+; Ignore LCELL Buffers                                                       ; Off                ; Off                ;
+; Ignore SOFT Buffers                                                        ; On                 ; On                 ;
+; Limit AHDL Integers to 32 Bits                                             ; Off                ; Off                ;
+; Optimization Technique                                                     ; Balanced           ; Balanced           ;
+; Carry Chain Length                                                         ; 70                 ; 70                 ;
+; Auto Carry Chains                                                          ; On                 ; On                 ;
+; Auto Open-Drain Pins                                                       ; On                 ; On                 ;
+; Perform WYSIWYG Primitive Resynthesis                                      ; Off                ; Off                ;
+; Auto ROM Replacement                                                       ; On                 ; On                 ;
+; Auto RAM Replacement                                                       ; On                 ; On                 ;
+; Auto DSP Block Replacement                                                 ; On                 ; On                 ;
+; Auto Shift Register Replacement                                            ; Auto               ; Auto               ;
+; Allow Shift Register Merging across Hierarchies                            ; Auto               ; Auto               ;
+; Auto Clock Enable Replacement                                              ; On                 ; On                 ;
+; Strict RAM Replacement                                                     ; Off                ; Off                ;
+; Allow Synchronous Control Signals                                          ; On                 ; On                 ;
+; Force Use of Synchronous Clear Signals                                     ; Off                ; Off                ;
+; Auto RAM Block Balancing                                                   ; On                 ; On                 ;
+; Auto RAM to Logic Cell Conversion                                          ; Off                ; Off                ;
+; Auto Resource Sharing                                                      ; Off                ; Off                ;
+; Allow Any RAM Size For Recognition                                         ; Off                ; Off                ;
+; Allow Any ROM Size For Recognition                                         ; Off                ; Off                ;
+; Allow Any Shift Register Size For Recognition                              ; Off                ; Off                ;
+; Use LogicLock Constraints during Resource Balancing                        ; On                 ; On                 ;
+; Ignore translate_off and synthesis_off directives                          ; Off                ; Off                ;
+; Timing-Driven Synthesis                                                    ; On                 ; On                 ;
+; Report Parameter Settings                                                  ; On                 ; On                 ;
+; Report Source Assignments                                                  ; On                 ; On                 ;
+; Report Connectivity Checks                                                 ; On                 ; On                 ;
+; Ignore Maximum Fan-Out Assignments                                         ; Off                ; Off                ;
+; Synchronization Register Chain Length                                      ; 2                  ; 2                  ;
+; PowerPlay Power Optimization                                               ; Normal compilation ; Normal compilation ;
+; HDL message level                                                          ; Level2             ; Level2             ;
+; Suppress Register Optimization Related Messages                            ; Off                ; Off                ;
+; Number of Removed Registers Reported in Synthesis Report                   ; 5000               ; 5000               ;
+; Number of Swept Nodes Reported in Synthesis Report                         ; 5000               ; 5000               ;
+; Number of Inverted Registers Reported in Synthesis Report                  ; 100                ; 100                ;
+; Clock MUX Protection                                                       ; On                 ; On                 ;
+; Auto Gated Clock Conversion                                                ; Off                ; Off                ;
+; Block Design Naming                                                        ; Auto               ; Auto               ;
+; SDC constraint protection                                                  ; Off                ; Off                ;
+; Synthesis Effort                                                           ; Auto               ; Auto               ;
+; Shift Register Replacement - Allow Asynchronous Clear Signal               ; On                 ; On                 ;
+; Pre-Mapping Resynthesis Optimization                                       ; Off                ; Off                ;
+; Analysis & Synthesis Message Level                                         ; Medium             ; Medium             ;
+; Disable Register Merging Across Hierarchies                                ; Auto               ; Auto               ;
+; Resource Aware Inference For Block RAM                                     ; On                 ; On                 ;
+; Synthesis Seed                                                             ; 1                  ; 1                  ;
++----------------------------------------------------------------------------+--------------------+--------------------+
+
+
++------------------------------------------+
+; Parallel Compilation                     ;
++----------------------------+-------------+
+; Processors                 ; Number      ;
++----------------------------+-------------+
+; Number detected on machine ; 8           ;
+; Maximum allowed            ; 4           ;
+;                            ;             ;
+; Average used               ; 1.00        ;
+; Maximum used               ; 4           ;
+;                            ;             ;
+; Usage by Processor         ; % Time Used ;
+;     Processor 1            ; 100.0%      ;
+;     Processors 2-4         ; < 0.1%      ;
+;     Processors 5-8         ;   0.0%      ;
++----------------------------+-------------+
+
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Source Files Read                                                                                                                                                           ;
++----------------------------------+-----------------+---------------------------------------------+-------------------------------------------------------------------------------------+---------+
+; File Name with User-Entered Path ; Used in Netlist ; File Type                                   ; File Name with Absolute Path                                                        ; Library ;
++----------------------------------+-----------------+---------------------------------------------+-------------------------------------------------------------------------------------+---------+
+; riscv_top.v                      ; yes             ; User Verilog HDL File                       ; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/riscv_top.v      ;         ;
+; control.v                        ; yes             ; User Verilog HDL File                       ; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/control.v        ;         ;
+; alu_control.v                    ; yes             ; User Verilog HDL File                       ; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/alu_control.v    ;         ;
+; alu.v                            ; yes             ; User Verilog HDL File                       ; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/alu.v            ;         ;
+; reg_file.v                       ; yes             ; User Verilog HDL File                       ; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/reg_file.v       ;         ;
+; imm_gen.v                        ; yes             ; User Verilog HDL File                       ; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/imm_gen.v        ;         ;
+; inst_mem.v                       ; yes             ; User Verilog HDL File                       ; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/inst_mem.v       ;         ;
+; data_mem.v                       ; yes             ; User Verilog HDL File                       ; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/data_mem.v       ;         ;
+; uniciclodata.hex                 ; yes             ; Auto-Found Hexadecimal (Intel-Format) File  ; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/uniciclodata.hex ;         ;
+; unicicloinst.hex                 ; yes             ; Auto-Found Hexadecimal (Intel-Format) File  ; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/unicicloinst.hex ;         ;
++----------------------------------+-----------------+---------------------------------------------+-------------------------------------------------------------------------------------+---------+
+
+
++---------------------------------------------------------+
+; Analysis & Synthesis Resource Usage Summary             ;
++---------------------------------------------+-----------+
+; Resource                                    ; Usage     ;
++---------------------------------------------+-----------+
+; Estimated Total logic elements              ; 57,738    ;
+;                                             ;           ;
+; Total combinational functions               ; 24535     ;
+; Logic element usage by number of LUT inputs ;           ;
+;     -- 4 input functions                    ; 24097     ;
+;     -- 3 input functions                    ; 279       ;
+;     -- <=2 input functions                  ; 159       ;
+;                                             ;           ;
+; Logic elements by mode                      ;           ;
+;     -- normal mode                          ; 24358     ;
+;     -- arithmetic mode                      ; 177       ;
+;                                             ;           ;
+; Total registers                             ; 33312     ;
+;     -- Dedicated logic registers            ; 33312     ;
+;     -- I/O registers                        ; 0         ;
+;                                             ;           ;
+; I/O pins                                    ; 1298      ;
+; Embedded Multiplier 9-bit elements          ; 0         ;
+; Maximum fan-out node                        ; clk~input ;
+; Maximum fan-out                             ; 33312     ;
+; Total fan-out                               ; 199569    ;
+; Average fan-out                             ; 3.30      ;
++---------------------------------------------+-----------+
+
+
++-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Analysis & Synthesis Resource Utilization by Entity                                                                                                                                       ;
++----------------------------+-------------------+---------------+-------------+--------------+---------+-----------+------+--------------+----------------------------------+--------------+
+; Compilation Hierarchy Node ; LC Combinationals ; LC Registers  ; Memory Bits ; DSP Elements ; DSP 9x9 ; DSP 18x18 ; Pins ; Virtual Pins ; Full Hierarchy Name              ; Library Name ;
++----------------------------+-------------------+---------------+-------------+--------------+---------+-----------+------+--------------+----------------------------------+--------------+
+; |riscv_top                 ; 24535 (292)       ; 33312 (32)    ; 0           ; 0            ; 0       ; 0         ; 1298 ; 0            ; |riscv_top                       ; work         ;
+;    |alu:u_alu|             ; 314 (314)         ; 0 (0)         ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |riscv_top|alu:u_alu             ; work         ;
+;    |alu_control:u_aluctrl| ; 3 (3)             ; 0 (0)         ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |riscv_top|alu_control:u_aluctrl ; work         ;
+;    |control:u_ctrl|        ; 6 (6)             ; 0 (0)         ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |riscv_top|control:u_ctrl        ; work         ;
+;    |data_mem:u_dmem|       ; 23015 (23015)     ; 32768 (32768) ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |riscv_top|data_mem:u_dmem       ; work         ;
+;    |imm_gen:u_immgen|      ; 68 (68)           ; 0 (0)         ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |riscv_top|imm_gen:u_immgen      ; work         ;
+;    |inst_mem:u_imem|       ; 81 (81)           ; 0 (0)         ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |riscv_top|inst_mem:u_imem       ; work         ;
+;    |reg_file:u_rf|         ; 756 (756)         ; 512 (512)     ; 0           ; 0            ; 0       ; 0         ; 0    ; 0            ; |riscv_top|reg_file:u_rf         ; work         ;
++----------------------------+-------------------+---------------+-------------+--------------+---------+-----------+------+--------------+----------------------------------+--------------+
+Note: For table entries with two numbers listed, the numbers in parentheses indicate the number of resources of the given type used by the specific entity alone. The numbers listed outside of parentheses indicate the total resources of the given type used by the specific entity and all of its sub-entities in the hierarchy.
+
+
++---------------------------------------------------------------------------------------+
+; Registers Removed During Synthesis                                                    ;
++-----------------------------------------+---------------------------------------------+
+; Register name                           ; Reason for Removal                          ;
++-----------------------------------------+---------------------------------------------+
+; reg_file:u_rf|regs[8][31]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][31]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][31]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][30]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][30]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][30]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][29]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][29]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][29]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][28]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][28]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][28]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][27]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][27]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][27]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][26]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][26]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][26]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][25]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][25]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][25]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][24]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][24]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][24]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][23]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][23]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][23]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][22]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][22]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][22]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][21]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][21]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][21]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][20]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][20]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][20]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][19]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][19]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][19]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][18]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][18]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][18]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][17]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][17]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][17]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][16]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][16]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][16]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][15]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][15]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][15]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][14]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][14]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][14]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][13]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][13]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][13]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][12]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][12]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][12]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][11]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][11]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][11]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][10]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][10]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][10]              ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][9]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][9]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][9]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][8]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][8]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][8]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][7]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][7]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][7]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][6]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][6]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][6]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][5]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][5]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][5]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][4]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][4]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][4]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][3]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][3]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][3]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][2]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][2]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][2]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][1]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][1]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][1]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[8][0]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[9][0]                ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[10][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[11][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[12][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[13][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[14][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[15][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[16][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[17][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[18][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[19][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[20][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[21][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[22][0]               ; Stuck at GND due to stuck port clock_enable ;
+; reg_file:u_rf|regs[23][0]               ; Stuck at GND due to stuck port clock_enable ;
+; Total Number of Removed Registers = 512 ;                                             ;
++-----------------------------------------+---------------------------------------------+
+
+
++---------------------------------------------------------------------------------------------------------------------------------------------------+
+; Removed Registers Triggering Further Register Optimizations                                                                                       ;
++----------------------------+--------------------------------+-------------------------------------------------------------------------------------+
+; Register name              ; Reason for Removal             ; Registers Removed due to This Register                                              ;
++----------------------------+--------------------------------+-------------------------------------------------------------------------------------+
+; reg_file:u_rf|regs[8][31]  ; Stuck at GND                   ; reg_file:u_rf|regs[8][0], reg_file:u_rf|regs[9][0], reg_file:u_rf|regs[10][0],      ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[11][0], reg_file:u_rf|regs[12][0], reg_file:u_rf|regs[13][0],    ;
+;                            ;                                ; reg_file:u_rf|regs[14][0], reg_file:u_rf|regs[15][0], reg_file:u_rf|regs[16][0],    ;
+;                            ;                                ; reg_file:u_rf|regs[17][0], reg_file:u_rf|regs[18][0], reg_file:u_rf|regs[19][0],    ;
+;                            ;                                ; reg_file:u_rf|regs[20][0], reg_file:u_rf|regs[21][0], reg_file:u_rf|regs[22][0],    ;
+;                            ;                                ; reg_file:u_rf|regs[23][0]                                                           ;
+; reg_file:u_rf|regs[8][4]   ; Stuck at GND                   ; reg_file:u_rf|regs[8][3], reg_file:u_rf|regs[22][3], reg_file:u_rf|regs[23][3],     ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[8][2], reg_file:u_rf|regs[21][2], reg_file:u_rf|regs[22][2],     ;
+;                            ;                                ; reg_file:u_rf|regs[23][2]                                                           ;
+; reg_file:u_rf|regs[11][31] ; Stuck at GND                   ; reg_file:u_rf|regs[21][29], reg_file:u_rf|regs[11][17], reg_file:u_rf|regs[21][15], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[11][3], reg_file:u_rf|regs[21][1]                                ;
+; reg_file:u_rf|regs[10][30] ; Stuck at GND                   ; reg_file:u_rf|regs[22][29], reg_file:u_rf|regs[10][16], reg_file:u_rf|regs[22][15], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[10][2], reg_file:u_rf|regs[22][1]                                ;
+; reg_file:u_rf|regs[9][29]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][29], reg_file:u_rf|regs[9][15], reg_file:u_rf|regs[23][15],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[9][1], reg_file:u_rf|regs[23][1]                                 ;
+; reg_file:u_rf|regs[10][31] ; Stuck at GND                   ; reg_file:u_rf|regs[22][30], reg_file:u_rf|regs[10][17], reg_file:u_rf|regs[22][16], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[10][3]                                                           ;
+; reg_file:u_rf|regs[12][31] ; Stuck at GND                   ; reg_file:u_rf|regs[20][28], reg_file:u_rf|regs[12][17], reg_file:u_rf|regs[20][14], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[12][3]                                                           ;
+; reg_file:u_rf|regs[13][31] ; Stuck at GND                   ; reg_file:u_rf|regs[19][27], reg_file:u_rf|regs[13][17], reg_file:u_rf|regs[19][13], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[13][3]                                                           ;
+; reg_file:u_rf|regs[14][31] ; Stuck at GND                   ; reg_file:u_rf|regs[18][26], reg_file:u_rf|regs[14][17], reg_file:u_rf|regs[18][12], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[14][3]                                                           ;
+; reg_file:u_rf|regs[15][31] ; Stuck at GND                   ; reg_file:u_rf|regs[17][25], reg_file:u_rf|regs[15][17], reg_file:u_rf|regs[17][11], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[15][3]                                                           ;
+; reg_file:u_rf|regs[16][31] ; Stuck at GND                   ; reg_file:u_rf|regs[16][24], reg_file:u_rf|regs[16][17], reg_file:u_rf|regs[16][10], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[16][3]                                                           ;
+; reg_file:u_rf|regs[17][31] ; Stuck at GND                   ; reg_file:u_rf|regs[15][23], reg_file:u_rf|regs[17][17], reg_file:u_rf|regs[15][9],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[17][3]                                                           ;
+; reg_file:u_rf|regs[18][31] ; Stuck at GND                   ; reg_file:u_rf|regs[14][22], reg_file:u_rf|regs[18][17], reg_file:u_rf|regs[14][8],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[18][3]                                                           ;
+; reg_file:u_rf|regs[19][31] ; Stuck at GND                   ; reg_file:u_rf|regs[13][21], reg_file:u_rf|regs[19][17], reg_file:u_rf|regs[13][7],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[19][3]                                                           ;
+; reg_file:u_rf|regs[20][31] ; Stuck at GND                   ; reg_file:u_rf|regs[12][20], reg_file:u_rf|regs[20][17], reg_file:u_rf|regs[12][6],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[20][3]                                                           ;
+; reg_file:u_rf|regs[21][31] ; Stuck at GND                   ; reg_file:u_rf|regs[11][19], reg_file:u_rf|regs[21][17], reg_file:u_rf|regs[11][5],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[21][3]                                                           ;
+; reg_file:u_rf|regs[19][29] ; Stuck at GND                   ; reg_file:u_rf|regs[13][19], reg_file:u_rf|regs[19][15], reg_file:u_rf|regs[13][5],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[19][1]                                                           ;
+; reg_file:u_rf|regs[9][30]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][30], reg_file:u_rf|regs[9][16], reg_file:u_rf|regs[23][16],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[9][2]                                                            ;
+; reg_file:u_rf|regs[11][30] ; Stuck at GND                   ; reg_file:u_rf|regs[21][28], reg_file:u_rf|regs[11][16], reg_file:u_rf|regs[21][14], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[11][2]                                                           ;
+; reg_file:u_rf|regs[12][30] ; Stuck at GND                   ; reg_file:u_rf|regs[20][27], reg_file:u_rf|regs[12][16], reg_file:u_rf|regs[20][13], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[12][2]                                                           ;
+; reg_file:u_rf|regs[14][30] ; Stuck at GND                   ; reg_file:u_rf|regs[18][25], reg_file:u_rf|regs[14][16], reg_file:u_rf|regs[18][11], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[14][2]                                                           ;
+; reg_file:u_rf|regs[15][30] ; Stuck at GND                   ; reg_file:u_rf|regs[17][24], reg_file:u_rf|regs[15][16], reg_file:u_rf|regs[17][10], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[15][2]                                                           ;
+; reg_file:u_rf|regs[16][30] ; Stuck at GND                   ; reg_file:u_rf|regs[16][23], reg_file:u_rf|regs[16][16], reg_file:u_rf|regs[16][9],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[16][2]                                                           ;
+; reg_file:u_rf|regs[17][30] ; Stuck at GND                   ; reg_file:u_rf|regs[15][22], reg_file:u_rf|regs[17][16], reg_file:u_rf|regs[15][8],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[17][2]                                                           ;
+; reg_file:u_rf|regs[18][30] ; Stuck at GND                   ; reg_file:u_rf|regs[14][21], reg_file:u_rf|regs[18][16], reg_file:u_rf|regs[14][7],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[18][2]                                                           ;
+; reg_file:u_rf|regs[19][30] ; Stuck at GND                   ; reg_file:u_rf|regs[13][20], reg_file:u_rf|regs[19][16], reg_file:u_rf|regs[13][6],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[19][2]                                                           ;
+; reg_file:u_rf|regs[20][30] ; Stuck at GND                   ; reg_file:u_rf|regs[12][19], reg_file:u_rf|regs[20][16], reg_file:u_rf|regs[12][5],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[20][2]                                                           ;
+; reg_file:u_rf|regs[20][29] ; Stuck at GND                   ; reg_file:u_rf|regs[12][18], reg_file:u_rf|regs[20][15], reg_file:u_rf|regs[12][4],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[20][1]                                                           ;
+; reg_file:u_rf|regs[9][31]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][31], reg_file:u_rf|regs[9][17], reg_file:u_rf|regs[23][17],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[9][3]                                                            ;
+; reg_file:u_rf|regs[10][29] ; Stuck at GND                   ; reg_file:u_rf|regs[22][28], reg_file:u_rf|regs[10][15], reg_file:u_rf|regs[22][14], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[10][1]                                                           ;
+; reg_file:u_rf|regs[11][29] ; Stuck at GND                   ; reg_file:u_rf|regs[21][27], reg_file:u_rf|regs[11][15], reg_file:u_rf|regs[21][13], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[11][1]                                                           ;
+; reg_file:u_rf|regs[12][29] ; Stuck at GND                   ; reg_file:u_rf|regs[20][26], reg_file:u_rf|regs[12][15], reg_file:u_rf|regs[20][12], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[12][1]                                                           ;
+; reg_file:u_rf|regs[13][29] ; Stuck at GND                   ; reg_file:u_rf|regs[19][25], reg_file:u_rf|regs[13][15], reg_file:u_rf|regs[19][11], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[13][1]                                                           ;
+; reg_file:u_rf|regs[14][29] ; Stuck at GND                   ; reg_file:u_rf|regs[18][24], reg_file:u_rf|regs[14][15], reg_file:u_rf|regs[18][10], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[14][1]                                                           ;
+; reg_file:u_rf|regs[15][29] ; Stuck at GND                   ; reg_file:u_rf|regs[17][23], reg_file:u_rf|regs[15][15], reg_file:u_rf|regs[17][9],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[15][1]                                                           ;
+; reg_file:u_rf|regs[16][29] ; Stuck at GND                   ; reg_file:u_rf|regs[16][22], reg_file:u_rf|regs[16][15], reg_file:u_rf|regs[16][8],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[16][1]                                                           ;
+; reg_file:u_rf|regs[17][29] ; Stuck at GND                   ; reg_file:u_rf|regs[15][21], reg_file:u_rf|regs[17][15], reg_file:u_rf|regs[15][7],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[17][1]                                                           ;
+; reg_file:u_rf|regs[18][29] ; Stuck at GND                   ; reg_file:u_rf|regs[14][20], reg_file:u_rf|regs[18][15], reg_file:u_rf|regs[14][6],  ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[18][1]                                                           ;
+; reg_file:u_rf|regs[13][30] ; Stuck at GND                   ; reg_file:u_rf|regs[19][26], reg_file:u_rf|regs[13][16], reg_file:u_rf|regs[19][12], ;
+;                            ; due to stuck port clock_enable ; reg_file:u_rf|regs[13][2]                                                           ;
+; reg_file:u_rf|regs[21][30] ; Stuck at GND                   ; reg_file:u_rf|regs[11][18], reg_file:u_rf|regs[21][16], reg_file:u_rf|regs[11][4]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[9][28]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][28], reg_file:u_rf|regs[9][14], reg_file:u_rf|regs[23][14]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[10][28] ; Stuck at GND                   ; reg_file:u_rf|regs[22][27], reg_file:u_rf|regs[10][14], reg_file:u_rf|regs[22][13]  ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[11][28] ; Stuck at GND                   ; reg_file:u_rf|regs[21][26], reg_file:u_rf|regs[11][14], reg_file:u_rf|regs[21][12]  ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[12][28] ; Stuck at GND                   ; reg_file:u_rf|regs[20][25], reg_file:u_rf|regs[12][14], reg_file:u_rf|regs[20][11]  ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[13][28] ; Stuck at GND                   ; reg_file:u_rf|regs[19][24], reg_file:u_rf|regs[13][14], reg_file:u_rf|regs[19][10]  ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[14][28] ; Stuck at GND                   ; reg_file:u_rf|regs[18][23], reg_file:u_rf|regs[14][14], reg_file:u_rf|regs[18][9]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[15][28] ; Stuck at GND                   ; reg_file:u_rf|regs[17][22], reg_file:u_rf|regs[15][14], reg_file:u_rf|regs[17][8]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[16][28] ; Stuck at GND                   ; reg_file:u_rf|regs[16][21], reg_file:u_rf|regs[16][14], reg_file:u_rf|regs[16][7]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[17][28] ; Stuck at GND                   ; reg_file:u_rf|regs[15][20], reg_file:u_rf|regs[17][14], reg_file:u_rf|regs[15][6]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[18][28] ; Stuck at GND                   ; reg_file:u_rf|regs[14][19], reg_file:u_rf|regs[18][14], reg_file:u_rf|regs[14][5]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[19][28] ; Stuck at GND                   ; reg_file:u_rf|regs[13][18], reg_file:u_rf|regs[19][14], reg_file:u_rf|regs[13][4]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[9][27]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][27], reg_file:u_rf|regs[9][13], reg_file:u_rf|regs[23][13]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[10][27] ; Stuck at GND                   ; reg_file:u_rf|regs[22][26], reg_file:u_rf|regs[10][13], reg_file:u_rf|regs[22][12]  ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[11][27] ; Stuck at GND                   ; reg_file:u_rf|regs[21][25], reg_file:u_rf|regs[11][13], reg_file:u_rf|regs[21][11]  ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[12][27] ; Stuck at GND                   ; reg_file:u_rf|regs[20][24], reg_file:u_rf|regs[12][13], reg_file:u_rf|regs[20][10]  ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[13][27] ; Stuck at GND                   ; reg_file:u_rf|regs[19][23], reg_file:u_rf|regs[13][13], reg_file:u_rf|regs[19][9]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[14][27] ; Stuck at GND                   ; reg_file:u_rf|regs[18][22], reg_file:u_rf|regs[14][13], reg_file:u_rf|regs[18][8]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[15][27] ; Stuck at GND                   ; reg_file:u_rf|regs[17][21], reg_file:u_rf|regs[15][13], reg_file:u_rf|regs[17][7]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[16][27] ; Stuck at GND                   ; reg_file:u_rf|regs[16][20], reg_file:u_rf|regs[16][13], reg_file:u_rf|regs[16][6]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[17][27] ; Stuck at GND                   ; reg_file:u_rf|regs[15][19], reg_file:u_rf|regs[17][13], reg_file:u_rf|regs[15][5]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[18][27] ; Stuck at GND                   ; reg_file:u_rf|regs[14][18], reg_file:u_rf|regs[18][13], reg_file:u_rf|regs[14][4]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[9][26]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][26], reg_file:u_rf|regs[9][12], reg_file:u_rf|regs[23][12]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[10][26] ; Stuck at GND                   ; reg_file:u_rf|regs[22][25], reg_file:u_rf|regs[10][12], reg_file:u_rf|regs[22][11]  ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[11][26] ; Stuck at GND                   ; reg_file:u_rf|regs[21][24], reg_file:u_rf|regs[11][12], reg_file:u_rf|regs[21][10]  ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[12][26] ; Stuck at GND                   ; reg_file:u_rf|regs[20][23], reg_file:u_rf|regs[12][12], reg_file:u_rf|regs[20][9]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[13][26] ; Stuck at GND                   ; reg_file:u_rf|regs[19][22], reg_file:u_rf|regs[13][12], reg_file:u_rf|regs[19][8]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[14][26] ; Stuck at GND                   ; reg_file:u_rf|regs[18][21], reg_file:u_rf|regs[14][12], reg_file:u_rf|regs[18][7]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[15][26] ; Stuck at GND                   ; reg_file:u_rf|regs[17][20], reg_file:u_rf|regs[15][12], reg_file:u_rf|regs[17][6]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[16][26] ; Stuck at GND                   ; reg_file:u_rf|regs[16][19], reg_file:u_rf|regs[16][12], reg_file:u_rf|regs[16][5]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[17][26] ; Stuck at GND                   ; reg_file:u_rf|regs[15][18], reg_file:u_rf|regs[17][12], reg_file:u_rf|regs[15][4]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[9][25]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][25], reg_file:u_rf|regs[9][11], reg_file:u_rf|regs[23][11]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[10][25] ; Stuck at GND                   ; reg_file:u_rf|regs[22][24], reg_file:u_rf|regs[10][11], reg_file:u_rf|regs[22][10]  ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[11][25] ; Stuck at GND                   ; reg_file:u_rf|regs[21][23], reg_file:u_rf|regs[11][11], reg_file:u_rf|regs[21][9]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[12][25] ; Stuck at GND                   ; reg_file:u_rf|regs[20][22], reg_file:u_rf|regs[12][11], reg_file:u_rf|regs[20][8]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[13][25] ; Stuck at GND                   ; reg_file:u_rf|regs[19][21], reg_file:u_rf|regs[13][11], reg_file:u_rf|regs[19][7]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[14][25] ; Stuck at GND                   ; reg_file:u_rf|regs[18][20], reg_file:u_rf|regs[14][11], reg_file:u_rf|regs[18][6]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[15][25] ; Stuck at GND                   ; reg_file:u_rf|regs[17][19], reg_file:u_rf|regs[15][11], reg_file:u_rf|regs[17][5]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[16][25] ; Stuck at GND                   ; reg_file:u_rf|regs[16][18], reg_file:u_rf|regs[16][11], reg_file:u_rf|regs[16][4]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[9][24]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][24], reg_file:u_rf|regs[9][10], reg_file:u_rf|regs[23][10]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[10][24] ; Stuck at GND                   ; reg_file:u_rf|regs[22][23], reg_file:u_rf|regs[10][10], reg_file:u_rf|regs[22][9]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[22][31] ; Stuck at GND                   ; reg_file:u_rf|regs[10][18], reg_file:u_rf|regs[22][17], reg_file:u_rf|regs[10][4]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[12][24] ; Stuck at GND                   ; reg_file:u_rf|regs[20][21], reg_file:u_rf|regs[12][10], reg_file:u_rf|regs[20][7]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[13][24] ; Stuck at GND                   ; reg_file:u_rf|regs[19][20], reg_file:u_rf|regs[13][10], reg_file:u_rf|regs[19][6]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[14][24] ; Stuck at GND                   ; reg_file:u_rf|regs[18][19], reg_file:u_rf|regs[14][10], reg_file:u_rf|regs[18][5]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[15][24] ; Stuck at GND                   ; reg_file:u_rf|regs[17][18], reg_file:u_rf|regs[15][10], reg_file:u_rf|regs[17][4]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[9][23]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][23], reg_file:u_rf|regs[9][9], reg_file:u_rf|regs[23][9]     ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[10][23] ; Stuck at GND                   ; reg_file:u_rf|regs[22][22], reg_file:u_rf|regs[10][9], reg_file:u_rf|regs[22][8]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[11][23] ; Stuck at GND                   ; reg_file:u_rf|regs[21][21], reg_file:u_rf|regs[11][9], reg_file:u_rf|regs[21][7]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[12][23] ; Stuck at GND                   ; reg_file:u_rf|regs[20][20], reg_file:u_rf|regs[12][9], reg_file:u_rf|regs[20][6]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[13][23] ; Stuck at GND                   ; reg_file:u_rf|regs[19][19], reg_file:u_rf|regs[13][9], reg_file:u_rf|regs[19][5]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[14][23] ; Stuck at GND                   ; reg_file:u_rf|regs[18][18], reg_file:u_rf|regs[14][9], reg_file:u_rf|regs[18][4]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[9][22]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][22], reg_file:u_rf|regs[9][8], reg_file:u_rf|regs[23][8]     ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[10][22] ; Stuck at GND                   ; reg_file:u_rf|regs[22][21], reg_file:u_rf|regs[10][8], reg_file:u_rf|regs[22][7]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[11][24] ; Stuck at GND                   ; reg_file:u_rf|regs[21][22], reg_file:u_rf|regs[11][10], reg_file:u_rf|regs[21][8]   ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[12][22] ; Stuck at GND                   ; reg_file:u_rf|regs[20][19], reg_file:u_rf|regs[12][8], reg_file:u_rf|regs[20][5]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[13][22] ; Stuck at GND                   ; reg_file:u_rf|regs[19][18], reg_file:u_rf|regs[13][8], reg_file:u_rf|regs[19][4]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[9][21]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][21], reg_file:u_rf|regs[9][7], reg_file:u_rf|regs[23][7]     ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[10][21] ; Stuck at GND                   ; reg_file:u_rf|regs[22][20], reg_file:u_rf|regs[10][7], reg_file:u_rf|regs[22][6]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[11][21] ; Stuck at GND                   ; reg_file:u_rf|regs[21][19], reg_file:u_rf|regs[11][7], reg_file:u_rf|regs[21][5]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[12][21] ; Stuck at GND                   ; reg_file:u_rf|regs[20][18], reg_file:u_rf|regs[12][7], reg_file:u_rf|regs[20][4]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[9][20]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][20], reg_file:u_rf|regs[9][6], reg_file:u_rf|regs[23][6]     ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[10][20] ; Stuck at GND                   ; reg_file:u_rf|regs[22][19], reg_file:u_rf|regs[10][6], reg_file:u_rf|regs[22][5]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[11][20] ; Stuck at GND                   ; reg_file:u_rf|regs[21][18], reg_file:u_rf|regs[11][6], reg_file:u_rf|regs[21][4]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[9][19]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][19], reg_file:u_rf|regs[9][5], reg_file:u_rf|regs[23][5]     ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[10][19] ; Stuck at GND                   ; reg_file:u_rf|regs[22][18], reg_file:u_rf|regs[10][5], reg_file:u_rf|regs[22][4]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[9][18]  ; Stuck at GND                   ; reg_file:u_rf|regs[23][18], reg_file:u_rf|regs[9][4], reg_file:u_rf|regs[23][4]     ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
+; reg_file:u_rf|regs[11][22] ; Stuck at GND                   ; reg_file:u_rf|regs[21][20], reg_file:u_rf|regs[11][8], reg_file:u_rf|regs[21][6]    ;
+;                            ; due to stuck port clock_enable ;                                                                                     ;
++----------------------------+--------------------------------+-------------------------------------------------------------------------------------+
+
+
++------------------------------------------------------+
+; General Register Statistics                          ;
++----------------------------------------------+-------+
+; Statistic                                    ; Value ;
++----------------------------------------------+-------+
+; Total registers                              ; 33312 ;
+; Number of registers using Synchronous Clear  ; 0     ;
+; Number of registers using Synchronous Load   ; 29    ;
+; Number of registers using Asynchronous Clear ; 32    ;
+; Number of registers using Asynchronous Load  ; 0     ;
+; Number of registers using Clock Enable       ; 33282 ;
+; Number of registers using Preset             ; 0     ;
++----------------------------------------------+-------+
+
+
++--------------------------------------------------+
+; Inverted Register Statistics                     ;
++----------------------------------------+---------+
+; Inverted Register                      ; Fan out ;
++----------------------------------------+---------+
+; pc[22]                                 ; 5       ;
+; Total number of inverted registers = 1 ;         ;
++----------------------------------------+---------+
+
+
++------------------------------------------------------------------------------------------------------------------------------------------------------+
+; Multiplexer Restructuring Statistics (Restructuring Performed)                                                                                       ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------------+
+; Multiplexer Inputs ; Bus Width ; Baseline Area ; Area if Restructured ; Saving if Restructured ; Registered ; Example Multiplexer Output             ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------------+
+; 4:1                ; 29 bits   ; 58 LEs        ; 58 LEs               ; 0 LEs                  ; Yes        ; |riscv_top|pc[7]                       ;
+; 4:1                ; 4 bits    ; 8 LEs         ; 8 LEs                ; 0 LEs                  ; No         ; |riscv_top|imm_gen:u_immgen|Selector9  ;
+; 3:1                ; 32 bits   ; 64 LEs        ; 64 LEs               ; 0 LEs                  ; No         ; |riscv_top|alu_a[14]                   ;
+; 3:1                ; 32 bits   ; 64 LEs        ; 64 LEs               ; 0 LEs                  ; No         ; |riscv_top|wr_data[0]                  ;
+; 32:1               ; 2 bits    ; 42 LEs        ; 8 LEs                ; 34 LEs                 ; No         ; |riscv_top|imm_gen:u_immgen|Selector2  ;
+; 32:1               ; 4 bits    ; 84 LEs        ; 4 LEs                ; 80 LEs                 ; No         ; |riscv_top|imm_gen:u_immgen|Selector14 ;
+; 17:1               ; 32 bits   ; 352 LEs       ; 352 LEs              ; 0 LEs                  ; No         ; |riscv_top|reg_file:u_rf|rs1_data[7]   ;
+; 5:1                ; 16 bits   ; 48 LEs        ; 32 LEs               ; 16 LEs                 ; No         ; |riscv_top|data_mem:u_dmem|rdata[11]   ;
+; 10:1               ; 2 bits    ; 12 LEs        ; 8 LEs                ; 4 LEs                  ; No         ; |riscv_top|imm_gen:u_immgen|Selector23 ;
+; 7:1                ; 2 bits    ; 8 LEs         ; 6 LEs                ; 2 LEs                  ; No         ; |riscv_top|imm_gen:u_immgen|Selector21 ;
+; 33:1               ; 32 bits   ; 704 LEs       ; 352 LEs              ; 352 LEs                ; No         ; |riscv_top|reg_file:u_rf|rs2_data[4]   ;
+; 19:1               ; 8 bits    ; 96 LEs        ; 56 LEs               ; 40 LEs                 ; No         ; |riscv_top|alu:u_alu|Mux23             ;
+; 20:1               ; 7 bits    ; 91 LEs        ; 56 LEs               ; 35 LEs                 ; No         ; |riscv_top|alu:u_alu|Mux8              ;
+; 20:1               ; 4 bits    ; 52 LEs        ; 32 LEs               ; 20 LEs                 ; No         ; |riscv_top|alu:u_alu|Mux27             ;
+; 21:1               ; 4 bits    ; 56 LEs        ; 36 LEs               ; 20 LEs                 ; No         ; |riscv_top|alu:u_alu|Mux7              ;
+; 21:1               ; 2 bits    ; 28 LEs        ; 18 LEs               ; 10 LEs                 ; No         ; |riscv_top|alu:u_alu|Mux29             ;
+; 22:1               ; 2 bits    ; 28 LEs        ; 20 LEs               ; 8 LEs                  ; No         ; |riscv_top|alu:u_alu|Mux3              ;
++--------------------+-----------+---------------+----------------------+------------------------+------------+----------------------------------------+
+
+
++-------------------------------+
+; Elapsed Time Per Partition    ;
++----------------+--------------+
+; Partition Name ; Elapsed Time ;
++----------------+--------------+
+; Top            ; 00:01:30     ;
++----------------+--------------+
+
+
++-------------------------------+
+; Analysis & Synthesis Messages ;
++-------------------------------+
+Info: *******************************************************************
+Info: Running Quartus II 64-Bit Analysis & Synthesis
+    Info: Version 13.1.0 Build 162 10/23/2013 SJ Web Edition
+    Info: Processing started: Wed Jul 01 11:23:19 2026
+Info: Command: quartus_map --read_settings_files=on --write_settings_files=off riscv_uniciclo -c riscv_uniciclo
+Info (11104): Parallel Compilation has detected 8 hyper-threaded processors. However, the extra hyper-threaded processors will not be used by default. Parallel Compilation will use 4 of the 4 physical processors detected instead.
+Info (12021): Found 1 design units, including 1 entities, in source file riscv_top.v
+    Info (12023): Found entity 1: riscv_top
+Info (12021): Found 1 design units, including 1 entities, in source file control.v
+    Info (12023): Found entity 1: control
+Info (12021): Found 1 design units, including 1 entities, in source file alu_control.v
+    Info (12023): Found entity 1: alu_control
+Info (12021): Found 1 design units, including 1 entities, in source file alu.v
+    Info (12023): Found entity 1: alu
+Info (12021): Found 1 design units, including 1 entities, in source file reg_file.v
+    Info (12023): Found entity 1: reg_file
+Info (12021): Found 1 design units, including 1 entities, in source file imm_gen.v
+    Info (12023): Found entity 1: imm_gen
+Info (12021): Found 1 design units, including 1 entities, in source file inst_mem.v
+    Info (12023): Found entity 1: inst_mem
+Info (12021): Found 1 design units, including 1 entities, in source file data_mem.v
+    Info (12023): Found entity 1: data_mem
+Info (12127): Elaborating entity "riscv_top" for the top level hierarchy
+Info (12128): Elaborating entity "inst_mem" for hierarchy "inst_mem:u_imem"
+Warning (10850): Verilog HDL warning at inst_mem.v(35): number of words (17) in memory file does not match the number of elements in the address range [0:1023]
+Warning (10030): Net "mem.data_a" at inst_mem.v(27) has no driver or initial value, using a default initial value '0'
+Warning (10030): Net "mem.waddr_a" at inst_mem.v(27) has no driver or initial value, using a default initial value '0'
+Warning (10030): Net "mem.we_a" at inst_mem.v(27) has no driver or initial value, using a default initial value '0'
+Info (12128): Elaborating entity "control" for hierarchy "control:u_ctrl"
+Info (12128): Elaborating entity "reg_file" for hierarchy "reg_file:u_rf"
+Info (12128): Elaborating entity "imm_gen" for hierarchy "imm_gen:u_immgen"
+Info (12128): Elaborating entity "alu_control" for hierarchy "alu_control:u_aluctrl"
+Info (12128): Elaborating entity "alu" for hierarchy "alu:u_alu"
+Info (12128): Elaborating entity "data_mem" for hierarchy "data_mem:u_dmem"
+Info (276014): Found 1 instances of uninferred RAM logic
+    Info (276007): RAM logic "data_mem:u_dmem|mem" is uninferred due to asynchronous read logic
+Info (13000): Registers with preset signals will power-up high
+Info (13003): DEV_CLRn pin will set, and not reset, register with preset signal due to NOT Gate Push-Back
+Warning (13024): Output pins are stuck at VCC or GND
+    Warning (13410): Pin "dbg_instr[0]" is stuck at VCC
+    Warning (13410): Pin "dbg_instr[1]" is stuck at VCC
+    Warning (13410): Pin "dbg_alu_ctrl_op[1]" is stuck at GND
+    Warning (13410): Pin "dbg_alu_ctrl_op[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x0[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x8[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x9[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x10[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x11[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x12[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x13[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x14[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x15[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x16[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x17[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x18[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x19[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x20[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x21[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x22[31]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[0]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[1]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[2]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[3]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[4]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[5]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[6]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[7]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[8]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[9]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[10]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[11]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[12]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[13]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[14]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[15]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[16]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[17]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[18]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[19]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[20]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[21]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[22]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[23]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[24]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[25]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[26]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[27]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[28]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[29]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[30]" is stuck at GND
+    Warning (13410): Pin "dbg_x23[31]" is stuck at GND
+Info (286030): Timing-Driven Synthesis is running
+Info (16010): Generating hard_block partition "hard_block:auto_generated_inst"
+    Info (16011): Adding 0 node(s), including 0 DDIO, 0 PLL, 0 transceiver and 0 LCELL
+Info (21057): Implemented 59100 device resources after synthesis - the final resource count might be different
+    Info (21058): Implemented 2 input pins
+    Info (21059): Implemented 1296 output pins
+    Info (21061): Implemented 57802 logic cells
+Info: Quartus II 64-Bit Analysis & Synthesis was successful. 0 errors, 553 warnings
+    Info: Peak virtual memory: 4937 megabytes
+    Info: Processing ended: Wed Jul 01 11:24:57 2026
+    Info: Elapsed time: 00:01:38
+    Info: Total CPU time (on all processors): 00:01:38
+
+
