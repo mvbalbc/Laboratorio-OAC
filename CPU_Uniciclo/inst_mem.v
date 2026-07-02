@@ -17,12 +17,13 @@
 `timescale 1ns / 1ps
 
 module inst_mem (
+    input  wire        clk,   // ADICIONADO: Sinal de clock
     input  wire [31:0] addr,
-    output wire [31:0] rdata
+    output reg  [31:0] rdata  // MUDADO: Alterado para 'reg' para saída síncrona
 );
 
     localparam TEXT_BASE = 32'h0040_0000;
-    localparam DEPTH     = 1024; // 4 KB — ajuste se necessário
+    localparam DEPTH     = 1024; 
 
     reg [31:0] mem [0:DEPTH-1];
 
@@ -35,12 +36,18 @@ module inst_mem (
         $readmemh("UnicicloInst.hex", mem);
     end
 
-    // Fail-safe: protege contra endereço fora da faixa válida
+    // Sinais internos de endereço
     wire [31:0] raw_idx   = (addr - TEXT_BASE) >> 2;
     wire        in_range  = (raw_idx[31:10] == 22'd0);
     wire [9:0]  word_addr = raw_idx[9:0];
 
-    // Endereço fora do range retorna NOP (addi x0, x0, 0)
-    assign rdata = in_range ? mem[word_addr] : 32'h0000_0013;
+    // Leitura síncrona na borda de subida do clock
+    // Isso força o Quartus a usar a memória RAM nativa do chip virtual
+    always @(posedge clk) begin
+        if (in_range)
+            rdata <= mem[word_addr];
+        else
+            rdata <= 32'h0000_0013; // Retorna NOP se fora do range
+    end
 
 endmodule
