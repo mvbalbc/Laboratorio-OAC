@@ -18,6 +18,8 @@ module riscv_top (
     wire [31:0] dbg_instr;
     wire [31:0] dbg_alu_result;
     wire [31:0] dbg_mem_rdata;
+    wire [31:0] dbg_mem_wdata;
+    wire [31:0] dbg_mem_addr;
     wire [31:0] dbg_wr_data;
     wire [31:0] dbg_rs1_data;
     wire [31:0] dbg_rs2_data;
@@ -229,5 +231,7 @@ module riscv_top (
     assign dbg_alu_ctrl_op  = alu_ctrl_op;
     assign dbg_zero         = zero;
     assign dbg_branch_taken = branch_taken;
+    assign dbg_mem_wdata    = rs2_data;
+    assign dbg_mem_addr     = alu_result;
 
 endmodule
