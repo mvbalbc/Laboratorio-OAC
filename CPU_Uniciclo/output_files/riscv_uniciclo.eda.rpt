@@ -1,5 +1,5 @@
 EDA Netlist Writer report for riscv_uniciclo
-Thu Jul 02 09:49:10 2026
+Thu Jul 02 10:56:15 2026
 Quartus II 64-Bit Version 13.1.0 Build 162 10/23/2013 SJ Web Edition
 
 
@@ -8,7 +8,9 @@ Quartus II 64-Bit Version 13.1.0 Build 162 10/23/2013 SJ Web Edition
 ---------------------
   1. Legal Notice
   2. EDA Netlist Writer Summary
-  3. EDA Netlist Writer Messages
+  3. Simulation Settings
+  4. Simulation Generated Files
+  5. EDA Netlist Writer Messages
 
 
 
@@ -34,11 +36,50 @@ applicable agreement for further details.
 +-------------------------------------------------------------------+
 ; EDA Netlist Writer Summary                                        ;
 +---------------------------+---------------------------------------+
-; EDA Netlist Writer Status ; Successful - Thu Jul 02 09:49:10 2026 ;
+; EDA Netlist Writer Status ; Successful - Thu Jul 02 10:56:15 2026 ;
 ; Revision Name             ; riscv_uniciclo                        ;
 ; Top-level Entity Name     ; riscv_top                             ;
 ; Family                    ; Cyclone IV E                          ;
+; Simulation Files Creation ; Successful                            ;
 +---------------------------+---------------------------------------+
+
+
++-------------------------------------------------------------------------------------------------------------------------------+
+; Simulation Settings                                                                                                           ;
++---------------------------------------------------------------------------------------------------+---------------------------+
+; Option                                                                                            ; Setting                   ;
++---------------------------------------------------------------------------------------------------+---------------------------+
+; Tool Name                                                                                         ; ModelSim-Altera (Verilog) ;
+; Generate netlist for functional simulation only                                                   ; Off                       ;
+; Time scale                                                                                        ; 1 ps                      ;
+; Truncate long hierarchy paths                                                                     ; Off                       ;
+; Map illegal HDL characters                                                                        ; Off                       ;
+; Flatten buses into individual nodes                                                               ; Off                       ;
+; Maintain hierarchy                                                                                ; Off                       ;
+; Bring out device-wide set/reset signals as ports                                                  ; Off                       ;
+; Enable glitch filtering                                                                           ; Off                       ;
+; Do not write top level VHDL entity                                                                ; Off                       ;
+; Disable detection of setup and hold time violations in the input registers of bi-directional pins ; Off                       ;
+; Architecture name in VHDL output netlist                                                          ; structure                 ;
+; Generate third-party EDA tool command script for RTL functional simulation                        ; Off                       ;
+; Generate third-party EDA tool command script for gate-level simulation                            ; Off                       ;
++---------------------------------------------------------------------------------------------------+---------------------------+
+
+
++--------------------------------------------------------------------------------------------------------------------------------+
+; Simulation Generated Files                                                                                                     ;
++--------------------------------------------------------------------------------------------------------------------------------+
+; Generated Files                                                                                                                ;
++--------------------------------------------------------------------------------------------------------------------------------+
+; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/riscv_uniciclo_7_1200mv_85c_slow.vo     ;
+; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/riscv_uniciclo_7_1200mv_0c_slow.vo      ;
+; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/riscv_uniciclo_min_1200mv_0c_fast.vo    ;
+; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/riscv_uniciclo.vo                       ;
+; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/riscv_uniciclo_7_1200mv_85c_v_slow.sdo  ;
+; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/riscv_uniciclo_7_1200mv_0c_v_slow.sdo   ;
+; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/riscv_uniciclo_min_1200mv_0c_v_fast.sdo ;
+; C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/riscv_uniciclo_v.sdo                    ;
++--------------------------------------------------------------------------------------------------------------------------------+
 
 
 +-----------------------------+
@@ -47,26 +88,20 @@ applicable agreement for further details.
 Info: *******************************************************************
 Info: Running Quartus II 64-Bit EDA Netlist Writer
     Info: Version 13.1.0 Build 162 10/23/2013 SJ Web Edition
-    Info: Copyright (C) 1991-2013 Altera Corporation. All rights reserved.
-    Info: Your use of Altera Corporation's design tools, logic functions 
-    Info: and other software and tools, and its AMPP partner logic 
-    Info: functions, and any output files from any of the foregoing 
-    Info: (including device programming or simulation files), and any 
-    Info: associated documentation or information are expressly subject 
-    Info: to the terms and conditions of the Altera Program License 
-    Info: Subscription Agreement, Altera MegaCore Function License 
-    Info: Agreement, or other applicable license agreement, including, 
-    Info: without limitation, that your use is for the sole purpose of 
-    Info: programming logic devices manufactured by Altera and sold by 
-    Info: Altera or its authorized distributors.  Please refer to the 
-    Info: applicable agreement for further details.
-    Info: Processing started: Thu Jul 02 09:49:04 2026
-Info: Command: quartus_eda --gen_testbench --check_outputs=on --tool=modelsim_oem --format=verilog riscv_uniciclo -c riscv_uniciclo --vector_source=C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/Waveform.vwf --testbench_file=C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/Waveform.vwf.vt
-Info (201000): Generated Verilog Test Bench File C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/Waveform.vwf.vt for simulation
+    Info: Processing started: Thu Jul 02 10:56:14 2026
+Info: Command: quartus_eda --read_settings_files=off --write_settings_files=off riscv_uniciclo -c riscv_uniciclo
+Info (204019): Generated file riscv_uniciclo_7_1200mv_85c_slow.vo in folder "C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/" for EDA simulation tool
+Info (204019): Generated file riscv_uniciclo_7_1200mv_0c_slow.vo in folder "C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/" for EDA simulation tool
+Info (204019): Generated file riscv_uniciclo_min_1200mv_0c_fast.vo in folder "C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/" for EDA simulation tool
+Info (204019): Generated file riscv_uniciclo.vo in folder "C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/" for EDA simulation tool
+Info (204019): Generated file riscv_uniciclo_7_1200mv_85c_v_slow.sdo in folder "C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/" for EDA simulation tool
+Info (204019): Generated file riscv_uniciclo_7_1200mv_0c_v_slow.sdo in folder "C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/" for EDA simulation tool
+Info (204019): Generated file riscv_uniciclo_min_1200mv_0c_v_fast.sdo in folder "C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/" for EDA simulation tool
+Info (204019): Generated file riscv_uniciclo_v.sdo in folder "C:/Users/jgmel/Documents/projects/oac/Laboratorio-OAC/CPU_Uniciclo/simulation/modelsim/" for EDA simulation tool
 Info: Quartus II 64-Bit EDA Netlist Writer was successful. 0 errors, 0 warnings
-    Info: Peak virtual memory: 4825 megabytes
-    Info: Processing ended: Thu Jul 02 09:49:10 2026
-    Info: Elapsed time: 00:00:06
-    Info: Total CPU time (on all processors): 00:00:06
+    Info: Peak virtual memory: 4575 megabytes
+    Info: Processing ended: Thu Jul 02 10:56:15 2026
+    Info: Elapsed time: 00:00:01
+    Info: Total CPU time (on all processors): 00:00:01
 
 
