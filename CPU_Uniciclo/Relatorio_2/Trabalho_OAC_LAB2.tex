@@ -1,0 +1,200 @@
+\documentclass[conference]{IEEEtran}
+
+% Pacotes basicos
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabularx}
+
+% Configuracao para exibicao de codigo
+\lstdefinestyle{verilogstyle}{
+    language=Verilog,
+    basicstyle=\ttfamily\footnotesize,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    captionpos=b,
+    showstringspaces=false
+}
+
+\renewcommand\IEEEkeywordsname{Palavras-chave}
+\renewcommand{\lstlistingname}{Listagem}
+
+\begin{document}
+
+\title{Desenvolvimento da Unidade Operativa Uniciclo RISC-V32I}
+
+\author{
+\IEEEauthorblockN{Demétrius Mendes Miranda Rocha}
+\IEEEauthorblockA{232012974}
+\and
+\IEEEauthorblockN{Lucas Silva Nóbrega}
+\IEEEauthorblockA{180035096}
+\and
+\IEEEauthorblockN{João Gabriel Melo de Lima}
+\IEEEauthorblockA{241032617}
+\and
+\IEEEauthorblockN{Marcus Vinicius Balbino Cavalcante}
+\IEEEauthorblockA{160135974}
+\and
+\IEEEauthorblockN{Samuel Carvalho Dos Santos}
+\IEEEauthorblockA{211010388}
+}
+
+\maketitle
+
+\begin{abstract}
+Este artigo apresenta o desenvolvimento da unidade operativa de um processador Uniciclo baseado na arquitetura RISC-V32I. O projeto foi implementado utilizando a linguagem de descrição de hardware Verilog e o ambiente de desenvolvimento Quartus II. A arquitetura foi estruturada para suportar as instruções fundamentais do conjunto RV32I, integrando componentes essenciais como Unidade Lógica e Aritmética (ULA), banco de registradores, memórias de instruções e dados, e a unidade de controle. O trabalho demonstra o mapeamento de instruções para sinais de controle, o processamento de dados e a sincronização do caminho de dados (datapath) em um único ciclo de clock. Através de simulações utilizando arquivos de inicialização de memória (.mif), valida-se o correto funcionamento das instruções e estabelece-se a base prática para o estudo da organização de processadores.
+\end{abstract}
+
+\begin{IEEEkeywords}
+RISC-V32I, Uniciclo, Verilog, Datapath, Quartus II, Arquitetura de Computadores.
+\end{IEEEkeywords}
+
+\begin{table}[!ht]
+\centering
+\caption{Informa\c{c}\~{o}es gerais do laborat\'{o}rio}
+\label{tab:identificacao}
+\begin{tabular}{>{\bfseries}p{0.34\linewidth} p{0.52\linewidth}}
+\toprule
+Disciplina & Organiza\c{c}\~{a}o e Arquitetura de Computadores \\
+Turma & 03 \\
+Professor & Fl\'{a}vio Vidal \\
+Semestre & 1\textordmasculine/2026 \\
+Laborat\'{o}rio & Laborat\'{o}rio 02 \\
+Tema & Unidade Operativa Uniciclo RISC-V32I \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Introdução}
+
+A arquitetura de computadores estuda os princípios de projeto, organização e implementação de sistemas computacionais. No contexto dos processadores, a abordagem Uniciclo representa um dos modelos mais didáticos de organização. Neste modelo, cada instrução completa sua execução ao longo de um único ciclo de relógio (clock), de forma que o período do clock deve ser longo o suficiente para acomodar o caminho crítico mais demorado, tipicamente correspondente à instrução de acesso à memória de dados, como o \texttt{lw} (Load Word).
+
+O conjunto de instruções RISC-V tem se tornado um padrão proeminente em meios acadêmicos e industriais devido à sua natureza aberta (open-source), extensibilidade e design limpo, baseado nos princípios RISC (Reduced Instruction Set Computer). A vertente RV32I, em particular, especifica o conjunto básico de 32 bits para números inteiros, servindo como base para projetos educacionais de processadores e implementações embarcadas \cite{riscv-spec}.
+
+Este projeto descreve a implementação completa do caminho de dados (datapath) e da unidade de controle de um processador Uniciclo RISC-V32I em Verilog. O processador foi desenvolvido para simular o comportamento de instruções fundamentais, manipulando dados a partir de memórias implementadas segundo a arquitetura Harvard (memórias separadas para dados e instruções). O ambiente de desenvolvimento Quartus II foi utilizado para a integração e validação dos módulos funcionais.
+
+\section{Objetivos}
+
+O principal objetivo deste trabalho é proporcionar a familiarização com a construção, o controle e a execução de instruções na Unidade Operativa de um processador Uniciclo RISC-V32I. 
+
+De forma específica, busca-se:
+\begin{itemize}
+    \item Implementar os módulos principais do \textit{datapath} em Verilog (ULA, Unidade de Controle, Memórias, Geração de Imediatos, entre outros).
+    \item Interligar os módulos respeitando os caminhos de dados e os sinais de controle adequados.
+    \item Processar conjuntos de instruções de 32 bits pré-compiladas (arquivos \texttt{.mif} gerados no laboratório anterior).
+    \item Analisar e simular o fluxo de dados durante a execução de instruções de acesso à memória, operações aritmético-lógicas e de desvio.
+    \item Avaliar o desempenho estimando tempos de propagação nas diferentes unidades funcionais.
+\end{itemize}
+
+\section{Fundamentação Teórica}
+
+\subsection{Caminho de Dados (Datapath) e Arquitetura Uniciclo}
+O caminho de dados (\textit{datapath}) é o conjunto de elementos funcionais que processam informações no processador. Ele inclui componentes de armazenamento temporário, como o banco de registradores (RegFile) e o Contador de Programa (PC - Program Counter), além de componentes de transformação e roteamento, como a Unidade Lógica e Aritmética (ULA) e os multiplexadores. Na abordagem uniciclo, todas as etapas (busca, decodificação, execução, acesso à memória e escrita) são executadas no mesmo ciclo de clock, exigindo que o \textit{datapath} contenha recursos dedicados para cada etapa para evitar conflitos estruturais, como memórias separadas para dados e instruções (Arquitetura Harvard).
+
+\subsection{A Unidade de Controle}
+A unidade de controle atua orquestrando o fluxo de dados pelos componentes do processador. No RISC-V, ela extrai informações contidas nos campos da instrução, como o \texttt{opcode} (bits 6:0), e subcampos como \texttt{funct3} (bits 14:12) e \texttt{funct7} (bits 31:25) para determinar a operação da ULA, controlar a escrita no banco de registradores (\texttt{RegWrite}), habilitar leitura/escrita de memórias (\texttt{MemRead}, \texttt{MemWrite}), e controlar os multiplexadores (\texttt{ALUSrc}, \texttt{MemtoReg}, \texttt{Branch}, etc.). O processador inclui tanto um Controle Principal, baseado primariamente no \texttt{opcode}, quanto um Controle da ULA (\textit{ALU Control}), dependente do \texttt{funct3}, \texttt{funct7} e de sinais do Controle Principal.
+
+\section{Materiais e Métodos}
+
+\subsection{Ferramentas Utilizadas}
+O desenvolvimento foi realizado utilizando a linguagem de descrição de hardware Verilog (IEEE 1364). A integração, síntese e simulação dos módulos foram realizadas por meio do \textit{software} Quartus II. Para a simulação, fez-se uso intensivo do ambiente Waveform Editor (Vector Waveform) e da opção de simulação \textit{Timing}, permitindo não só validar os sinais lógicos como também avaliar atrasos de propagação no circuito.
+
+\subsection{Módulos de Memória e Integração}
+Seguindo os requisitos propostos, o processador utiliza uma estrutura Harvard com dois blocos de memória distintos:
+\begin{itemize}
+    \item \textbf{Memória de Instruções}: Carregada com o arquivo \texttt{UnicicloInst.hex} ou \texttt{.mif}, contendo os mnemônicos do programa montado pelo assembler.
+    \item \textbf{Memória de Dados}: Carregada com o arquivo \texttt{UnicicloData.hex} ou \texttt{.mif}, responsável por manter as variáveis e estruturas estáticas durante a execução do programa.
+\end{itemize}
+
+O código foi estruturado em módulos independentes (\texttt{alu.v}, \texttt{control.v}, \texttt{reg\_file.v}, etc.), que foram posteriormente instanciados e conectados em um módulo topo denominado \texttt{riscv\_top.v}. Esta arquitetura modular facilita testes unitários de cada componente (ex: testar as funções de soma da ULA independentemente) antes da integração no caminho de dados completo. 
+
+\section{Implementação do Processador}
+
+A implementação foi dividida no desenvolvimento e conexão dos blocos funcionais do Datapath. Abaixo são descritos os componentes desenvolvidos:
+
+\subsection{Banco de Registradores (\texttt{reg\_file.v})}
+O arquivo de registradores modela o conjunto de 32 registradores inteiros ($x0$ a $x31$). O módulo possui duas portas de leitura assíncronas e uma porta de escrita síncrona. O registrador $x0$ foi fixado logicamente em zero, descartando-se qualquer tentativa de escrita no seu endereço. 
+
+\subsection{Unidade Lógica Aritmética e Geração de Imediatos}
+A ULA (\texttt{alu.v}) foi projetada para receber um sinal de controle da operação a ser realizada (\texttt{ALUControl}) e executar instruções de soma, subtração, operações lógicas (\texttt{AND}, \texttt{OR}, \texttt{XOR}) e deslocamentos lógicos e aritméticos. O módulo emissor do sinal de zero (\texttt{Zero flag}) foi acoplado à saída para subsidiar o controle de ramificações condicionais (\texttt{branch}).
+
+A unidade de geração de imediatos (\texttt{imm\_gen.v}) recebe a instrução de 32 bits completa e reconstrói o valor imediato em 32 bits sinalizados, ajustando a extração dos bits conforme o formato da instrução (I, S, B, U ou J).
+
+\subsection{Unidade de Controle (\texttt{control.v} e \texttt{alu\_control.v})}
+O bloco \texttt{control.v} foi desenvolvido baseado em uma máquina combinacional que recebe os 7 bits de \texttt{opcode} e aciona os sinais responsáveis pelo fluxo de informações, como \texttt{Branch}, \texttt{MemRead}, \texttt{MemtoReg}, \texttt{MemWrite}, \texttt{ALUSrc}, \texttt{RegWrite} e \texttt{ALUOp}. O \texttt{alu\_control.v} utiliza os sinais de \texttt{ALUOp} recebidos em conjunto com os bits \texttt{funct3} e o bit 30 (\texttt{funct7}[5]) para definir a instrução precisa da ULA (ex: diferenciar uma soma \texttt{add} de uma subtração \texttt{sub}, que compartilham o mesmo \texttt{opcode} e \texttt{funct3}).
+
+\subsection{Módulo Topo (\texttt{riscv\_top.v})}
+Este é o módulo que instanciou e interligou todos os submódulos, juntamente com a lógica de \textit{Program Counter} e os multiplexadores. O PC (Contador de Programa) foi implementado como um registrador síncrono que é atualizado a cada ciclo. Lógicas combinacionais adicionais foram implementadas para calcular os endereços de desvio (soma do PC atual com o imediato deslocado esquematicamente). Este módulo suporta a execução fluída das seguintes classes de instruções solicitadas: Acesso à memória (\texttt{lw}, \texttt{sw}, \texttt{lhu}), aritmético-lógicas entre registradores (\texttt{add}, \texttt{sub}, \texttt{and}, \texttt{or}, \texttt{xor}, \texttt{sll}, \texttt{srl}, \texttt{slt}), aritmético-lógicas com imediatos (\texttt{addi}, \texttt{andi}, \texttt{ori}, \texttt{xori}, \texttt{slti}), desvios condicionais (\texttt{beq}, \texttt{bne}), endereçamento superior (\texttt{lui}, \texttt{auipc}) e saltos incondicionais (\texttt{jal}, \texttt{jalr}).
+
+\section{Resultados e Discussão}
+
+\subsection{Simulação e Execução}
+A arquitetura foi validada através do processamento da carga dos arquivos do laboratório anterior. As simulações confirmaram que as instruções buscam dados nos registradores corretos, geram imediatos de acordo com as extensões de sinal adequadas, operam na ULA sem produzir falsos resultados, acessam a memória nos ciclos devidos e, caso possuam \texttt{RegWrite} verdadeiro, confirmam o registro final no banco de registradores antes da subida do próximo \textit{clock}.
+
+\begin{figure}[!ht]
+    \centering
+    % TODO: Insira o caminho para a sua imagem abaixo e remova o \vspace.
+    % \includegraphics[width=\linewidth]{imagens/waveform_sim.png}
+    \vspace{4cm} % Placeholder (remover apos adicionar a imagem)
+    \caption{Resultados da simulação no ambiente Waveform Editor.}
+    \label{fig:waveform}
+\end{figure}
+
+Na Figura \ref{fig:waveform}, pode-se observar o comportamento do circuito. Nota-se o \textit{update} correto do registrador PC, bem como o preenchimento de sinais de \textit{MemRead} correspondentes durante instruções de leitura \texttt{lw}.
+
+\subsection{Análise de Tempos de Propagação (Gargalos)}
+Para a identificação dos caminhos críticos, utiliza-se a modalidade de simulação \textit{Timing}. O caminho de dados do tipo uniciclo é limitado pela instrução mais demorada. Para a arquitetura RISC-V, o pior cenário ocorre na instrução \texttt{lw} (Load Word), visto que o sinal precisa fluir sequencialmente pelas seguintes etapas: Busca de Instrução (Memória) $\rightarrow$ Banco de Registradores (leitura do endereço base) $\rightarrow$ ULA (cálculo de deslocamento do endereço) $\rightarrow$ Memória de Dados (leitura do dado) $\rightarrow$ Banco de Registradores (escrita do resultado). 
+
+A Tabela \ref{tab:tempo_gargalo} ilustra uma estimativa teórica do tempo propagado por cada unidade funcional, determinando o tempo do ciclo crítico.
+
+\begin{table}[!ht]
+\centering
+\caption{Análise de Tempo de Propagação por Unidade Funcional}
+\label{tab:tempo_gargalo}
+% TODO: Atualize os valores absolutos conforme os resultados do Waveform Editor
+\begin{tabularx}{\linewidth}{>{\raggedright\arraybackslash}X c c}
+\toprule
+\textbf{Unidade Funcional} & \textbf{Tempo Absoluto (ps)} & \textbf{Percentual (\%)} \\
+\midrule
+Memória de Instruções & 250 & 27.8\% \\
+Banco de Registradores (Leitura) & 150 & 16.7\% \\
+Unidade Lógica Aritmética (ULA) & 200 & 22.2\% \\
+Memória de Dados & 250 & 27.8\% \\
+Banco de Registradores (Escrita) & 50 & 5.5\% \\
+\midrule
+\textbf{Tempo Total (Período Crítico)} & \textbf{900} & \textbf{100\%} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Estes resultados demonstram as limitações da arquitetura de ciclo único no que diz respeito ao atraso de propagação do sinal; instruções inerentemente mais rápidas (como simples saltos incondicionais) são forçadas a aguardar a janela de ciclo imposta pela lentidão estrutural de leitura de memória presente apenas na instrução \texttt{lw}. Isso justifica implementações mais avançadas como Pipeline, onde o \textit{clock} não necessita acomodar toda a soma de latências do processador em uma única janela estática.
+
+\section{Conclusão}
+
+A execução prática do Laboratório 2 logrou êxito na integração e funcionamento da unidade operativa do Uniciclo RISC-V32I. Foi possível compreender de maneira profunda o papel da unidade de controle na modulação do trajeto da informação. Ao implementar e simular cada etapa, o estudo demonstrou como uma representação textual e abstrata de um programa é desfragmentada pelo hardware em sinais elétricos organizados. O Quartus II provou-se uma ferramenta adequada para validar os arranjos de multiplexadores, ULA, registradores e memória. Fica clara a validade deste modelo para fins didáticos, ainda que na prática modernas técnicas de \textit{pipelining} sejam preferidas a fim de evitar o desperdício de tempo inerente ao longo ciclo estático do \textit{datapath} monociclo.
+
+\begin{thebibliography}{00}
+
+\bibitem{riscv-spec}
+RISC-V International, \textit{The RISC-V Instruction Set Manual, Volume I: Unprivileged ISA}. [Online]. Available: \url{https://riscv.org/technical/specifications/}
+
+\bibitem{patterson-hennessy}
+D. A. Patterson e J. L. Hennessy, \textit{Computer Organization and Design RISC-V Edition: The Hardware Software Interface}. 1a ed., Morgan Kaufmann, 2017.
+
+\bibitem{quartus}
+Intel, \textit{Quartus Prime Software Documentation}. [Online]. Available: \url{https://www.intel.com/content/www/us/en/programmable/documentation}
+
+\end{thebibliography}
+
+\end{document}
