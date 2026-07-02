@@ -1,5 +1,5 @@
 Flow report for riscv_uniciclo
-Thu Jul 02 10:56:15 2026
+Thu Jul 02 11:12:44 2026
 Quartus II 64-Bit Version 13.1.0 Build 162 10/23/2013 SJ Web Edition
 
 
@@ -40,22 +40,22 @@ applicable agreement for further details.
 +---------------------------------------------------------------------------------+
 ; Flow Summary                                                                    ;
 +------------------------------------+--------------------------------------------+
-; Flow Status                        ; Successful - Thu Jul 02 10:56:15 2026      ;
+; Flow Status                        ; Successful - Thu Jul 02 11:12:43 2026      ;
 ; Quartus II 64-Bit Version          ; 13.1.0 Build 162 10/23/2013 SJ Web Edition ;
 ; Revision Name                      ; riscv_uniciclo                             ;
 ; Top-level Entity Name              ; riscv_top                                  ;
 ; Family                             ; Cyclone IV E                               ;
 ; Device                             ; EP4CE115F29C7                              ;
 ; Timing Models                      ; Final                                      ;
-; Total logic elements               ; 0 / 114,480 ( 0 % )                        ;
-;     Total combinational functions  ; 0 / 114,480 ( 0 % )                        ;
-;     Dedicated logic registers      ; 0 / 114,480 ( 0 % )                        ;
-; Total registers                    ; 0                                          ;
-; Total pins                         ; 2 / 529 ( < 1 % )                          ;
-; Total virtual pins                 ; 0                                          ;
-; Total memory bits                  ; 0 / 3,981,312 ( 0 % )                      ;
-; Embedded Multiplier 9-bit elements ; 0 / 532 ( 0 % )                            ;
-; Total PLLs                         ; 0 / 4 ( 0 % )                              ;
+; Total logic elements               ; 59,005                                     ;
+;     Total combinational functions  ; 25,323                                     ;
+;     Dedicated logic registers      ; 33,792                                     ;
+; Total registers                    ; 33792                                      ;
+; Total pins                         ; 2                                          ;
+; Total virtual pins                 ; 1,360                                      ;
+; Total memory bits                  ; 0                                          ;
+; Embedded Multiplier 9-bit elements ; 0                                          ;
+; Total PLLs                         ; 0                                          ;
 +------------------------------------+--------------------------------------------+
 
 
@@ -64,7 +64,7 @@ applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 07/02/2026 10:55:53 ;
+; Start date & time ; 07/02/2026 11:10:15 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; riscv_uniciclo      ;
 +-------------------+---------------------+
@@ -75,7 +75,7 @@ applicable agreement for further details.
 +--------------------------------------+---------------------------------+----------------+-------------+----------------+
 ; Assignment Name                      ; Value                           ; Default Value  ; Entity Name ; Section Id     ;
 +--------------------------------------+---------------------------------+----------------+-------------+----------------+
-; COMPILER_SIGNATURE_ID                ; 102037079104843.178300055301844 ; --             ; --          ; --             ;
+; COMPILER_SIGNATURE_ID                ; 102037079104843.178300141514424 ; --             ; --          ; --             ;
 ; EDA_DESIGN_INSTANCE_NAME             ; NA                              ; --             ; --          ; tb_riscv_top   ;
 ; EDA_NATIVELINK_SIMULATION_TEST_BENCH ; tb_riscv_top                    ; --             ; --          ; eda_simulation ;
 ; EDA_OUTPUT_DATA_FORMAT               ; Verilog Hdl                     ; --             ; --          ; eda_simulation ;
@@ -96,41 +96,29 @@ applicable agreement for further details.
 +--------------------------------------+---------------------------------+----------------+-------------+----------------+
 
 
-+-------------------------------------------------------------------------------------------------------------------------------+
-; Flow Elapsed Time                                                                                                             ;
-+---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
-+---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis      ; 00:00:01     ; 1.0                     ; 4642 MB             ; 00:00:01                           ;
-; Fitter                    ; 00:00:09     ; 1.4                     ; 5498 MB             ; 00:00:12                           ;
-; Assembler                 ; 00:00:04     ; 1.0                     ; 4610 MB             ; 00:00:04                           ;
-; TimeQuest Timing Analyzer ; 00:00:03     ; 1.0                     ; 4727 MB             ; 00:00:02                           ;
-; EDA Netlist Writer        ; 00:00:01     ; 1.0                     ; 4563 MB             ; 00:00:01                           ;
-; Total                     ; 00:00:18     ; --                      ; --                  ; 00:00:20                           ;
-+---------------------------+--------------+-------------------------+---------------------+------------------------------------+
++--------------------------------------------------------------------------------------------------------------------------+
+; Flow Elapsed Time                                                                                                        ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Analysis & Synthesis ; 00:02:22     ; 1.0                     ; 4927 MB             ; 00:02:22                           ;
+; Total                ; 00:02:22     ; --                      ; --                  ; 00:02:22                           ;
++----------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
-+----------------------------------------------------------------------------------------+
-; Flow OS Summary                                                                        ;
-+---------------------------+------------------+-----------+------------+----------------+
-; Module Name               ; Machine Hostname ; OS Name   ; OS Version ; Processor type ;
-+---------------------------+------------------+-----------+------------+----------------+
-; Analysis & Synthesis      ; JGlimsNote       ; Windows 7 ; 6.2        ; x86_64         ;
-; Fitter                    ; JGlimsNote       ; Windows 7 ; 6.2        ; x86_64         ;
-; Assembler                 ; JGlimsNote       ; Windows 7 ; 6.2        ; x86_64         ;
-; TimeQuest Timing Analyzer ; JGlimsNote       ; Windows 7 ; 6.2        ; x86_64         ;
-; EDA Netlist Writer        ; JGlimsNote       ; Windows 7 ; 6.2        ; x86_64         ;
-+---------------------------+------------------+-----------+------------+----------------+
++-----------------------------------------------------------------------------------+
+; Flow OS Summary                                                                   ;
++----------------------+------------------+-----------+------------+----------------+
+; Module Name          ; Machine Hostname ; OS Name   ; OS Version ; Processor type ;
++----------------------+------------------+-----------+------------+----------------+
+; Analysis & Synthesis ; JGlimsNote       ; Windows 7 ; 6.2        ; x86_64         ;
++----------------------+------------------+-----------+------------+----------------+
 
 
 ------------
 ; Flow Log ;
 ------------
 quartus_map --read_settings_files=on --write_settings_files=off riscv_uniciclo -c riscv_uniciclo
-quartus_fit --read_settings_files=off --write_settings_files=off riscv_uniciclo -c riscv_uniciclo
-quartus_asm --read_settings_files=off --write_settings_files=off riscv_uniciclo -c riscv_uniciclo
-quartus_sta riscv_uniciclo -c riscv_uniciclo
-quartus_eda --read_settings_files=off --write_settings_files=off riscv_uniciclo -c riscv_uniciclo
 
 
 
