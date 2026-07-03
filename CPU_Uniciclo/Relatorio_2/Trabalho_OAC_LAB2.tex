@@ -34,23 +34,27 @@
 \title{Desenvolvimento da Unidade Operativa Uniciclo RISC-V32I}
 
 \author{
-\IEEEauthorblockN{Demétrius Mendes Miranda Rocha}
-\IEEEauthorblockA{232012974}
-\and
-\IEEEauthorblockN{Lucas Silva Nóbrega}
-\IEEEauthorblockA{180035096}
-\and
-\IEEEauthorblockN{João Gabriel Melo de Lima}
-\IEEEauthorblockA{241032617}
-\and
-\IEEEauthorblockN{Marcus Vinicius Balbino Cavalcante}
-\IEEEauthorblockA{160135974}
-\and
-\IEEEauthorblockN{Samuel Carvalho Dos Santos}
-\IEEEauthorblockA{211010388}
+    \IEEEauthorblockN{Demétrius Mendes Miranda Rocha}
+    \IEEEauthorblockA{232012974}
+    \and
+    \IEEEauthorblockN{Lucas Silva Nóbrega}
+    \IEEEauthorblockA{180035096}
+    \and
+    \IEEEauthorblockN{João Gabriel Melo de Lima}
+    \IEEEauthorblockA{241032617}
+    \and
+    \IEEEauthorblockN{Marcus Vinicius Balbino Cavalcante}
+    \IEEEauthorblockA{160135974}
+    \and
+    \IEEEauthorblockN{Samuel Carvalho Dos Santos}
+    \IEEEauthorblockA{211010388}
 }
 
-\maketitle
+
+
+\maketitle 
+
+
 
 \begin{abstract}
 Este artigo apresenta o desenvolvimento da unidade operativa de um processador Uniciclo baseado na arquitetura RISC-V32I. O projeto foi implementado utilizando a linguagem de descrição de hardware Verilog e o ambiente de desenvolvimento Quartus II. A arquitetura foi estruturada para suportar as instruções fundamentais do conjunto RV32I, integrando componentes essenciais como Unidade Lógica e Aritmética (ULA), banco de registradores, memórias de instruções e dados, e a unidade de controle. O trabalho demonstra o mapeamento de instruções para sinais de controle, o processamento de dados e a sincronização do caminho de dados (datapath) em um único ciclo de clock. Através de simulações utilizando arquivos de inicialização de memória (.mif), valida-se o correto funcionamento das instruções e estabelece-se a base prática para o estudo da organização de processadores.
@@ -64,7 +68,7 @@ RISC-V32I, Uniciclo, Verilog, Datapath, Quartus II, Arquitetura de Computadores.
 \centering
 \caption{Informa\c{c}\~{o}es gerais do laborat\'{o}rio}
 \label{tab:identificacao}
-\begin{tabular}{>{\bfseries}p{0.34\linewidth} p{0.52\linewidth}}
+\begin{tabular}{>{\bfseries}p{0.25\linewidth} >{\centering\arraybackslash}p{0.61\linewidth}}
 \toprule
 Disciplina & Organiza\c{c}\~{a}o e Arquitetura de Computadores \\
 Turma & 03 \\

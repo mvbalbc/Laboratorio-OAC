@@ -1,5 +1,5 @@
 Flow report for riscv_uniciclo
-Thu Jul  2 17:10:52 2026
+Thu Jul  2 18:18:40 2026
 Quartus Prime Version 25.1std.0 Build 1129 10/21/2025 SC Lite Edition
 
 
@@ -38,29 +38,24 @@ on the Quartus Prime software download page.
 
 
 
-+-----------------------------------------------------------------------------------+
-; Flow Summary                                                                      ;
-+---------------------------------+-------------------------------------------------+
-; Flow Status                     ; Successful - Thu Jul  2 17:10:51 2026           ;
-; Quartus Prime Version           ; 25.1std.0 Build 1129 10/21/2025 SC Lite Edition ;
-; Revision Name                   ; riscv_uniciclo                                  ;
-; Top-level Entity Name           ; riscv_top                                       ;
-; Family                          ; Cyclone V                                       ;
-; Device                          ; 5CGXFC7C7F23C8                                  ;
-; Timing Models                   ; Final                                           ;
-; Logic utilization (in ALMs)     ; N/A                                             ;
-; Total registers                 ; 32911                                           ;
-; Total pins                      ; 2                                               ;
-; Total virtual pins              ; 336                                             ;
-; Total block memory bits         ; 2,048                                           ;
-; Total DSP Blocks                ; 0                                               ;
-; Total HSSI RX PCSs              ; 0                                               ;
-; Total HSSI PMA RX Deserializers ; 0                                               ;
-; Total HSSI TX PCSs              ; 0                                               ;
-; Total HSSI PMA TX Serializers   ; 0                                               ;
-; Total PLLs                      ; 0                                               ;
-; Total DLLs                      ; 0                                               ;
-+---------------------------------+-------------------------------------------------+
++-------------------------------------------------------------------------------+
+; Flow Summary                                                                  ;
++-----------------------------+-------------------------------------------------+
+; Flow Status                 ; Successful - Thu Jul  2 18:18:40 2026           ;
+; Quartus Prime Version       ; 25.1std.0 Build 1129 10/21/2025 SC Lite Edition ;
+; Revision Name               ; riscv_uniciclo                                  ;
+; Top-level Entity Name       ; riscv_top                                       ;
+; Family                      ; Cyclone V                                       ;
+; Device                      ; 5CGXFC7C7F23C8                                  ;
+; Timing Models               ; Final                                           ;
+; Logic utilization (in ALMs) ; N/A until Partition Merge                       ;
+; Total registers             ; N/A until Partition Merge                       ;
+; Total pins                  ; N/A until Partition Merge                       ;
+; Total virtual pins          ; N/A until Partition Merge                       ;
+; Total block memory bits     ; N/A until Partition Merge                       ;
+; Total PLLs                  ; N/A until Partition Merge                       ;
+; Total DLLs                  ; N/A until Partition Merge                       ;
++-----------------------------+-------------------------------------------------+
 
 
 +-----------------------------------------+
@@ -68,7 +63,7 @@ on the Quartus Prime software download page.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 07/02/2026 17:07:31 ;
+; Start date & time ; 07/02/2026 17:52:38 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; riscv_uniciclo      ;
 +-------------------+---------------------+
@@ -79,7 +74,7 @@ on the Quartus Prime software download page.
 +--------------------------------------+----------------------------------------+----------------+-------------+-----------------------------------+
 ; Assignment Name                      ; Value                                  ; Default Value  ; Entity Name ; Section Id                        ;
 +--------------------------------------+----------------------------------------+----------------+-------------+-----------------------------------+
-; COMPILER_SIGNATURE_ID                ; 102021901574897.178302285122920        ; --             ; --          ; --                                ;
+; COMPILER_SIGNATURE_ID                ; 102021901574897.178302555830952        ; --             ; --          ; --                                ;
 ; EDA_DESIGN_ENTRY_SYNTHESIS_TOOL      ; Precision Synthesis                    ; <None>         ; --          ; --                                ;
 ; EDA_DESIGN_INSTANCE_NAME             ; NA                                     ; --             ; --          ; tb_riscv_top                      ;
 ; EDA_GENERATE_FUNCTIONAL_NETLIST      ; Off                                    ; --             ; --          ; eda_board_design_timing           ;
@@ -108,29 +103,41 @@ on the Quartus Prime software download page.
 +--------------------------------------+----------------------------------------+----------------+-------------+-----------------------------------+
 
 
-+--------------------------------------------------------------------------------------------------------------------------+
-; Flow Elapsed Time                                                                                                        ;
-+----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Module Name          ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
-+----------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis ; 00:03:13     ; 1.0                     ; 678 MB              ; 00:02:54                           ;
-; Total                ; 00:03:13     ; --                      ; --                  ; 00:02:54                           ;
-+----------------------+--------------+-------------------------+---------------------+------------------------------------+
++----------------------------------------------------------------------------------------------------------------------------+
+; Flow Elapsed Time                                                                                                          ;
++------------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Module Name            ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
++------------------------+--------------+-------------------------+---------------------+------------------------------------+
+; Analysis & Elaboration ; 00:00:26     ; 1.0                     ; 735 MB              ; 00:00:25                           ;
+; EDA Netlist Writer     ; 00:00:03     ; 1.0                     ; 746 MB              ; 00:00:02                           ;
+; EDA Netlist Writer     ; 00:00:12     ; 1.0                     ; 776 MB              ; 00:00:09                           ;
+; EDA Netlist Writer     ; 00:00:02     ; 1.0                     ; 746 MB              ; 00:00:02                           ;
+; EDA Netlist Writer     ; 00:00:09     ; 1.0                     ; 776 MB              ; 00:00:09                           ;
+; Total                  ; 00:00:52     ; --                      ; --                  ; 00:00:47                           ;
++------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 
-+-----------------------------------------------------------------------------------------+
-; Flow OS Summary                                                                         ;
-+----------------------+--------------------------+---------+------------+----------------+
-; Module Name          ; Machine Hostname         ; OS Name ; OS Version ; Processor type ;
-+----------------------+--------------------------+---------+------------+----------------+
-; Analysis & Synthesis ; samuel-cds-S460-L-BK26P1 ; Ubuntu  ; 24         ; x86_64         ;
-+----------------------+--------------------------+---------+------------+----------------+
++-------------------------------------------------------------------------------------------+
+; Flow OS Summary                                                                           ;
++------------------------+--------------------------+---------+------------+----------------+
+; Module Name            ; Machine Hostname         ; OS Name ; OS Version ; Processor type ;
++------------------------+--------------------------+---------+------------+----------------+
+; Analysis & Elaboration ; samuel-cds-S460-L-BK26P1 ; Ubuntu  ; 24         ; x86_64         ;
+; EDA Netlist Writer     ; samuel-cds-S460-L-BK26P1 ; Ubuntu  ; 24         ; x86_64         ;
+; EDA Netlist Writer     ; samuel-cds-S460-L-BK26P1 ; Ubuntu  ; 24         ; x86_64         ;
+; EDA Netlist Writer     ; samuel-cds-S460-L-BK26P1 ; Ubuntu  ; 24         ; x86_64         ;
+; EDA Netlist Writer     ; samuel-cds-S460-L-BK26P1 ; Ubuntu  ; 24         ; x86_64         ;
++------------------------+--------------------------+---------+------------+----------------+
 
 
 ------------
 ; Flow Log ;
 ------------
-quartus_map --read_settings_files=on --write_settings_files=off riscv_uniciclo -c riscv_uniciclo
+quartus_map --read_settings_files=on --write_settings_files=off riscv_uniciclo -c riscv_uniciclo --analysis_and_elaboration
+quartus_eda --gen_testbench --tool=modelsim_oem --format=verilog --write_settings_files=off riscv_uniciclo -c riscv_uniciclo --vector_source=/home/samuel-cds/Documentos/Faculdade/OAC/Laboratorio-OAC/CPU_Uniciclo/Waveform.vwf --testbench_file=/home/samuel-cds/Documentos/Faculdade/OAC/Laboratorio-OAC/CPU_Uniciclo/simulation/qsim/Waveform.vwf.vt
+quartus_eda --write_settings_files=off --simulation=on --functional=on --flatten_buses=off --tool=modelsim_oem --format=verilog --output_directory=/home/samuel-cds/Documentos/Faculdade/OAC/Laboratorio-OAC/CPU_Uniciclo/simulation/qsim/ riscv_uniciclo -c riscv_uniciclo
+quartus_eda --gen_testbench --tool=modelsim_oem --format=verilog --write_settings_files=off riscv_uniciclo -c riscv_uniciclo --vector_source=/home/samuel-cds/Documentos/Faculdade/OAC/Laboratorio-OAC/CPU_Uniciclo/Waveform.vwf --testbench_file=/home/samuel-cds/Documentos/Faculdade/OAC/Laboratorio-OAC/CPU_Uniciclo/simulation/qsim/Waveform.vwf.vt
+quartus_eda --write_settings_files=off --simulation=on --functional=on --flatten_buses=off --tool=modelsim_oem --format=verilog --output_directory=/home/samuel-cds/Documentos/Faculdade/OAC/Laboratorio-OAC/CPU_Uniciclo/simulation/qsim/ riscv_uniciclo -c riscv_uniciclo
 
 
 

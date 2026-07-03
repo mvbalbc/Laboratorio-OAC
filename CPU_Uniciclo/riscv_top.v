@@ -52,7 +52,7 @@ module riscv_top (
     // ============================================================
     wire [31:0] instruction;
     inst_mem u_imem (
-        .clk   (clk), // <--- ADICIONE ESTA LINHA EXATAMENTE AQUI
+        .clk   (clk),
         .addr  (pc),
         .rdata (instruction)
     );
