@@ -57,7 +57,7 @@
 
 
 \begin{abstract}
-Este artigo apresenta o desenvolvimento da unidade operativa de um processador Uniciclo baseado na arquitetura RISC-V32I. O projeto foi implementado utilizando a linguagem de descrição de hardware Verilog e o ambiente de desenvolvimento Quartus II. A arquitetura foi estruturada para suportar as instruções fundamentais do conjunto RV32I, integrando componentes essenciais como Unidade Lógica e Aritmética (ULA), banco de registradores, memórias de instruções e dados, e a unidade de controle. O trabalho demonstra o mapeamento de instruções para sinais de controle, o processamento de dados e a sincronização do caminho de dados (datapath) em um único ciclo de clock. Através de simulações utilizando arquivos de inicialização de memória (.mif), valida-se o correto funcionamento das instruções e estabelece-se a base prática para o estudo da organização de processadores.
+Este artigo apresenta o desenvolvimento da unidade operativa de um processador Uniciclo baseado na arquitetura RISC-V32I. O projeto foi implementado utilizando a linguagem de descrição de hardware Verilog e o ambiente de desenvolvimento Quartus II. A arquitetura foi estruturada para suportar as instruções fundamentais do conjunto RV32I, integrando componentes essenciais como Unidade Lógica e Aritmética (ULA), banco de registradores, memórias de instruções e dados, e a unidade de controle. O trabalho demonstra o mapeamento de instruções para sinais de controle, o processamento de dados e a sincronização do caminho de dados (\textit{datapath}) em um único ciclo de clock. Através de simulações utilizando arquivos de inicialização de memória (.mif), valida-se o correto funcionamento das instruções e estabelece-se a base prática para o estudo da organização de processadores.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -86,7 +86,7 @@ A arquitetura de computadores estuda os princípios de projeto, organização e 
 
 O conjunto de instruções RISC-V tem se tornado um padrão proeminente em meios acadêmicos e industriais devido à sua natureza aberta (open-source), extensibilidade e design limpo, baseado nos princípios RISC (Reduced Instruction Set Computer). A vertente RV32I, em particular, especifica o conjunto básico de 32 bits para números inteiros, servindo como base para projetos educacionais de processadores e implementações embarcadas \cite{riscv-spec}.
 
-Este projeto descreve a implementação completa do caminho de dados (datapath) e da unidade de controle de um processador Uniciclo RISC-V32I em Verilog. O processador foi desenvolvido para simular o comportamento de instruções fundamentais, manipulando dados a partir de memórias implementadas segundo a arquitetura Harvard (memórias separadas para dados e instruções). O ambiente de desenvolvimento Quartus II foi utilizado para a integração e validação dos módulos funcionais.
+Este projeto descreve a implementação completa do caminho de dados (\textit{\ref{fig:datapath}}) e da unidade de controle de um processador Uniciclo RISC-V32I em Verilog. O processador foi desenvolvido para simular o comportamento de instruções fundamentais, manipulando dados a partir de memórias implementadas segundo a arquitetura Harvard (memórias separadas para dados e instruções). O ambiente de desenvolvimento Quartus II foi utilizado para a integração e validação dos módulos funcionais.
 
 \section{Objetivos}
 
@@ -94,7 +94,7 @@ O principal objetivo deste trabalho é proporcionar a familiarização com a con
 
 De forma específica, busca-se:
 \begin{itemize}
-    \item Implementar os módulos principais do \textit{datapath} em Verilog (ULA, Unidade de Controle, Memórias, Geração de Imediatos, entre outros).
+    \item Implementar os módulos principais do \textit{\ref{fig:datapath}} em Verilog (ULA, Unidade de Controle, Memórias, Geração de Imediatos, entre outros).
     \item Interligar os módulos respeitando os caminhos de dados e os sinais de controle adequados.
     \item Processar conjuntos de instruções de 32 bits pré-compiladas (arquivos \texttt{.mif} gerados no laboratório anterior).
     \item Analisar e simular o fluxo de dados durante a execução de instruções de acesso à memória, operações aritmético-lógicas e de desvio.
@@ -111,13 +111,13 @@ De forma específica, busca-se:
 \end{figure}
 
 \subsection{Caminho de Dados (Datapath) e Arquitetura Uniciclo}
-O caminho de dados (\textit{datapath}) é o conjunto de elementos funcionais que processam informações no processador, formado por elementos de estado e elementos combinacionais. Ele inclui componentes de armazenamento temporário, como o banco de registradores (RegFile) e o Contador de Programa (PC - Program Counter), além de componentes de transformação e roteamento, como a Unidade Lógica e Aritmética (ULA) e os multiplexadores. Na abordagem uniciclo, todas as etapas (busca, decodificação, execução, acesso à memória e escrita) são executadas no mesmo ciclo de clock, exigindo que o \textit{datapath} contenha recursos dedicados para cada etapa para evitar conflitos estruturais, como memórias separadas para dados e instruções (Arquitetura Harvard).
+O caminho de dados (\textit{\ref{fig:datapath}}) é o conjunto de elementos funcionais que processam informações no processador, formado por elementos de estado e elementos combinacionais. Ele inclui componentes de armazenamento temporário, como o banco de registradores (RegFile) e o Contador de Programa (PC - Program Counter), além de componentes de transformação e roteamento, como a Unidade Lógica e Aritmética (ULA) e os multiplexadores. Na abordagem uniciclo, todas as etapas (busca, decodificação, execução, acesso à memória e escrita) são executadas no mesmo ciclo de clock, exigindo que o \textit{\ref{fig:datapath}}} contenha recursos dedicados para cada etapa para evitar conflitos estruturais, como memórias separadas para dados e instruções (Arquitetura Harvard).
 
 \subsection{Program Counter}
 O Program Counter (PC) é o registrador responsável por armazenar o endereço da próxima instrução a ser buscada na memória de instruções. Comumente, o seu valor é incrementado em quatro bytes (PC+4) após cada instrução, pois todas as instruções do conjunto RV32I possuem tamanho fixo de 32 bits. Em instruções de desvio e salto, entretanto, o próximo valor do PC passa a ser determinado pelo resultado de cálculos envolvendo deslocamentos de imediatos ou de endereços calculados pela ULA.
 
 \subsection{Multiplexadores}
-Os multiplexadores são responsáveis por selecionar quais sinais percorrem o datapath. Eles permitem escolher, por exemplo, entre um operando vindo do banco de registradores ou do gerador de imediato, entre o resultado da ULA ou da memória para escrita nos registradores, e entre diferentes possibilidades para atualização do Program Counter.
+Os multiplexadores são responsáveis por selecionar quais sinais percorrem o \ref{fig:datapath}. Eles permitem escolher, por exemplo, entre um operando vindo do banco de registradores ou do gerador de imediato, entre o resultado da ULA ou da memória para escrita nos registradores, e entre diferentes possibilidades para atualização do Program Counter.
 
 \subsection{Arquitetura Harvard}
 O processador desenvolvido utiliza arquitetura Harvard, caracterizada pela separação física entre memória de instruções e memória de dados. Desta forma, a busca de instruções ocorre independentemente dos acessos realizados à memória de dados, eliminando conflitos estruturais comuns em arquiteturas com memória unificada.
@@ -249,7 +249,7 @@ Estes resultados demonstram as limitações da arquitetura de ciclo único no qu
 
 \section{Conclusão}
 
-A execução prática do Laboratório 2 logrou êxito na integração e funcionamento da unidade operativa do Uniciclo RISC-V32I. Foi possível compreender de maneira profunda o papel da unidade de controle na modulação do trajeto da informação. Ao implementar e simular cada etapa, o estudo demonstrou como uma representação textual e abstrata de um programa é desfragmentada pelo hardware em sinais elétricos organizados. O Quartus II provou-se uma ferramenta adequada para validar os arranjos de multiplexadores, ULA, registradores e memória. Fica clara a validade deste modelo para fins didáticos, ainda que na prática modernas técnicas de \textit{pipelining} sejam preferidas a fim de evitar o desperdício de tempo inerente ao longo ciclo estático do \textit{datapath} monociclo.
+A execução prática do Laboratório 2 logrou êxito na integração e funcionamento da unidade operativa do Uniciclo RISC-V32I. Foi possível compreender de maneira profunda o papel da unidade de controle na modulação do trajeto da informação. Ao implementar e simular cada etapa, o estudo demonstrou como uma representação textual e abstrata de um programa é desfragmentada pelo hardware em sinais elétricos organizados. O Quartus II provou-se uma ferramenta adequada para validar os arranjos de multiplexadores, ULA, registradores e memória. Fica clara a validade deste modelo para fins didáticos, ainda que, na prática, modernas técnicas de \textit{pipelining} sejam preferidas a fim de evitar o desperdício de tempo inerente ao longo ciclo estático do \textit{\ref{fig:datapath}} monociclo.
 
 \begin{thebibliography}{00}
 
