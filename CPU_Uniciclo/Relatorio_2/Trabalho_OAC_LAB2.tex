@@ -107,6 +107,32 @@ O caminho de dados (\textit{datapath}) é o conjunto de elementos funcionais que
 \subsection{A Unidade de Controle}
 A unidade de controle atua orquestrando o fluxo de dados pelos componentes do processador. No RISC-V, ela extrai informações contidas nos campos da instrução, como o \texttt{opcode} (bits 6:0), e subcampos como \texttt{funct3} (bits 14:12) e \texttt{funct7} (bits 31:25) para determinar a operação da ULA, controlar a escrita no banco de registradores (\texttt{RegWrite}), habilitar leitura/escrita de memórias (\texttt{MemRead}, \texttt{MemWrite}), e controlar os multiplexadores (\texttt{ALUSrc}, \texttt{MemtoReg}, \texttt{Branch}, etc.). O processador inclui tanto um Controle Principal, baseado primariamente no \texttt{opcode}, quanto um Controle da ULA (\textit{ALU Control}), dependente do \texttt{funct3}, \texttt{funct7} e de sinais do Controle Principal.
 
+\subsection{Sinais de Controle por Tipo de Opera\c{c}\~{a}o no RISC-V32I}
+\begin{table}[h]
+\centering
+\caption{Sinais de Controle por Tipo de Opera\c{c}\~{a}o no RISC-V32I}
+\label{tab:sinais_controle}
+\footnotesize % Mantém a fonte ligeiramente menor para ajudar no ajuste
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Tipo de Opera\c{c}\~{a}o} & 
+\rotatebox{50}{\textbf{Branch}} & 
+\rotatebox{50}{\textbf{MemRead}} & 
+\rotatebox{50}{\textbf{MemtoReg}} & 
+\rotatebox{50}{\textbf{ALUOp}} & 
+\rotatebox{50}{\textbf{MemWrite}} & 
+\rotatebox{50}{\textbf{ALUSrc}} \\ 
+\midrule
+\textbf{Tipo-R}  & 0 & 0 & 0 & 10 & 0 & 0 \\
+\textbf{Tipo-I}  & 0 & 0 & 0 & 11 & 0 & 1 \\
+\textbf{Load}    & 0 & 1 & 1 & 00 & 0 & 1 \\
+\textbf{Store}   & 0 & 0 & X & 00 & 1 & 1 \\
+\textbf{Branch}  & 1 & 0 & X & 01 & 0 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \section{Materiais e Métodos}
 
 \subsection{Ferramentas Utilizadas}
