@@ -13,6 +13,8 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{float}
 
 % Configuracao para exibicao de codigo
 \lstdefinestyle{verilogstyle}{
@@ -101,8 +103,46 @@ De forma específica, busca-se:
 
 \section{Fundamentação Teórica}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.90\linewidth]{datapath_novo.png}
+    \caption{Fluxo de dados da Unidade Operativa Uniciclo RISC-V32I.}
+    \label{fig:datapath}
+\end{figure}
+
 \subsection{Caminho de Dados (Datapath) e Arquitetura Uniciclo}
-O caminho de dados (\textit{datapath}) é o conjunto de elementos funcionais que processam informações no processador. Ele inclui componentes de armazenamento temporário, como o banco de registradores (RegFile) e o Contador de Programa (PC - Program Counter), além de componentes de transformação e roteamento, como a Unidade Lógica e Aritmética (ULA) e os multiplexadores. Na abordagem uniciclo, todas as etapas (busca, decodificação, execução, acesso à memória e escrita) são executadas no mesmo ciclo de clock, exigindo que o \textit{datapath} contenha recursos dedicados para cada etapa para evitar conflitos estruturais, como memórias separadas para dados e instruções (Arquitetura Harvard).
+O caminho de dados (\textit{datapath}) é o conjunto de elementos funcionais que processam informações no processador, formado por elementos de estado e elementos combinacionais. Ele inclui componentes de armazenamento temporário, como o banco de registradores (RegFile) e o Contador de Programa (PC - Program Counter), além de componentes de transformação e roteamento, como a Unidade Lógica e Aritmética (ULA) e os multiplexadores. Na abordagem uniciclo, todas as etapas (busca, decodificação, execução, acesso à memória e escrita) são executadas no mesmo ciclo de clock, exigindo que o \textit{datapath} contenha recursos dedicados para cada etapa para evitar conflitos estruturais, como memórias separadas para dados e instruções (Arquitetura Harvard).
+
+\subsection{Program Counter}
+O Program Counter (PC) é o registrador responsável por armazenar o endereço da próxima instrução a ser buscada na memória de instruções. Comumente, o seu valor é incrementado em quatro bytes (PC+4) após cada instrução, pois todas as instruções do conjunto RV32I possuem tamanho fixo de 32 bits. Em instruções de desvio e salto, entretanto, o próximo valor do PC passa a ser determinado pelo resultado de cálculos envolvendo deslocamentos de imediatos ou de endereços calculados pela ULA.
+
+\subsection{Multiplexadores}
+Os multiplexadores são responsáveis por selecionar quais sinais percorrem o datapath. Eles permitem escolher, por exemplo, entre um operando vindo do banco de registradores ou do gerador de imediato, entre o resultado da ULA ou da memória para escrita nos registradores, e entre diferentes possibilidades para atualização do Program Counter.
+
+\subsection{Arquitetura Harvard}
+O processador desenvolvido utiliza arquitetura Harvard, caracterizada pela separação física entre memória de instruções e memória de dados. Desta forma, a busca de instruções ocorre independentemente dos acessos realizados à memória de dados, eliminando conflitos estruturais comuns em arquiteturas com memória unificada.
+
+\subsection{Formatos de Instruções do RV32I}
+O conjunto básico RV32I utiliza seis formatos principais de instrução: R, I, S, B, U e J. Cada formato organiza os campos opcode, registradores, imediato e códigos de função em posições específicas da palavra de 32 bits. Essa organização permite que a unidade de controle identifique rapidamente a operação a ser executada e que a unidade geradora de imediato reconstrua corretamente os valores utilizados durante a execução.
+
+
+\subsection{Banco de Registradores}
+O banco de registradores do RV32I contém 32 registradores de uso geral, cada um com 32 bits. Dois registradores podem ser lidos simultaneamente, enquanto apenas um pode ser escrito por ciclo de clock. O registrador x0 possui comportamento especial, permanecendo permanentemente com o valor zero independentemente de tentativas de escrita.
+
+\subsection{Gerador de Imediatos}
+Diversas instruções do conjunto RV32I utilizam valores imediatos codificados diretamente na instrução. Como esses valores encontram-se distribuídos em posições diferentes dependendo do formato (I, S, B, U ou J), torna-se necessária uma unidade responsável por reconstruir corretamente o imediato e realizar sua extensão de sinal para 32 bits.
+
+\subsection{Execução de uma Instrução}
+Qualquer tipo de operação e instrução, percorre cinco etapas lógicas:
+\begin{enumerate}
+\item Busca da instrução na memória;
+\item Decodificação e leitura dos registradores;
+\item Execução da operação na ULA;
+\item Acesso à memória de dados, quando necessário;
+\item Escrita do resultado no banco de registradores.
+\end{enumerate}
+
+Na arquitetura uniciclo essas etapas ocorrem durante um único período de clock.
 
 \subsection{A Unidade de Controle}
 A unidade de controle atua orquestrando o fluxo de dados pelos componentes do processador. No RISC-V, ela extrai informações contidas nos campos da instrução, como o \texttt{opcode} (bits 6:0), e subcampos como \texttt{funct3} (bits 14:12) e \texttt{funct7} (bits 31:25) para determinar a operação da ULA, controlar a escrita no banco de registradores (\texttt{RegWrite}), habilitar leitura/escrita de memórias (\texttt{MemRead}, \texttt{MemWrite}), e controlar os multiplexadores (\texttt{ALUSrc}, \texttt{MemtoReg}, \texttt{Branch}, etc.). O processador inclui tanto um Controle Principal, baseado primariamente no \texttt{opcode}, quanto um Controle da ULA (\textit{ALU Control}), dependente do \texttt{funct3}, \texttt{funct7} e de sinais do Controle Principal.
@@ -110,9 +150,7 @@ A unidade de controle atua orquestrando o fluxo de dados pelos componentes do pr
 \subsection{Sinais de Controle por Tipo de Opera\c{c}\~{a}o no RISC-V32I}
 \begin{table}[h]
 \centering
-\caption{Sinais de Controle por Tipo de Opera\c{c}\~{a}o no RISC-V32I}
 \label{tab:sinais_controle}
-\footnotesize % Mantém a fonte ligeiramente menor para ajudar no ajuste
 \setlength{\tabcolsep}{2pt}
 \begin{tabular}{lcccccc}
 \toprule
@@ -132,6 +170,7 @@ A unidade de controle atua orquestrando o fluxo de dados pelos componentes do pr
 \bottomrule
 \end{tabular}
 \end{table}
+
 
 \section{Materiais e Métodos}
 
