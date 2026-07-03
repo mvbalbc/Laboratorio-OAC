@@ -99,6 +99,8 @@ De forma específica, busca-se:
     \item Processar conjuntos de instruções de 32 bits pré-compiladas (arquivos \texttt{.mif} gerados no laboratório anterior).
     \item Analisar e simular o fluxo de dados durante a execução de instruções de acesso à memória, operações aritmético-lógicas e de desvio.
     \item Avaliar o desempenho estimando tempos de propagação nas diferentes unidades funcionais.
+    \item Validar o funcionamento do processador por meio de simulações temporais, verificando a execução correta das instruções suportadas e a evolução dos principais sinais internos do \textit{\ref{fig:datapath}}.
+    \item Relacionar a implementação em Verilog com o modelo teórico apresentado por Patterson e Hennessy, evidenciando como os componentes do \textit{\ref{fig:datapath}} e da unidade de controle cooperam durante a execução das instruções.
 \end{itemize}
 
 \section{Fundamentação Teórica}
@@ -111,7 +113,7 @@ De forma específica, busca-se:
 \end{figure}
 
 \subsection{Caminho de Dados (Datapath) e Arquitetura Uniciclo}
-O caminho de dados (\textit{\ref{fig:datapath}}) é o conjunto de elementos funcionais que processam informações no processador, formado por elementos de estado e elementos combinacionais. Ele inclui componentes de armazenamento temporário, como o banco de registradores (RegFile) e o Contador de Programa (PC - Program Counter), além de componentes de transformação e roteamento, como a Unidade Lógica e Aritmética (ULA) e os multiplexadores. Na abordagem uniciclo, todas as etapas (busca, decodificação, execução, acesso à memória e escrita) são executadas no mesmo ciclo de clock, exigindo que o \textit{\ref{fig:datapath}}} contenha recursos dedicados para cada etapa para evitar conflitos estruturais, como memórias separadas para dados e instruções (Arquitetura Harvard).
+O caminho de dados (\textit{\ref{fig:datapath}}) é o conjunto de elementos funcionais que processam informações no processador, formado por elementos de estado e elementos combinacionais. Ele inclui componentes de armazenamento temporário, como o banco de registradores (RegFile) e o Contador de Programa (PC - Program Counter), além de componentes de transformação e roteamento, como a Unidade Lógica e Aritmética (ULA) e os multiplexadores. Na abordagem uniciclo, todas as etapas (busca, decodificação, execução, acesso à memória e escrita) são executadas no mesmo ciclo de clock, exigindo que o \textit{\ref{fig:datapath}} contenha recursos dedicados para cada etapa para evitar conflitos estruturais, como memórias separadas para dados e instruções (Arquitetura Harvard).
 
 \subsection{Program Counter}
 O Program Counter (PC) é o registrador responsável por armazenar o endereço da próxima instrução a ser buscada na memória de instruções. Comumente, o seu valor é incrementado em quatro bytes (PC+4) após cada instrução, pois todas as instruções do conjunto RV32I possuem tamanho fixo de 32 bits. Em instruções de desvio e salto, entretanto, o próximo valor do PC passa a ser determinado pelo resultado de cálculos envolvendo deslocamentos de imediatos ou de endereços calculados pela ULA.
@@ -248,8 +250,7 @@ Banco de Registradores (Escrita) & 50 & 5.5\% \\
 Estes resultados demonstram as limitações da arquitetura de ciclo único no que diz respeito ao atraso de propagação do sinal; instruções inerentemente mais rápidas (como simples saltos incondicionais) são forçadas a aguardar a janela de ciclo imposta pela lentidão estrutural de leitura de memória presente apenas na instrução \texttt{lw}. Isso justifica implementações mais avançadas como Pipeline, onde o \textit{clock} não necessita acomodar toda a soma de latências do processador em uma única janela estática.
 
 \section{Conclusão}
-
-A execução prática do Laboratório 2 logrou êxito na integração e funcionamento da unidade operativa do Uniciclo RISC-V32I. Foi possível compreender de maneira profunda o papel da unidade de controle na modulação do trajeto da informação. Ao implementar e simular cada etapa, o estudo demonstrou como uma representação textual e abstrata de um programa é desfragmentada pelo hardware em sinais elétricos organizados. O Quartus II provou-se uma ferramenta adequada para validar os arranjos de multiplexadores, ULA, registradores e memória. Fica clara a validade deste modelo para fins didáticos, ainda que, na prática, modernas técnicas de \textit{pipelining} sejam preferidas a fim de evitar o desperdício de tempo inerente ao longo ciclo estático do \textit{\ref{fig:datapath}} monociclo.
+Após a integração dos módulos e a realização das simulações no Quartus II, foi possível validar o funcionamento da unidade operativa, confirmando a correta execução das instruções implementadas do conjunto RV32I. A execução prática do Laboratório 2 logrou êxito na integração e funcionamento da unidade operativa do Uniciclo RISC-V32I. Foi possível compreender de maneira profunda o papel da unidade de controle na modulação do trajeto da informação. Ao implementar e simular cada etapa, o estudo demonstrou como uma representação textual e abstrata de um programa é desfragmentada pelo hardware em sinais elétricos organizados. O Quartus II provou-se uma ferramenta adequada para validar os arranjos de multiplexadores, ULA, registradores e memória. Fica clara a validade deste modelo para fins didáticos, ainda que, na prática, modernas técnicas de \textit{pipelining} sejam preferidas a fim de evitar o desperdício de tempo inerente ao longo ciclo estático do \textit{\ref{fig:datapath}} monociclo.
 
 \begin{thebibliography}{00}
 
